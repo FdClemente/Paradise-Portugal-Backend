@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Components\Address\GoogleAutocomplete;
 use App\Filament\Resources\HouseResource\Pages;
 use App\Models\House;
 use Filament\Forms\Components\Placeholder;
@@ -53,40 +54,54 @@ class HouseResource extends Resource
                 Section::make(__('filament.house.address_details'))
                     ->columns(3)
                     ->schema([
-                        TextInput::make('street_name')
-                            ->columnSpan(2)
-                            ->label(__('filament.house.street_name'))
-                            ->required(),
+                        GoogleAutocomplete::make('address')
+                            ->label('Google look-up')
+                            ->withFields([
+                                TextInput::make('street_name')
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'route',
+                                    ])
+                                    ->columnSpan(2)
+                                    ->label(__('filament.house.street_name'))
+                                    ->required(),
+                                TextInput::make('street_number')
+                                    ->columnSpan(1)
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'street_number',
+                                    ])
+                                    ->label(__('filament.house.street_number'))
+                                    ->required(),
+                                TextInput::make('zip')
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'postal_code_prefix',
+                                    ])
+                                    ->label(__('filament.house.zip_code'))
+                                    ->required(),
+                                TextInput::make('city')
+                                    ->label(__('filament.house.city'))
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'administrative_area_level_2',
+                                    ])
+                                    ->required(),
+                                TextInput::make('state')
+                                    ->label(__('filament.house.state'))
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'administrative_area_level_1',
+                                    ])
+                                    ->required(),
+                                TextInput::make('latitude')
+                                    ->label(__('filament.house.latitude'))
+                                    ->required(),
+                                TextInput::make('longitude')
+                                    ->label(__('filament.house.longitude'))
+                                    ->required(),
+                                TextInput::make('country')
+                                    ->label(__('filament.house.country'))
+                                    ->columnSpanFull()
+                                    ->required(),
+                            ]),
 
-                        TextInput::make('street_number')
-                            ->columnSpan(1)
-                            ->label(__('filament.house.street_number'))
-                            ->required(),
 
-                        TextInput::make('zip')
-                            ->label(__('filament.house.zip_code'))
-                            ->required(),
-
-                        TextInput::make('city')
-                            ->label(__('filament.house.city'))
-                            ->required(),
-
-                        TextInput::make('state')
-                            ->label(__('filament.house.state'))
-                            ->required(),
-
-
-                        TextInput::make('country')
-                            ->label(__('filament.house.country'))
-                            ->required(),
-
-                        TextInput::make('latitude')
-                            ->label(__('filament.house.latitude'))
-                            ->required(),
-
-                        TextInput::make('longitude')
-                            ->label(__('filament.house.longitude'))
-                            ->required(),
                     ]),
 
 
