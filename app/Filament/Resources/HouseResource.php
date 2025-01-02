@@ -104,7 +104,6 @@ class HouseResource extends Resource
 
                     ]),
 
-
                 Placeholder::make('created_at')
                     ->label('Created Date')
                     ->content(fn(?House $record): string => $record?->created_at?->diffForHumans() ?? '-'),
