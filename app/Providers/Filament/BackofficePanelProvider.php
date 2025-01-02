@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use SolutionForest\FilamentTranslateField\FilamentTranslateFieldPlugin;
 
 class BackofficePanelProvider extends PanelProvider
 {
@@ -36,6 +38,7 @@ class BackofficePanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->brandLogo(fn () => view('filament.admin.logo'))
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
@@ -53,6 +56,16 @@ class BackofficePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                FilamentTranslateFieldPlugin::make()
+                    ->defaultLocales(['de', 'en', 'es', 'fr', 'pt-pt']),
+                FilamentDeveloperLoginsPlugin::make()
+                    ->enabled(app()->hasDebugModeEnabled())
+                    ->switchable(false)
+                    ->users([
+                        'Admin' => 'admin@example.com',
+                    ])
             ]);
     }
 }

@@ -19,5 +19,19 @@ return [
         'phone_number_verified_at' => 'Phone Number verified at',
         'password' => 'Password',
         'password_confirmation' => 'Password confirmation',
+    ],
+    'house' => [
+        'name' => 'Name',
+        'description' => 'Description',
+        'address_details' => 'Address Details',
+        'street_name' => 'Address',
+        'street_number' => 'Street number',
+        'city' => 'City',
+        'state' => 'State',
+        'zip_code' => 'Zip code',
+        'country' => 'Country',
+        'latitude' => 'Latitude',
+        'longitude' => 'Longitude',
+        'house_details' => 'House Details',
     ]
 ];

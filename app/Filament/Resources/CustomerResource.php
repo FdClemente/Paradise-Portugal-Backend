@@ -63,7 +63,7 @@ class CustomerResource extends Resource
                 Section::make(__('filament.user.contact_details'))
                     ->columns()
                     ->schema([
-                        CountryCodeSelect::make('country_code')
+                        CountryCodeSelect::make('country_phone')
                             ->required()
                             ->label(__('filament.user.country_code'))
                             ->reactive()
