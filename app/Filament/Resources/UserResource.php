@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -36,25 +37,34 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required(),
-
-                TextInput::make('email')
-                    ->required(),
-
-                DatePicker::make('email_verified_at')
-                    ->label('Email Verified Date'),
-
-                TextInput::make('password')
-                    ->required(),
-
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn(?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn(?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                Section::make(__('filament.user.user_details'))
+                    ->description(__('filament.user.admin_warning'))
+                    ->columns()
+                    ->schema([
+                        TextInput::make('first_name')
+                            ->columnSpan(1)
+                            ->label(__('filament.user.first_name'))
+                            ->required(),
+                        TextInput::make('last_name')
+                            ->columnSpan(1)
+                            ->label(__('filament.user.last_name'))
+                            ->required(),
+                        TextInput::make('email')
+                            ->columnSpan(2)
+                            ->label(__('filament.user.email'))
+                            ->unique(ignoreRecord: true)
+                            ->required(),
+                        TextInput::make('password')
+                            ->label(__('filament.user.password'))
+                            ->required()
+                            ->columnSpan(1)
+                            ->confirmed(),
+                        TextInput::make('password_confirmation')
+                            ->label(__('filament.user.password_confirmation'))
+                            ->required()
+                            ->columnSpan(1)
+                            ->confirmed()
+                    ])
             ]);
     }
 
@@ -63,7 +73,7 @@ class UserResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $query->whereHas('roles', function ($query) {
-                    $query->where('name', 'admin');
+                    $query->where('role', 'admin');
                 });
             })
             ->columns([

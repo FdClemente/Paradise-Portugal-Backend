@@ -5,9 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -23,6 +28,8 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Tapp\FilamentCountryCodeField\Forms\Components\CountryCodeSelect;
 
 class CustomerResource extends Resource
 {
@@ -36,25 +43,50 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required(),
-
-                TextInput::make('email')
-                    ->required(),
-
-                DatePicker::make('email_verified_at')
-                    ->label('Email Verified Date'),
-
-                TextInput::make('password')
-                    ->required(),
-
-                Placeholder::make('created_at')
-                    ->label('Created Date')
-                    ->content(fn(?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
-
-                Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
-                    ->content(fn(?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                Section::make(__('filament.user.customer_details'))
+                    ->columns()
+                    ->schema([
+                        TextInput::make('first_name')
+                            ->columnSpan(1)
+                            ->label(__('filament.user.first_name'))
+                            ->required(),
+                        TextInput::make('last_name')
+                            ->columnSpan(1)
+                            ->label(__('filament.user.last_name'))
+                            ->required(),
+                        TextInput::make('email')
+                            ->columnSpan(2)
+                            ->label(__('filament.user.email'))
+                            ->unique(ignoreRecord: true)
+                            ->required(),
+                    ]),
+                Section::make(__('filament.user.contact_details'))
+                    ->columns()
+                    ->schema([
+                        CountryCodeSelect::make('country_code')
+                            ->required()
+                            ->label(__('filament.user.country_code'))
+                            ->reactive()
+                            ->afterStateUpdated(function (Set $set, Get $get, $state, CountryCodeSelect $component) {
+                                if ($state === null)
+                                    return;
+                                $countryCode = strtoupper($component->getIsoCodeByCountryCode($state));
+                                if ($get('country') !== null) {
+                                    if ($get('country') !== $countryCode)
+                                        return;
+                                }
+                                $set('country', $countryCode);
+                            })
+                            ->flags(false),
+                        TextInput::make('phone_number')
+                            ->label(__('filament.user.phone_number'))
+                            ->required(),
+                    ]),
+                Section::make(__('filament.user.address_details'))
+                    ->schema([
+                        Country::make('country')
+                            ->required()
+                    ])
             ]);
     }
 
@@ -63,7 +95,7 @@ class CustomerResource extends Resource
         return $table
             ->modifyQueryUsing(function (Builder $query) {
                 $query->whereHas('roles', function ($query) {
-                    $query->where('name', 'customer');
+                    $query->where('role', 'customer');
                 });
             })
             ->columns([

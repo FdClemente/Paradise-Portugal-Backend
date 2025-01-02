@@ -10,7 +10,9 @@
         "eneadm/ladder": "^1.2",
         "filament/filament": "^3.2",
         "laravel/framework": "^11.31",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "parfaitementweb/filament-country-field": "^2.2",
+        "tapp/filament-country-code-field": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
