@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "diogogpinto/filament-auth-ui-enhancer": "^1.0",
         "dutchcodingcompany/filament-developer-logins": "^1.5",
         "eneadm/ladder": "^1.2",
         "filament/filament": "^3.2",

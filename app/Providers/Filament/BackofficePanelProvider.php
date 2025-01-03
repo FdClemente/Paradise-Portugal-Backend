@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -38,7 +39,7 @@ class BackofficePanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->brandLogo(fn () => view('filament.admin.logo'))
+            ->brandName("Portugal Paradise")
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
@@ -65,7 +66,15 @@ class BackofficePanelProvider extends PanelProvider
                     ->switchable(false)
                     ->users([
                         'Admin' => 'admin@example.com',
-                    ])
-            ]);
+                    ]),
+                AuthUIEnhancerPlugin::make()
+                    ->showEmptyPanelOnMobile(false)
+                    ->formPanelPosition('right')
+                    ->formPanelWidth('40%')
+                    ->emptyPanelBackgroundImageOpacity('100%')
+                    ->emptyPanelBackgroundImageUrl(asset('images/login.jpg'))
+                ,
+            ])
+            ->viteTheme('resources/css/filament/backoffice/theme.css');
     }
 }
