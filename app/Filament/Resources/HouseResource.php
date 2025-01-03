@@ -23,6 +23,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
 class HouseResource extends Resource
@@ -114,20 +115,26 @@ class HouseResource extends Resource
                             ->relationship('details')
                             ->schema([
                                 TextInput::make('area')
+                                    ->label(__('filament.house.area'))
                                     ->suffix('m²'),
                                 TextInput::make('num_bedrooms')
+                                    ->label(__('filament.house.num_bedrooms'))
                                     ->integer(),
                                 TextInput::make('num_bathrooms')
+                                    ->label(__('filament.house.num_bathrooms'))
                                     ->integer(),
-                                TimePicker::make('check_in_time')
-                                    ->native(false),
-                                TimePicker::make('check_out_time')
-                                    ->native(false),
+                                TimePickerField::make('check_in_time')
+                                    ->label(__('filament.house.check_in_time')),
+                                TimePickerField::make('check_out_time')
+                                    ->label(__('filament.house.check_out_time')),
                                 Grid::make(3)
                                     ->schema([
-                                        Toggle::make('private_bathroom'),
-                                        Toggle::make('private_entrance'),
-                                        Toggle::make('family_friendly'),
+                                        Toggle::make('private_bathroom')
+                                            ->label(__('filament.house.private_bathroom')),
+                                        Toggle::make('private_entrance')
+                                            ->label(__('filament.house.private_entrance')),
+                                        Toggle::make('family_friendly')
+                                            ->label(__('filament.house.family_friendly')),
                                     ])
                             ])
                     ]),
