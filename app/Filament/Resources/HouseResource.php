@@ -15,14 +15,17 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Infolists;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
@@ -40,20 +43,26 @@ class HouseResource extends Resource
             ->schema([
                 Section::make(__('filament.house.house_details'))
                     ->schema([
-                        Select::make('house_type_id')
-                            ->label(__('filament.house.house_type'))
-                            ->relationship('houseType', 'name')
-                            ->createOptionForm([
-                                Translate::make()
-                                    ->prefixLocaleLabel()
-                                    ->contained(false)
-                                    ->columnSpanFull()
-                                    ->schema([
-                                        TextInput::make('name'),
-                                    ])
-                                    ->locales(config('app.available_locales'))
+                        Grid::make(4)
+                            ->schema([
+                                Select::make('house_type_id')
+                                    ->columnSpan(2)
+                                    ->label(__('filament.house.house_type'))
+                                    ->relationship('houseType', 'name')
+                                    ->createOptionForm([
+                                        Translate::make()
+                                            ->prefixLocaleLabel()
+                                            ->contained(false)
+                                            ->columnSpanFull()
+                                            ->schema([
+                                                TextInput::make('name'),
+                                            ])
+                                            ->locales(config('app.available_locales'))
+                                    ]),
+                                Select::make('is_disabled')
+                                    ->boolean(),
+                                TextInput::make('house_id'),
                             ]),
-
                         Translate::make()
                             ->schema([
                                 TextInput::make('name'),
@@ -160,6 +169,29 @@ class HouseResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Infolists\Components\Grid::make(3)
+            ->schema([
+                Infolists\Components\Section::make(__('filament.house.house_details'))
+                    ->description(fn(?House $record): string => $record?->name . ' - ' . $record?->address_complete ?? '-')
+                ->columnSpan(2),
+                Infolists\Components\Section::make(__('filament.house.images'))
+                    ->schema([
+                        Infolists\Components\ImageEntry::make('images')
+                            ->label('')
+                            ->width('100%')
+                            ->height('100%')
+                            ->extraAttributes(['draggable' => 'false'])
+                            ->simpleLightbox(fn($record) => $record?->getFirstMediaUrl('house_image'), defaultDisplayUrl: true),
+                    ])
+                ->columnSpan(1),
+            ]),
+
+        ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -178,7 +210,7 @@ class HouseResource extends Resource
                     ->sortable(),
                 TextColumn::make('description')
                     ->label(__('filament.house.description'))
-                    ->limit()
+                    ->limit(50)
                     ->html(),
                 TextColumn::make('street_name')
                     ->label(__('filament.house.street_name')),
@@ -207,8 +239,8 @@ class HouseResource extends Resource
                 //
             ])
             ->actions([
+                ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -223,6 +255,7 @@ class HouseResource extends Resource
             'index' => Pages\ListHouses::route('/'),
             'create' => Pages\CreateHouse::route('/create'),
             'edit' => Pages\EditHouse::route('/{record}/edit'),
+            'view' => Pages\ViewHouse::route('/{record}'),
         ];
     }
 

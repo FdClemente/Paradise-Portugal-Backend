@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 use SolutionForest\FilamentTranslateField\FilamentTranslateFieldPlugin;
 
 class BackofficePanelProvider extends PanelProvider
@@ -72,8 +73,8 @@ class BackofficePanelProvider extends PanelProvider
                     ->formPanelPosition('right')
                     ->formPanelWidth('40%')
                     ->emptyPanelBackgroundImageOpacity('100%')
-                    ->emptyPanelBackgroundImageUrl(asset('images/login.jpg'))
-                ,
+                    ->emptyPanelBackgroundImageUrl(asset('images/login.jpg')),
+                SimpleLightBoxPlugin::make()
             ])
             ->viteTheme('resources/css/filament/backoffice/theme.css');
     }

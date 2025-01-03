@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,6 +21,8 @@ class House extends Model implements HasMedia
     public $translatable = ['name', 'description'];
 
     protected $fillable = [
+        'is_disabled',
+        'house_id',
         'house_type_id',
         'name',
         'description',
@@ -48,5 +51,18 @@ class House extends Model implements HasMedia
     public function details(): HasOne
     {
         return $this->hasOne(HouseDetail::class, 'house_id', 'id');
+    }
+
+    public function address():Attribute
+    {
+        return Attribute::make(
+            get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->city
+        );
+    }
+    public function addressComplete():Attribute
+    {
+        return Attribute::make(
+            get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->zip.' '.$this->city
+        );
     }
 }
