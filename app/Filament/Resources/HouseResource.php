@@ -188,6 +188,7 @@ class HouseResource extends Resource
                     ])
                 ->columnSpan(1),
             ]),
+            Infolists\Components\Section::make(__('filament.house.address_details'))
 
         ]);
     }
