@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Settings;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\Settings;
+use App\Filament\Resources\Settings\UserResource\Pages;
 use App\Models\User;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;

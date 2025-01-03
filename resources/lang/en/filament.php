@@ -22,8 +22,10 @@ return [
     ],
     'house' => [
         'name' => 'Name',
+        'house_type' => 'House type',
         'description' => 'Description',
         'address_details' => 'Address Details',
+        'images' => 'Images',
         'street_name' => 'Address',
         'street_number' => 'Street number',
         'city' => 'City',

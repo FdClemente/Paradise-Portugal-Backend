@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Resources\Settings\UserResource\Pages;
 
-use App\Filament\Resources\UserResource;
+use App\Filament\Resources\Settings\UserResource;
 use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Password;
 
 class CreateUser extends CreateRecord
 {
