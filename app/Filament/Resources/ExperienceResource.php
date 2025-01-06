@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExperienceResource\Pages;
+use App\Filament\Resources\Settings\ExperiencePartnerResource;
 use App\Models\Experience;
+use App\Models\Settings\ExperiencePartner;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
@@ -21,6 +23,7 @@ use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -45,9 +48,12 @@ class ExperienceResource extends Resource
                 ->schema([
                     Section::make(__('filament.experience.experience_details'))
                         ->columns(3)
-                        ->columnSpan(3)
+                        ->columnSpan(4)
                         ->schema([
                             Select::make('experience_type_id')
+                                ->createOptionForm(function (Form $form){
+                                    return ExperiencePartnerResource::form($form);
+                                })
                                 ->required()
                                 ->preload()
                                 ->label(__('filament.experience.experience_type'))
@@ -55,6 +61,9 @@ class ExperienceResource extends Resource
                                 ->relationship('experienceType', 'name'),
                             Select::make('experience_partner_id')
                                 ->label(__('filament.experience.experience_partner'))
+                                ->createOptionForm(function (Form $form){
+                                    return ExperiencePartnerResource::form($form);
+                                })
                                 ->required()
                                 ->preload()
                                 ->searchable()
@@ -73,7 +82,7 @@ class ExperienceResource extends Resource
                                 ])->locales(config('app.available_locales')),
                         ]),
                     Section::make(__('filament.experience.experience_image'))
-                        ->columnSpan(1)
+                        ->columnSpan(4)
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('images')
                             ->multiple()
@@ -96,6 +105,9 @@ class ExperienceResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('images')
+                    ->label(__('filament.experience.experience_image'))
+                    ->limit(1),
                 TextColumn::make('experienceType.name')
                     ->label(__('filament.experience.experience_type')),
 
