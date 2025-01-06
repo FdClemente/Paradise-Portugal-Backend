@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\Settings;
 
-use App\Filament\Resources\Settings\HouseTypeResource\Pages;
-use App\Models\HouseType;
-use Filament\Forms\Components\DatePicker;
+use App\Filament\Resources\Settings\FeatureResource\Pages;
+use App\Models\Feature;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,15 +13,17 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
-class HouseTypeResource extends Resource
+class FeatureResource extends Resource
 {
-    protected static ?string $model = HouseType::class;
+    protected static ?string $model = Feature::class;
 
-    protected static ?string $slug = 'settings/house-types';
+    protected static ?string $slug = 'settings/features';
 
     public static function getNavigationGroup(): ?string
     {
@@ -33,22 +34,24 @@ class HouseTypeResource extends Resource
     {
         return $form
             ->schema([
-                Translate::make()
-                    ->prefixLocaleLabel()
-                    ->contained(false)
-                    ->columnSpanFull()
+                Grid::make(1)
                     ->schema([
-                        TextInput::make('name')
-                            ->label(__('filament.house_type.name')),
-                    ])
-                    ->locales(config('app.available_locales')),
-                Placeholder::make('created_at')
-                    ->label(__('filament.created_at'))
-                    ->content(fn(?HouseType $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                        Translate::make()->schema([
+                            TextInput::make('name')
+                        ])->locales(config('app.available_locales')),
+                        IconPicker::make('icon'),
+                    ]),
+                Grid::make(2)
+                    ->schema([
+                        Placeholder::make('created_at')
+                            ->label(__('filament.created_at'))
+                            ->content(fn(?Feature $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
-                Placeholder::make('updated_at')
-                    ->label(__('filament.updated_at'))
-                    ->content(fn(?HouseType $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                        Placeholder::make('updated_at')
+                            ->label(__('filament.updated_at'))
+                            ->content(fn(?Feature $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                    ])
+
 
             ]);
     }
@@ -58,9 +61,11 @@ class HouseTypeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('filament.house_type.name'))
                     ->searchable()
                     ->sortable(),
+
+                IconColumn::make('icon')->icon(fn (?Feature $record): string => $record?->icon ?? 'heroicon-o-question-mark-circle'),
+
             ])
             ->filters([
                 //
@@ -79,7 +84,7 @@ class HouseTypeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListHouseTypes::route('/'),
+            'index' => Pages\ListFeatures::route('/'),
         ];
     }
 

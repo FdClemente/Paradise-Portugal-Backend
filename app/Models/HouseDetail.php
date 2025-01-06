@@ -16,5 +16,6 @@ class HouseDetail extends Model
         'private_bathroom',
         'private_entrance',
         'family_friendly',
+        'num_guest'
     ];
 }

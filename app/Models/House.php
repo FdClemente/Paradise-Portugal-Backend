@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Image\Enums\Fit;
@@ -64,5 +65,10 @@ class House extends Model implements HasMedia
         return Attribute::make(
             get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->zip.' '.$this->city
         );
+    }
+
+    public function features()
+    {
+        return $this->belongsToMany(Feature::class);
     }
 }

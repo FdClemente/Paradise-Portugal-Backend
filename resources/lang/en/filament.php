@@ -5,7 +5,7 @@ return [
         'first_name' => 'First name',
         'last_name' => 'Last name',
         'email' => 'Email',
-        'email_verified_at' => 'Email Verified At',
+        'email_verified_at' => 'Email Verified',
         'email_verified_placeholder' => 'Email not verified',
         'customer_singular' => 'Customer',
         'customer_plural' => 'Customers',
@@ -44,5 +44,16 @@ return [
         'latitude' => 'Latitude',
         'longitude' => 'Longitude',
         'house_details' => 'House Details',
+        'features' => 'Features',
+        'num_guest' => 'Number of guests',
+        'next_reservation' => 'Next reservation',
+    ],
+    'house_type' => [
+        'name' => 'Name',
+    ],
+    'created_at' => 'Created at',
+    'updated_at' => 'Updated at',
+    'navigation_group' => [
+        'settings' => 'Settings'
     ]
 ];

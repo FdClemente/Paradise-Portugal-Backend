@@ -17,6 +17,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -41,130 +42,152 @@ class HouseResource extends Resource
     {
         return $form
             ->schema([
-                Section::make(__('filament.house.house_details'))
+                Grid::make(4)
                     ->schema([
-                        Grid::make(4)
+                        Grid::make()
+                            ->columnSpan(3)
                             ->schema([
-                                Select::make('house_type_id')
-                                    ->columnSpan(2)
-                                    ->label(__('filament.house.house_type'))
-                                    ->relationship('houseType', 'name')
-                                    ->createOptionForm([
+                                Section::make(__('filament.house.house_details'))
+                                    ->schema([
+                                        Grid::make(4)
+                                            ->schema([
+                                                Select::make('house_type_id')
+                                                    ->columnSpan(2)
+                                                    ->label(__('filament.house.house_type'))
+                                                    ->relationship('houseType', 'name')
+                                                    ->createOptionForm([
+                                                        Translate::make()
+                                                            ->prefixLocaleLabel()
+                                                            ->contained(false)
+                                                            ->columnSpanFull()
+                                                            ->schema([
+                                                                TextInput::make('name'),
+                                                            ])
+                                                            ->locales(config('app.available_locales'))
+                                                    ]),
+                                                Select::make('is_disabled')
+                                                    ->boolean(),
+                                                TextInput::make('house_id'),
+                                            ]),
                                         Translate::make()
-                                            ->prefixLocaleLabel()
-                                            ->contained(false)
-                                            ->columnSpanFull()
                                             ->schema([
                                                 TextInput::make('name'),
+                                                RichEditor::make('description')
+                                                    ->saveUploadedFileAttachmentsUsing(fn($file) => $file->store('houses', 'public')),
                                             ])
-                                            ->locales(config('app.available_locales'))
+                                            ->locales(config('app.available_locales')),
                                     ]),
-                                Select::make('is_disabled')
-                                    ->boolean(),
-                                TextInput::make('house_id'),
-                            ]),
-                        Translate::make()
-                            ->schema([
-                                TextInput::make('name'),
-                                RichEditor::make('description')
-                                    ->saveUploadedFileAttachmentsUsing(fn($file) => $file->store('houses', 'public')),
-                            ])
-                            ->locales(config('app.available_locales')),
-                    ]),
-                Section::make(__('filament.house.address_details'))
-                    ->columns(3)
-                    ->schema([
-                        GoogleAutocomplete::make('address')
-                            ->label('Google look-up')
-                            ->withFields([
-                                TextInput::make('street_name')
-                                    ->extraInputAttributes([
-                                        'data-google-field' => 'route',
-                                    ])
-                                    ->columnSpan(2)
-                                    ->label(__('filament.house.street_name'))
-                                    ->required(),
-                                TextInput::make('street_number')
-                                    ->columnSpan(1)
-                                    ->extraInputAttributes([
-                                        'data-google-field' => 'street_number',
-                                    ])
-                                    ->label(__('filament.house.street_number'))
-                                    ->required(),
-                                TextInput::make('zip')
-                                    ->extraInputAttributes([
-                                        'data-google-field' => 'postal_code_prefix',
-                                    ])
-                                    ->label(__('filament.house.zip_code'))
-                                    ->required(),
-                                TextInput::make('city')
-                                    ->label(__('filament.house.city'))
-                                    ->extraInputAttributes([
-                                        'data-google-field' => 'administrative_area_level_2',
-                                    ])
-                                    ->required(),
-                                TextInput::make('state')
-                                    ->label(__('filament.house.state'))
-                                    ->extraInputAttributes([
-                                        'data-google-field' => 'administrative_area_level_1',
-                                    ])
-                                    ->required(),
-                                TextInput::make('latitude')
-                                    ->label(__('filament.house.latitude'))
-                                    ->required(),
-                                TextInput::make('longitude')
-                                    ->label(__('filament.house.longitude'))
-                                    ->required(),
-                                TextInput::make('country')
-                                    ->label(__('filament.house.country'))
-                                    ->columnSpanFull()
-                                    ->required(),
-                            ]),
-                        Grid::make()
-                            ->relationship('details')
-                            ->schema([
-                                TextInput::make('area')
-                                    ->label(__('filament.house.area'))
-                                    ->suffix('m²'),
-                                TextInput::make('num_bedrooms')
-                                    ->label(__('filament.house.num_bedrooms'))
-                                    ->integer(),
-                                TextInput::make('num_bathrooms')
-                                    ->label(__('filament.house.num_bathrooms'))
-                                    ->integer(),
-                                TimePickerField::make('check_in_time')
-                                    ->label(__('filament.house.check_in_time')),
-                                TimePickerField::make('check_out_time')
-                                    ->label(__('filament.house.check_out_time')),
-                                Grid::make(3)
+                                Section::make(__('filament.house.address_details'))
+                                    ->columns(3)
                                     ->schema([
-                                        Toggle::make('private_bathroom')
-                                            ->label(__('filament.house.private_bathroom')),
-                                        Toggle::make('private_entrance')
-                                            ->label(__('filament.house.private_entrance')),
-                                        Toggle::make('family_friendly')
-                                            ->label(__('filament.house.family_friendly')),
-                                    ])
+                                        GoogleAutocomplete::make('address')
+                                            ->label('Google look-up')
+                                            ->withFields([
+                                                TextInput::make('street_name')
+                                                    ->extraInputAttributes([
+                                                        'data-google-field' => 'route',
+                                                    ])
+                                                    ->columnSpan(2)
+                                                    ->label(__('filament.house.street_name'))
+                                                    ->required(),
+                                                TextInput::make('street_number')
+                                                    ->columnSpan(1)
+                                                    ->extraInputAttributes([
+                                                        'data-google-field' => 'street_number',
+                                                    ])
+                                                    ->label(__('filament.house.street_number'))
+                                                    ->required(),
+                                                TextInput::make('zip')
+                                                    ->extraInputAttributes([
+                                                        'data-google-field' => 'postal_code_prefix',
+                                                    ])
+                                                    ->label(__('filament.house.zip_code'))
+                                                    ->required(),
+                                                TextInput::make('city')
+                                                    ->label(__('filament.house.city'))
+                                                    ->extraInputAttributes([
+                                                        'data-google-field' => 'administrative_area_level_2',
+                                                    ])
+                                                    ->required(),
+                                                TextInput::make('state')
+                                                    ->label(__('filament.house.state'))
+                                                    ->extraInputAttributes([
+                                                        'data-google-field' => 'administrative_area_level_1',
+                                                    ])
+                                                    ->required(),
+                                                TextInput::make('latitude')
+                                                    ->label(__('filament.house.latitude'))
+                                                    ->required(),
+                                                TextInput::make('longitude')
+                                                    ->label(__('filament.house.longitude'))
+                                                    ->required(),
+                                                TextInput::make('country')
+                                                    ->label(__('filament.house.country'))
+                                                    ->columnSpanFull()
+                                                    ->required(),
+                                            ]),
+                                        Select::make('features')
+                                            ->label(__('filament.house.features'))
+                                            ->columnSpanFull()
+                                            ->multiple()
+                                            ->relationship('features', 'name'),
+                                        Grid::make()
+                                            ->relationship('details')
+                                            ->schema([
+                                                TextInput::make('area')
+                                                    ->label(__('filament.house.area'))
+                                                    ->suffix('m²'),
+                                                TextInput::make('num_guest')
+                                                    ->label(__('filament.house.num_guest'))
+                                                    ->integer(),
+                                                TextInput::make('num_bedrooms')
+                                                    ->label(__('filament.house.num_bedrooms'))
+                                                    ->integer(),
+                                                TextInput::make('num_bathrooms')
+                                                    ->label(__('filament.house.num_bathrooms'))
+                                                    ->integer(),
+                                                TimePickerField::make('check_in_time')
+                                                    ->label(__('filament.house.check_in_time')),
+                                                TimePickerField::make('check_out_time')
+                                                    ->label(__('filament.house.check_out_time')),
+                                                Grid::make(3)
+                                                    ->schema([
+                                                        Toggle::make('private_bathroom')
+                                                            ->label(__('filament.house.private_bathroom')),
+                                                        Toggle::make('private_entrance')
+                                                            ->label(__('filament.house.private_entrance')),
+                                                        Toggle::make('family_friendly')
+                                                            ->label(__('filament.house.family_friendly')),
+                                                    ])
+                                            ])
+                                    ]),
+
+                            ]),
+                        Grid::make(1)
+                            ->columnSpan(1)
+                            ->schema([
+                                Section::make(__('filament.house.images'))
+                                    ->schema([
+                                        SpatieMediaLibraryFileUpload::make('images')
+                                            ->collection('house_image')
+                                            ->label('')
+                                            ->preserveFilenames()
+                                            ->columnSpanFull()
+                                            ->multiple()
+                                            ->reorderable()
+                                            ->appendFiles()
+                                            ->conversion('webp_format'),
+                                    ]),
                             ])
                     ]),
-                Section::make(__('filament.house.images'))
-                    ->schema([
-                        SpatieMediaLibraryFileUpload::make('images')
-                            ->collection('house_image')
-                            ->label('')
-                            ->preserveFilenames()
-                            ->columnSpanFull()
-                            ->multiple()
-                            ->reorderable()
-                            ->appendFiles()
-                            ->conversion('webp_format'),
-                    ]),
+
+
                 Placeholder::make('created_at')
-                    ->label('Created Date')
+                    ->label(__('filament.created_at'))
                     ->content(fn(?House $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                 Placeholder::make('updated_at')
-                    ->label('Last Modified Date')
+                    ->label(__('filament.updated_at'))
                     ->content(fn(?House $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
             ]);
     }
@@ -173,22 +196,28 @@ class HouseResource extends Resource
     {
         return $infolist->schema([
             Infolists\Components\Grid::make(3)
-            ->schema([
-                Infolists\Components\Section::make(__('filament.house.house_details'))
-                    ->description(fn(?House $record): string => $record?->name . ' - ' . $record?->address_complete ?? '-')
-                ->columnSpan(2),
-                Infolists\Components\Section::make(__('filament.house.images'))
-                    ->schema([
-                        Infolists\Components\ImageEntry::make('images')
-                            ->label('')
-                            ->width('100%')
-                            ->height('100%')
-                            ->extraAttributes(['draggable' => 'false'])
-                            ->simpleLightbox(fn($record) => $record?->getFirstMediaUrl('house_image'), defaultDisplayUrl: true),
-                    ])
-                ->columnSpan(1),
-            ]),
-            Infolists\Components\Section::make(__('filament.house.address_details'))
+                ->schema([
+                    Infolists\Components\Grid::make(1)
+                        ->columnSpan(2)
+                        ->schema([
+                            Infolists\Components\Section::make(__('filament.house.house_details'))
+                                ->description(fn(?House $record): string => $record?->name . ' - ' . $record?->address_complete ?? '-'),
+                            Infolists\Components\Section::make(__('filament.house.next_reservation'))
+                                ->schema([
+                                    Infolists\Components\TextEntry::make('next_reservation')->default('No reservation')
+                                ]),
+                        ]),
+                    Infolists\Components\Section::make(__('filament.house.images'))
+                        ->schema([
+                            Infolists\Components\ImageEntry::make('images')
+                                ->label('')
+                                ->width('100%')
+                                ->height('100%')
+                                ->extraAttributes(['draggable' => 'false'])
+                                ->simpleLightbox(fn($record) => $record?->getFirstMediaUrl('house_image'), defaultDisplayUrl: true),
+                        ])
+                        ->columnSpan(1),
+                ]),
 
         ]);
     }

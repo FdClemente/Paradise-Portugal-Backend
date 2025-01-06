@@ -30,7 +30,10 @@ class UserResource extends Resource
 
     protected static ?string $slug = 'users';
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation_group.settings');
+    }
 
     public static function form(Form $form): Form
     {
