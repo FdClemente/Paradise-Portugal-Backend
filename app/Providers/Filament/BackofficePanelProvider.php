@@ -44,7 +44,6 @@ class BackofficePanelProvider extends PanelProvider
             ->brandName("Paradise Portugal")
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
