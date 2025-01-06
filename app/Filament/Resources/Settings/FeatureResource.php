@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Settings;
 
 use App\Filament\Resources\Settings\FeatureResource\Pages;
-use App\Models\Feature;
+use App\Models\Settings\Feature;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;

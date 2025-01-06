@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Settings;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 
-class HouseType extends Model
+class Feature extends Model
 {
     use HasTranslations;
 
@@ -13,5 +13,6 @@ class HouseType extends Model
 
     protected $fillable = [
         'name',
+        'icon',
     ];
 }

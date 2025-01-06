@@ -7,16 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('feature_house', function (Blueprint $table) {
+        Schema::create('experience_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(\App\Models\Settings\Feature::class)->constrained()->cascadeOnDelete();
+            $table->json('name');
+            $table->json('description');
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('feature_house');
+        Schema::dropIfExists('experience_types');
     }
 };

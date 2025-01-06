@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('houses', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\HouseType::class)->after('description')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Settings\HouseType::class)->after('description')->constrained()->cascadeOnDelete();
         });
     }
 

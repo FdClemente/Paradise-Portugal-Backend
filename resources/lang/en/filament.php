@@ -48,6 +48,28 @@ return [
         'num_guest' => 'Number of guests',
         'next_reservation' => 'Next reservation',
     ],
+    'experience_partner' => [
+        'experience_partner_details' => 'Experience Partner Details',
+        'experience_type' => 'Experience Type',
+        'contact_details' => 'Contact Details',
+        'email_helper' => 'Email used to send email to book the experience',
+        'name' => 'Name',
+        'website' => 'Website',
+        'languages' => 'Languages',
+        'phone_number' => 'Phone Number',
+    ],
+    'experience' => [
+        'experience_details' => 'Experience Details',
+        'experience_type' => 'Experience Type',
+        'contact_details' => 'Contact Details',
+        'email_helper' => 'Email used to send email to book the experience',
+        'name' => 'Name',
+        'experience_partner' => 'Experience Partner',
+        'min_guests' => 'Minimum number of guests',
+        'description' => 'Description',
+        'experience_image' => 'Experience Image',
+
+    ],
     'house_type' => [
         'name' => 'Name',
     ],
