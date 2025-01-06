@@ -52,6 +52,7 @@ class HouseResource extends Resource
                                         Grid::make(4)
                                             ->schema([
                                                 Select::make('house_type_id')
+                                                    ->required()
                                                     ->columnSpan(2)
                                                     ->label(__('filament.house.house_type'))
                                                     ->relationship('houseType', 'name')

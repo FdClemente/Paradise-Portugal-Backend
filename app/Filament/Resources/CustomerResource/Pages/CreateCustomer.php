@@ -31,7 +31,9 @@ class CreateCustomer extends CreateRecord
 
         $user->roles()->updateOrCreate(['role' => 'customer']);
 
-        Password::sendResetLink($user->email);
+        Password::sendResetLink([
+            'email' => $user->email,
+        ]);
 
         return $user;
     }
