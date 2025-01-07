@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Contracts\HasPoi;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -16,7 +17,7 @@ use Spatie\Translatable\HasTranslations;
 
 class House extends Model implements HasMedia
 {
-    use HasTranslations, softDeletes, InteractsWithMedia;
+    use HasTranslations, softDeletes, InteractsWithMedia, HasPoi;
 
     public $translatable = ['name', 'description'];
 
@@ -69,5 +70,10 @@ class House extends Model implements HasMedia
     public function features()
     {
         return $this->belongsToMany(Feature::class);
+    }
+
+    public function getFeaturedImageLink(): ?string
+    {
+        return $this->getFirstMediaUrl('house_image',conversionName: 'webp_format');
     }
 }
