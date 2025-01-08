@@ -86,4 +86,21 @@ trait HasPoi
             return $meilisearch->search($query, $options);
         });
     }
+
+    public function formatToMap()
+    {
+        return [
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'name' => $this->name,
+            'image' => $this->getFeaturedImageLink(),
+            'id' => $this->getKey(),
+            'type' => $this->getClassName(),
+        ];
+    }
+
+    private function getClassName()
+    {
+        return basename(str_replace('\\', '/', get_class($this)));
+    }
 }

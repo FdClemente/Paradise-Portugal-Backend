@@ -17,6 +17,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "husam-tariq/filament-timepicker": "^3.0",
         "laravel/framework": "^11.31",
+        "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.11",
         "laravel/tinker": "^2.9",
         "meilisearch/meilisearch-php": "^1.12",
@@ -38,6 +39,9 @@
         "phpunit/phpunit": "^11.0.1"
     },
     "autoload": {
+        "files": [
+            "app/helpers/map.php"
+        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
