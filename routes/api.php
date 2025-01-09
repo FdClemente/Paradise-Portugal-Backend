@@ -9,5 +9,7 @@ Route::prefix('v1')->group(function () {
     })->middleware('auth:sanctum');
 
     Route::post('/map', App\Http\Controllers\Api\MapController::class);
+
+    Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
 });
 

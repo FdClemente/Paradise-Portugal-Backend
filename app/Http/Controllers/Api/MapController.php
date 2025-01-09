@@ -17,6 +17,7 @@ class MapController extends Controller
         $width = $request->get('width', 720);
         $zoom = $request->get('zoom', 15);
         $query = $request->get('query', '');
+        $exclude = $request->get('exclude', []);
 
         $mapService = app(MapService::class);
 
@@ -37,7 +38,7 @@ class MapController extends Controller
 
         $numPoints = intval(config('map.minPoints') + (config('map.maxPoints') - config('map.minPoints')) * $zoomRatio);
 
-        $pois = $mapService->getPoints($north, $east, $south, $west, $latitude, $longitude, $query, $numPoints);
+        $pois = $mapService->getPoints($north, $east, $south, $west, $latitude, $longitude, $query, $numPoints, $exclude);
 
         return ApiSuccessResponse::make($pois);
     }

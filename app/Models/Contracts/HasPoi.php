@@ -87,7 +87,7 @@ trait HasPoi
         });
     }
 
-    public function formatToMap()
+    public function formatToMap(): array
     {
         return [
             'latitude' => $this->latitude,
@@ -99,8 +99,13 @@ trait HasPoi
         ];
     }
 
-    private function getClassName()
+    private function getClassName(): string
     {
         return basename(str_replace('\\', '/', get_class($this)));
+    }
+
+    public function isExcluded(array $excluded): bool
+    {
+        return in_array($this->getClassName(), $excluded);
     }
 }
