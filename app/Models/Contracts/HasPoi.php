@@ -16,11 +16,6 @@ trait HasPoi
         ];
     }
 
-    private function getName()
-    {
-        return $this->name;
-    }
-
     abstract public function getFeaturedImageLink():?string;
 
     public function toSearchableArray(): array

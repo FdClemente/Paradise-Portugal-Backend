@@ -76,4 +76,9 @@ class House extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl('house_image',conversionName: 'webp_format');
     }
+
+    private function getName()
+    {
+        return $this->getTranslations('name');
+    }
 }
