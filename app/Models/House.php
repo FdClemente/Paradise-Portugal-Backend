@@ -67,6 +67,16 @@ class House extends Model implements HasMedia
         );
     }
 
+    public function images(): Attribute
+    {
+        return Attribute::make(get: function (){
+            return $this->getMedia('house_image')
+                ->transform(fn(Media $media) => $media->getFullUrl('webp_format'))
+                ->values()
+                ->toArray();
+        })->shouldCache();
+    }
+
     public function features()
     {
         return $this->belongsToMany(Feature::class);
@@ -80,5 +90,12 @@ class House extends Model implements HasMedia
     private function getName()
     {
         return $this->getTranslations('name');
+    }
+
+    public function getExtraAttributes():array
+    {
+        return [
+            'images' => $this->images
+        ];
     }
 }

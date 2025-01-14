@@ -34,7 +34,8 @@ class HouseController extends Controller
                     'type' => $item->houseType->name,
                     'bedrooms' => $item->details->num_bedrooms,
                     'guests' => $item->details->num_guest,
-                    'image' => $item->getFeaturedImageLink()
+                    'image' => $item->getFeaturedImageLink(),
+                    'images' => $item->images
                 ];
             });
 

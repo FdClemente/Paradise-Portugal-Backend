@@ -25,6 +25,7 @@ trait HasPoi
         $coordinates = $this->getCoordinates();
         $name = $this->getName();
         $image = $this->getFeaturedImageLink();
+        $extraAttributes = $this->getExtraAttributes();
 
         $attributes['_geo'] = [
             'lat' => $coordinates['lat'],
@@ -32,8 +33,15 @@ trait HasPoi
         ];
         $attributes['name'] = $name;
         $attributes['image'] = $image;
+        return [
+            ...$attributes,
+            ...$extraAttributes,
+        ];
+    }
 
-        return $attributes;
+    public function getExtraAttributes():array
+    {
+        return [];
     }
 
     public function geoSearchByBox($north, $east, $south, $west, $lat, $lng, string $query = ''): Builder
@@ -91,6 +99,7 @@ trait HasPoi
             'image' => $this->getFeaturedImageLink(),
             'id' => $this->getKey(),
             'type' => $this->getClassName(),
+
         ];
     }
 
