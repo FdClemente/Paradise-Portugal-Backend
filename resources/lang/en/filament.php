@@ -73,6 +73,15 @@ return [
     'house_type' => [
         'name' => 'Name',
     ],
+    'reservation' => [
+        'customer' => 'Customer',
+        'house' => 'House',
+        'reservation_details' => 'Reservation Details',
+        'check_in_date' => 'Check in date',
+        'check_out_date' => 'Check out date',
+        'num_guests' => 'Guests',
+        'status' => 'Status',
+    ],
     'created_at' => 'Created at',
     'updated_at' => 'Updated at',
     'navigation_group' => [

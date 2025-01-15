@@ -30,6 +30,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Attributes\Url;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
 class ExperienceResource extends Resource
@@ -145,9 +146,9 @@ class ExperienceResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ;
     }
 
     public static function getPages(): array
