@@ -13,6 +13,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\Fieldset;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -22,6 +26,7 @@ use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -47,12 +52,13 @@ class ReservationResource extends Resource
                     ->schema([
                         Select::make('user_id')
                             ->label(__('filament.reservation.customer'))
-                            ->createOptionForm(function (Form $form){
+                            ->createOptionForm(function (Form $form) {
                                 return CustomerResource::form($form);
                             })
-                            ->createOptionAction(function (Action $action){
+                            ->createOptionAction(function (Action $action) {
                                 return $action->slideOver();
                             })
+                            ->visibleOn('create')
                             ->relationship('customer', 'email')
                             ->searchable()
                             ->preload()
@@ -72,7 +78,7 @@ class ReservationResource extends Resource
                         DatePicker::make('check_out_date')
                             ->label(__('filament.reservation.check_out_date'))
                             ->reactive()
-                            ->minDate(function (Get $get){
+                            ->minDate(function (Get $get) {
                                 return Carbon::parse($get('check_in_date'))->addDay()->startOfDay();
                             })
                             ->required(),
@@ -86,6 +92,7 @@ class ReservationResource extends Resource
                             ->options(ReservationStatusEnum::class)
                             ->label(__('filament.reservation.status'))
                             ->searchable()
+                            ->visibleOn('create')
                             ->preload()
                             ->required(),
 
@@ -104,26 +111,33 @@ class ReservationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('customer.name'),
+                TextColumn::make('customer.name')
+                    ->label(__('filament.reservation.customer')),
 
-                TextColumn::make('house.name'),
+                TextColumn::make('house.name')
+                    ->label(__('filament.reservation.house')),
 
                 TextColumn::make('check_in_date')
+                    ->label(__('filament.reservation.date'))
                     ->tooltip(fn($record) => Carbon::parse($record->check_in_date)->diffInDays(Carbon::parse($record->check_out_date)) . ' ' . __('filament.reservation.days'))
                     ->formatStateUsing(fn($record) => $record->check_in_date . ' - ' . $record->check_out_date),
 
-                TextColumn::make('num_guests'),
+                TextColumn::make('num_guests')
+                    ->label(__('filament.reservation.num_guests')),
 
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                    ->badge(fn($record) => $record->status->getColor())
+                    ->label(__('filament.reservation.status')),
 
-                TextColumn::make('reservation_code')->copyable(),
+                TextColumn::make('reservation_code')
+                    ->label(__('filament.reservation.reservation_code'))
+                    ->copyable(),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make(),
                 RestoreAction::make(),
                 ForceDeleteAction::make(),
             ])
@@ -136,12 +150,55 @@ class ReservationResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Grid::make(4)
+                ->schema([
+                    \Filament\Infolists\Components\Section::make(__('filament.reservation.reservation_details'))
+                        ->columnSpan(3)
+                        ->columns(4)
+                        ->schema([
+                            TextEntry::make('house.name')
+                                ->label(__('filament.reservation.house')),
+                            TextEntry::make('num_guests')
+                                ->label(__('filament.reservation.num_guests')),
+                            TextEntry::make('check_in_date')
+                                ->formatStateUsing(fn($record) => $record->check_in_date . ' - ' . $record->check_out_date)
+                                ->label(__('filament.reservation.date')),
+                            TextEntry::make('status')
+                                ->badge(fn($record) => $record->status->getColor())
+                                ->formatStateUsing(fn($record) => ucfirst($record->status->value))
+                                ->label(__('filament.reservation.status')),
+                        ]),
+                    \Filament\Infolists\Components\Section::make(__('filament.reservation.customer_details'))
+                        ->columnSpan(1)
+                        ->columns(1)
+                        ->headerActions([
+                                \Filament\Infolists\Components\Actions\Action::make('view')
+                                    ->url(fn($record) => CustomerResource::getUrl('view', ['record' => $record->customer->id]))]
+                        )
+                        ->schema([
+                            \Filament\Infolists\Components\TextEntry::make('customer.name')
+                                ->label(__('filament.reservation.customer_name')),
+                            \Filament\Infolists\Components\TextEntry::make('customer.phone_number')
+                                ->label(__('filament.reservation.customer_phone'))
+                                ->copyable(),
+                            \Filament\Infolists\Components\TextEntry::make('customer.email')
+                                ->copyable()
+                                ->label(__('filament.reservation.customer_email')),
+                        ]),
+                ])
+        ]);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListReservations::route('/'),
             'create' => Pages\CreateReservation::route('/create'),
             'edit' => Pages\EditReservation::route('/{record}/edit'),
+            'view' => Pages\ViewReservation::route('/{record}'),
         ];
     }
 

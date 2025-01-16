@@ -13,7 +13,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -22,6 +25,7 @@ use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -29,6 +33,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use Parfaitementweb\FilamentCountryField\Infolists\Components\CountryEntry;
 use Tapp\FilamentCountryCodeField\Forms\Components\CountryCodeSelect;
 
 class CustomerResource extends Resource
@@ -119,8 +124,7 @@ class CustomerResource extends Resource
                 TrashedFilter::make(),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make(),
                 RestoreAction::make(),
                 ForceDeleteAction::make(),
             ])
@@ -133,12 +137,39 @@ class CustomerResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            \Filament\Infolists\Components\Section::make(__('filament.user.customer_details'))
+                ->columns(4)
+                ->schema([
+                    TextEntry::make('name')
+                        ->label(__('filament.user.name')),
+                    TextEntry::make('email')
+                        ->copyable()
+                        ->iconPosition(IconPosition::Before)
+                        ->iconColor('danger')
+                        ->icon(fn($record) => $record->email_verified_at ? null : 'heroicon-o-exclamation-circle')
+                        ->tooltip(fn($record) => $record->email_verified_at ? null : __('filament.user.email_not_verified'))
+                        ->label(__('filament.user.email')),
+                    TextEntry::make('phone_number')
+                        ->formatStateUsing(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
+                        ->copyable()
+                        ->copyableState(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
+                        ->label(__('filament.user.phone_number')),
+                    CountryEntry::make('country')
+                    ->label(__('filament.user.country')),
+                ])
+        ]);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
+            'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 

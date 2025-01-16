@@ -15,5 +15,21 @@ enum ReservationStatusEnum: string
     case REJECTED = 'rejected';
     case REFUNDED = 'refunded';
     //case AWAITING_REVIEW = 'awaiting_review';
+
+    public function getColor(): string
+    {
+        return match ($this) {
+            self::PENDING => 'yellow',
+            self::CONFIRMED => 'green',
+            self::PAID => 'blue',
+            self::CANCELED_BY_CLIENT => 'red',
+            self::CANCELED_BY_OWNER => 'red',
+            self::NO_SHOW => 'red',
+            self::IN_PROGRESS => 'blue',
+            self::COMPLETED => 'green',
+            self::REJECTED => 'red',
+            self::REFUNDED => 'red',
+        };
+    }
 }
 

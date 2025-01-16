@@ -19,6 +19,9 @@ return [
         'phone_number_verified_at' => 'Phone Number verified at',
         'password' => 'Password',
         'password_confirmation' => 'Password confirmation',
+        'email_mark_as_verified' => 'Email verified successfully.',
+        'mark_email_as_verified' => 'Mark email as verified',
+        'country' => 'Country',
     ],
     'house' => [
         'name' => 'Name',
@@ -75,12 +78,18 @@ return [
     ],
     'reservation' => [
         'customer' => 'Customer',
+        'customer_name' => 'Name',
+        'customer_email' => 'Email',
+        'customer_phone' => 'Phone',
         'house' => 'House',
         'reservation_details' => 'Reservation Details',
+        'customer_details' => 'Customer Details',
         'check_in_date' => 'Check in date',
         'check_out_date' => 'Check out date',
         'num_guests' => 'Guests',
         'status' => 'Status',
+        'reservation_code' => 'Reservation code',
+        'date' => 'Date'
     ],
     'created_at' => 'Created at',
     'updated_at' => 'Updated at',

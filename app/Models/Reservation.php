@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Enum\ReservationStatusEnum;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Reservation extends Model
+class Reservation extends Model implements Eventable
 {
     use SoftDeletes;
 
@@ -36,5 +38,12 @@ class Reservation extends Model
     public function house(): BelongsTo
     {
         return $this->belongsTo(House::class);
+    }
+
+    public function toEvent(): Event|array {
+        return Event::make($this)
+            ->title($this->customer->name)
+            ->start($this->check_in_date)
+            ->end($this->check_out_date);
     }
 }
