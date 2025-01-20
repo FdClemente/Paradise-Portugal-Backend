@@ -20,6 +20,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 use SolutionForest\FilamentTranslateField\FilamentTranslateFieldPlugin;
 
@@ -78,7 +79,11 @@ class BackofficePanelProvider extends PanelProvider
                     ->formPanelWidth('40%')
                     ->emptyPanelBackgroundImageOpacity('100%')
                     ->emptyPanelBackgroundImageUrl(asset('images/login.jpg')),
-                SimpleLightBoxPlugin::make()
+                SimpleLightBoxPlugin::make(),
+                FilamentFullCalendarPlugin::make()
+                    ->schedulerLicenseKey('')
+                    ->selectable()
+                    ->editable()
             ])
             ->viteTheme('resources/css/filament/backoffice/theme.css');
     }
