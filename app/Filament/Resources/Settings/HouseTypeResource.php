@@ -40,6 +40,8 @@ class HouseTypeResource extends Resource
                             ->label(__('filament.house_type.name')),
                     ])
                     ->locales(config('app.available_locales')),
+                TextInput::make('wp_category')
+                    ->label(__('filament.house_type.wp_category')),
                 Placeholder::make('created_at')
                     ->label(__('filament.created_at'))
                     ->content(fn(?HouseType $record): string => $record?->created_at?->diffForHumans() ?? '-'),

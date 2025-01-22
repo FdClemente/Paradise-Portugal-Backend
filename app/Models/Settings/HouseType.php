@@ -13,5 +13,6 @@ class HouseType extends Model
 
     protected $fillable = [
         'name',
+        'wp_category'
     ];
 }

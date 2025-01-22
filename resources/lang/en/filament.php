@@ -75,6 +75,7 @@ return [
     ],
     'house_type' => [
         'name' => 'Name',
+        'wp_category' => 'Wordpress category ID',
     ],
     'reservation' => [
         'customer' => 'Customer',

@@ -35,6 +35,7 @@ class House extends Model implements HasMedia
         'country',
         'latitude',
         'longitude',
+        'wp_id'
     ];
 
     public function registerMediaConversions(?Media $media = null): void
@@ -97,5 +98,13 @@ class House extends Model implements HasMedia
         return [
             'images' => $this->images
         ];
+    }
+
+    public function setTranslationForAllLanguages($key, $value)
+    {
+        $languages = config('app.available_locales');
+        foreach ($languages as $language) {
+            $this->setTranslation($key, $language, $value);
+        }
     }
 }
