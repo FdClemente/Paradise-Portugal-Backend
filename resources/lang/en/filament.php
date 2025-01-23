@@ -50,6 +50,12 @@ return [
         'features' => 'Features',
         'num_guest' => 'Number of guests',
         'next_reservation' => 'Next reservation',
+        'min_days_booking' => 'Minimum days booking',
+        'custom_prices' => 'Custom prices',
+        'custom_price_date' => 'Date',
+        'custom_price' => 'Price',
+        'add_price' => 'Add price',
+        'custom_price_success_message' => 'Price added successfully.',
     ],
     'experience_partner' => [
         'experience_partner_details' => 'Experience Partner Details',

@@ -14,7 +14,7 @@ class HouseController extends Controller
         $selectedCities = $request->get('cities');
         $query = $request->get('q');
 
-        $cities = House::distinct()->get(['city'])->pluck('city');
+        $cities = House::distinct()->get(['state'])->pluck('state');
 
         if ($selectedCities === null) {
             $selectedCities =  $cities->toArray();
@@ -23,7 +23,7 @@ class HouseController extends Controller
         }
 
         $houses = House::search($query)
-            ->whereIn('city', $selectedCities)
+            ->whereIn('state', $selectedCities)
             ->paginate(25);
 
         $houses->getCollection()
@@ -35,7 +35,8 @@ class HouseController extends Controller
                     'bedrooms' => $item->details->num_bedrooms,
                     'guests' => $item->details->num_guest,
                     'image' => $item->getFeaturedImageLink(),
-                    'images' => $item->images
+                    'images' => $item->images,
+                    'default_price' => $item->default_price,
                 ];
             });
 

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Components\Address\GoogleAutocomplete;
 use App\Filament\Resources\HouseResource\Pages;
 use App\Models\House;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -28,6 +30,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Infolists;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
+use Illuminate\Support\Number;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
 class HouseResource extends Resource
@@ -67,8 +70,15 @@ class HouseResource extends Resource
                                                             ->locales(config('app.available_locales'))
                                                     ]),
                                                 Select::make('is_disabled')
+                                                    ->columnSpan(2)
                                                     ->boolean(),
                                                 TextInput::make('house_id'),
+                                                TextInput::make('min_days_booking')
+                                                    ->label(__('filament.house.min_days_booking'))
+                                                    ->integer(),
+                                                TextInput::make('default_price')
+                                                ->suffix('€')
+                                                ->columnSpan(2)
                                             ]),
                                         Translate::make()
                                             ->schema([
@@ -199,7 +209,6 @@ class HouseResource extends Resource
             Infolists\Components\Grid::make(3)
                 ->schema([
                     Infolists\Components\Grid::make(1)
-                        ->columnSpan(2)
                         ->schema([
                             Infolists\Components\Section::make(__('filament.house.house_details'))
                                 ->description(fn(?House $record): string => $record?->name . ' - ' . $record?->address_complete ?? '-'),
@@ -207,17 +216,58 @@ class HouseResource extends Resource
                                 ->schema([
                                     Infolists\Components\TextEntry::make('next_reservation')->default('No reservation')
                                 ]),
+                            Infolists\Components\Section::make(__('filament.house.custom_prices'))
+                                ->headerActions([
+                                    Infolists\Components\Actions\Action::make('add_price')
+                                        ->label(__('filament.house.add_price'))
+                                        ->modal()
+                                        ->form(fn($form) => $form->schema([
+                                            DatePicker::make('date')
+                                                ->label(__('filament.house.custom_price_date'))
+                                                ->minDate(now()->startOfDay())
+                                                ->disabledDates(fn($record) => $record->prices->pluck('date')->toArray())
+                                                ->date(),
+                                            TextInput::make('price')
+                                                ->integer()
+                                                ->suffix('€')
+                                                ->label(__('filament.house.custom_price'))
+                                        ]))
+                                        ->action(function ($record, $data) {
+                                            $record->prices()->create($data);
+
+                                            Notification::make()
+                                                ->success()
+                                                ->title(__('filament.house.custom_price_success_message'))
+                                                ->send();
+                                        })
+                                ])
+                                ->schema([
+                                    Infolists\Components\RepeatableEntry::make('prices')
+                                        ->label('')
+                                        ->schema([
+                                            Infolists\Components\TextEntry::make('date')
+                                                ->label(__('filament.house.custom_price'))
+                                                ->date(),
+                                            Infolists\Components\TextEntry::make('price')
+                                                ->label(__('filament.house.custom_price'))
+                                                ->formatStateUsing(fn($state) => Number::currency(intval($state), 'EUR')),
+
+                                        ])
+                                        ->grid(4)
+                                        ->columns(2)
+                                ]),
                         ]),
                     Infolists\Components\Section::make(__('filament.house.images'))
                         ->schema([
                             Infolists\Components\ImageEntry::make('images')
-                                ->label('')
                                 ->width('100%')
-                                ->height('100%')
+                                ->label('')
+                                ->checkFileExistence()
+                                ->square()
+                                ->width('19.5%')
                                 ->extraAttributes(['draggable' => 'false'])
-                                ->simpleLightbox(fn($record) => $record?->getFirstMediaUrl('house_image'), defaultDisplayUrl: true),
                         ])
-                        ->columnSpan(1),
+                        ->columnSpan(3),
                 ]),
 
         ]);

@@ -4,6 +4,8 @@ namespace App\Services\Wordpress;
 
 use App\Models\House;
 use App\Models\Settings\HouseType;
+use function PHPUnit\Framework\isArray;
+use function PHPUnit\Framework\isString;
 
 class ImportService
 {
@@ -37,8 +39,19 @@ class ImportService
 
     private function saveHouse(array $house)
     {
+        $houseModel = $this->initializeHouseModel($house);
+        $this->syncPrices($houseModel, $house);
+        $this->syncBookedDates($houseModel, $house);
+        #$this->updateHouseDetails($houseModel, $house);
+        #$this->attachFeaturedMedia($houseModel, $house);
+        #$this->attachAdditionalMedia($houseModel, $house);
+    }
+
+    private function initializeHouseModel(array $house): House
+    {
         $houseModel = House::firstOrNew(['wp_id' => $house['id']]);
-        /*$houseModel->setTranslationForAllLanguages('name', $house['title']['rendered']);
+
+        $houseModel->setTranslationForAllLanguages('name', $house['title']['rendered']);
         $houseModel->setTranslationForAllLanguages('description', $house['content']['rendered']);
         $houseModel->is_disabled = $house['status'] !== 'publish';
         $houseModel->street_name = $house['property_address'];
@@ -48,12 +61,23 @@ class ImportService
         $houseModel->country = $house['property_country'];
         $houseModel->latitude = $house['property_latitude'];
         $houseModel->longitude = $house['property_longitude'];
-        $houseModel->default_price = ((int)$house['property_price']) * 100;
-        $houseModel->house_type_id = HouseType::where('wp_category', $house['property_category'][0])->first()->id;
+        $houseModel->default_price = ((int)$house['property_price']);
+        $houseModel->house_type_id = $this->getHouseTypeId($house['property_category'][0]);
+
         $houseModel->save();
         $houseModel->refresh();
 
-        $houseModel->details()->updateOrCreate([
+        return $houseModel;
+    }
+
+    private function getHouseTypeId(string $category): int
+    {
+        return HouseType::where('wp_category', $category)->first()->id;
+    }
+
+    private function updateHouseDetails(House $houseModel, array $house): void
+    {
+        $houseModel->details()->updateOrCreate([], [
             'area' => $house['property_size'],
             'num_guest' => $house['guest_no'],
             'num_bedrooms' => $house['property_bedrooms'],
@@ -63,24 +87,68 @@ class ImportService
             'private_bathroom' => $house['private-bathroom'] === 'yes',
             'private_entrance' => $house['private-entrance'] === 'yes',
             'family_friendly' => $house['familyfriendly'] === 'yes',
-        ]);*/
+        ]);
+    }
 
-        $featuredMedia = \Http::get($house['_links']['wp:featuredmedia'][0]['href'])->json();
-        if (!$houseModel->media()->where('collection_name', 'house_image')->where('file_name', basename($featuredMedia['media_details']['sizes']['full']['source_url']))->exists()){
-            $featured = $houseModel->addMediaFromUrl($featuredMedia['media_details']['sizes']['full']['source_url'])
-                ->toMediaCollection('house_image');
+    private function attachFeaturedMedia(House $houseModel, array $house): void
+    {
+        $featuredMediaUrl = \Http::get($house['_links']['wp:featuredmedia'][0]['href'])->json()['media_details']['sizes']['full']['source_url'];
+        $fileName = basename($featuredMediaUrl);
 
+        if (!$houseModel->media()->where('collection_name', 'house_image')->where('file_name', $fileName)->exists()) {
+            $featured = $houseModel->addMediaFromUrl($featuredMediaUrl)->toMediaCollection('house_image');
             $featured->order_column = 1;
             $featured->save();
         }
+    }
 
-        $media = \Http::get($house['_links']['wp:attachment'][0]['href'])->json();
+    private function attachAdditionalMedia(House $houseModel, array $house): void
+    {
+        $mediaItems = \Http::get($house['_links']['wp:attachment'][0]['href'])->json();
 
-        foreach ($media as $item) {
-            if (!$houseModel->media()->where('collection_name', 'house_image')->where('file_name', basename($item['media_details']['sizes']['full']['source_url']))->exists()){
-                $houseModel->addMediaFromUrl($item['media_details']['sizes']['full']['source_url'])
-                    ->toMediaCollection('house_image');
+        foreach ($mediaItems as $item) {
+            $mediaUrl = $item['media_details']['sizes']['full']['source_url'];
+            $fileName = basename($mediaUrl);
+
+            if (!$houseModel->media()->where('collection_name', 'house_image')->where('file_name', $fileName)->exists()) {
+                $houseModel->addMediaFromUrl($mediaUrl)->toMediaCollection('house_image');
             }
+        }
+    }
+
+    private function syncPrices(House $houseModel, array $house)
+    {
+        if ($house['custom_price'] == "") {
+            return;
+        }
+        foreach ($house['custom_price'] as $date => $price) {
+            $priceModel = $houseModel->prices()->updateOrCreate([
+                'date' => date('Y-m-d', $date),
+            ], [
+                'price' => $price,
+            ]);
+
+            $megaDetails = $house['mega_details'][$date];
+
+            $priceModel->details()->updateOrCreate([], [
+                'min_days_booking' => $megaDetails['period_min_days_booking'],
+                'extra_price_per_guest' => $megaDetails['period_extra_price_per_guest'],
+                'price_per_weekend' => $megaDetails['period_price_per_weekeend'],
+                'checkin_change_over' => $megaDetails['period_checkin_change_over'],
+                'checkin_checkout_change_over' => $megaDetails['period_checkin_checkout_change_over'],
+                'price_per_month' => $megaDetails['period_price_per_month'],
+                'price_per_week' => $megaDetails['period_price_per_week'],
+            ]);
+        }
+    }
+
+    private function syncBookedDates(House $houseModel, array $house)
+    {
+        foreach ($house['booking_dates'] as $date => $reason) {
+            $houseModel->disableDates()->create([
+                'date' => date('Y-m-d', $date),
+                'reason' => $reason,
+            ]);
         }
     }
 

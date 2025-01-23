@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
+use App\Models\House\HouseDisableDate;
+use App\Models\House\HousePrices;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
@@ -35,7 +39,12 @@ class House extends Model implements HasMedia
         'country',
         'latitude',
         'longitude',
-        'wp_id'
+        'wp_id',
+        'min_days_booking'
+    ];
+
+    protected $casts = [
+        'default_price' => PriceCast::class,
     ];
 
     public function registerMediaConversions(?Media $media = null): void
@@ -53,6 +62,20 @@ class House extends Model implements HasMedia
     public function details(): HasOne
     {
         return $this->hasOne(HouseDetail::class, 'house_id', 'id');
+    }
+
+    public function disableDates(): HasMany
+    {
+        return $this->hasMany(HouseDisableDate::class);
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(HousePrices::class)->orderBy('date', 'desc')->where('date', '>=', now());
+    }
+    public function pricesOldest(): HasMany
+    {
+        return $this->hasMany(HousePrices::class)->orderBy('date', 'desc')->where('date', '<=', now());
     }
 
     public function address():Attribute
