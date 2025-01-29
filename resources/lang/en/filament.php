@@ -56,6 +56,10 @@ return [
         'custom_price' => 'Price',
         'add_price' => 'Add price',
         'custom_price_success_message' => 'Price added successfully.',
+        'date' => [
+            'from' => 'From',
+            'to' => 'To',
+        ]
     ],
     'experience_partner' => [
         'experience_partner_details' => 'Experience Partner Details',

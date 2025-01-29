@@ -12,5 +12,6 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::post('/map', App\Http\Controllers\Api\MapController::class);
 
     Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
+    Route::get('/houses/{house}/static_map', App\Http\Controllers\Api\MapImageController::class);
 });
 

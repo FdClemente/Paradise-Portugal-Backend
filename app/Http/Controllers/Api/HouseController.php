@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class HouseController extends Controller
 {
@@ -44,6 +45,34 @@ class HouseController extends Controller
         return ApiSuccessResponse::make([
             'cities' => $cities,
             'houses' => $houses,
+        ]);
+    }
+
+    public function show(House $house){
+
+        $houseData = [
+            'id' => $house->id,
+            'name' => $house->name,
+            'description' => $house->description,
+            'short_description' => Str::words(strip_tags($house->description), 20),
+            'type' => $house->houseType->name,
+            'bedrooms' => $house->details->num_bedrooms,
+            'address' => $house->address,
+            'guests' => $house->details->num_guest,
+            'image' => $house->getFeaturedImageLink(),
+            'images' => $house->images,
+            'default_price' => $house->default_price,
+            'features' => $house->features->transform(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'icon' => $item->icon,
+                ];
+            }),
+        ];
+
+        return ApiSuccessResponse::make([
+            'house' => $houseData,
         ]);
     }
 }

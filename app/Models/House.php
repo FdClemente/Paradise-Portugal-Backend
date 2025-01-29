@@ -71,7 +71,7 @@ class House extends Model implements HasMedia
 
     public function prices(): HasMany
     {
-        return $this->hasMany(HousePrices::class)->orderBy('date', 'desc')->where('date', '>=', now());
+        return $this->hasMany(HousePrices::class)->where('date', '>=', now());
     }
     public function pricesOldest(): HasMany
     {
@@ -129,5 +129,42 @@ class House extends Model implements HasMedia
         foreach ($languages as $language) {
             $this->setTranslation($key, $language, $value);
         }
+    }
+
+    public function groupedPrices(): Attribute
+    {
+        return Attribute::make(function (){
+            $prices = $this->prices()->get();
+
+            $groupedPrices = [];
+            $currentPeriod = null;
+
+            foreach ($prices as $price) {
+                $date = $price->date;
+                $currentPrice = $price->price;
+
+                if ($currentPeriod === null || $currentPrice !== $currentPeriod['price'] || $date->diffInDays($currentPeriod['end']) > 1) {
+                    if ($currentPeriod !== null) {
+                        $groupedPrices[] = $currentPeriod;
+                    }
+                    $currentPeriod = [
+                        'start' => $date,
+                        'end' => $date,
+                        'price' => $currentPrice,
+                        'prices' => [$price]
+                    ];
+                } else {
+                    $currentPeriod['end'] = $date;
+                    $currentPeriod['prices'][] = $price;
+                }
+            }
+
+            if ($currentPeriod !== null) {
+                $groupedPrices[] = $currentPeriod;
+            }
+
+            return $groupedPrices;
+
+        });
     }
 }

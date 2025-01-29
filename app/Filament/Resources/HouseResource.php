@@ -242,19 +242,25 @@ class HouseResource extends Resource
                                         })
                                 ])
                                 ->schema([
-                                    Infolists\Components\RepeatableEntry::make('prices')
+                                    Infolists\Components\RepeatableEntry::make('groupedPrices')
                                         ->label('')
                                         ->schema([
-                                            Infolists\Components\TextEntry::make('date')
-                                                ->label(__('filament.house.custom_price'))
-                                                ->date(),
+                                            Infolists\Components\TextEntry::make('start')
+                                                ->date()
+                                                ->label(__('filament.house.date.from')),
+                                            Infolists\Components\TextEntry::make('end')
+                                                ->date()
+                                                ->label(__('filament.house.date.to')),
                                             Infolists\Components\TextEntry::make('price')
                                                 ->label(__('filament.house.custom_price'))
                                                 ->formatStateUsing(fn($state) => Number::currency(intval($state), 'EUR')),
-
                                         ])
-                                        ->grid(4)
-                                        ->columns(2)
+                                        ->grid(2)
+                                        ->columns(3)
+                                        ->state(function ($record) {
+                                            return $record->groupedPrices;
+                                        })
+
                                 ]),
                         ]),
                     Infolists\Components\Section::make(__('filament.house.images'))
