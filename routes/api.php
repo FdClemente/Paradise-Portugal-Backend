@@ -13,5 +13,6 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
     Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
     Route::get('/houses/{house}/static_map', App\Http\Controllers\Api\MapImageController::class);
+    Route::get('/houses/{house}/booking-dates', App\Http\Controllers\Api\House\GetDisableDatesAndPriceController::class);
 });
 
