@@ -42,9 +42,9 @@ class ImportService
         $houseModel = $this->initializeHouseModel($house);
         $this->syncPrices($houseModel, $house);
         $this->syncBookedDates($houseModel, $house);
-        #$this->updateHouseDetails($houseModel, $house);
-        #$this->attachFeaturedMedia($houseModel, $house);
-        #$this->attachAdditionalMedia($houseModel, $house);
+        $this->updateHouseDetails($houseModel, $house);
+        $this->attachFeaturedMedia($houseModel, $house);
+        $this->attachAdditionalMedia($houseModel, $house);
     }
 
     private function initializeHouseModel(array $house): House
