@@ -7,6 +7,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
 
@@ -52,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
+        }
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
         }
     }
 }
