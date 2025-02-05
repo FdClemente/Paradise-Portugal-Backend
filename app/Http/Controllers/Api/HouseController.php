@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class HouseController extends Controller
@@ -60,6 +61,9 @@ class HouseController extends Controller
             'address' => $house->address,
             'guests' => $house->details?->num_guest,
             'image' => $house->getFeaturedImageLink(),
+            'house_id' => $house->id,
+            'check_in' => Carbon::createFromFormat('H:i:s',$house->details->check_in_time)->format('H:i'),
+            'check_out' => Carbon::createFromFormat('H:i:s',$house->details->check_out_time)->format('H:i'),
             'images' => $house->images,
             'default_price' => $house->default_price,
             'features' => $house->features->transform(function ($item) {

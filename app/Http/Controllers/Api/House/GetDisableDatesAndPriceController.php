@@ -10,7 +10,12 @@ class GetDisableDatesAndPriceController extends Controller
 {
     public function __invoke(House $house)
     {
-        $disableDates = $house->disableDates()->where('date', '>=', now())->get()->pluck('date')->toArray();
+        $disableDates = $house->disableDates()
+            ->where('date', '>=', now())
+            ->get()
+            ->pluck('date')
+            ->transform(fn($date)=>$date->format('Y-m-d'))
+            ->toArray();
 
         $customPrices = $house->prices()->where('date', '>=', now())->get()->pluck('price', 'date')->toArray();
 
