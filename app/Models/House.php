@@ -4,10 +4,13 @@ namespace App\Models;
 
 use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
+use App\Models\Contracts\HasReservation;
 use App\Models\House\HouseDisableDate;
 use App\Models\House\HousePrices;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseType;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +24,7 @@ use Spatie\Translatable\HasTranslations;
 
 class House extends Model implements HasMedia
 {
-    use HasTranslations, softDeletes, InteractsWithMedia, HasPoi;
+    use HasTranslations, softDeletes, InteractsWithMedia, HasPoi, HasReservation;
 
     public $translatable = ['name', 'description'];
 
