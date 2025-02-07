@@ -15,7 +15,8 @@ class HouseDisableDate extends Model
     protected $fillable = [
         'date',
         'house_id',
-        'reason'
+        'reason',
+        'reservation_id'
     ];
 
     public function house()

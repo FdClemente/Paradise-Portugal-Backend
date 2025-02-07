@@ -19,7 +19,7 @@ trait HasReservation
         return $total;
     }
 
-    private function getDatesRange(string $startDate, string $endDate): CarbonPeriod
+    public function getDatesRange(string $startDate, string $endDate): CarbonPeriod
     {
         $start = Carbon::make($startDate);
         $end = Carbon::make($endDate);

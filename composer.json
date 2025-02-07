@@ -13,6 +13,7 @@
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
         "filament/spatie-laravel-translatable-plugin": "^3.2",
+        "giggsey/libphonenumber-for-php": "^8.13",
         "guava/filament-icon-picker": "^2.0",
         "http-interop/http-factory-guzzle": "^1.2",
         "husam-tariq/filament-timepicker": "^3.0",

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Enum\ReservationStatusEnum;
-use Guava\Calendar\Contracts\Eventable;
-use Guava\Calendar\ValueObjects\Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,6 +25,9 @@ class Reservation extends Model
         'num_guests',
         'status',
         'reservation_code',
+        'payment_intent',
+        'payment_intent_secret',
+        'ip'
     ];
     public function customer(): BelongsTo
     {

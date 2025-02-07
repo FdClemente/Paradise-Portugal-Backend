@@ -19,6 +19,9 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);
+
+        Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);
+        Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
     });
 });
 

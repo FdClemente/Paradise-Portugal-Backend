@@ -14,6 +14,8 @@ enum ReservationStatusEnum: string
     case COMPLETED = 'completed';
     case REJECTED = 'rejected';
     case REFUNDED = 'refunded';
+
+    case PENDING_PAYMENT = 'pending_payment';
     //case AWAITING_REVIEW = 'awaiting_review';
 
     public function getColor(): string
@@ -29,7 +31,19 @@ enum ReservationStatusEnum: string
             self::COMPLETED => 'green',
             self::REJECTED => 'red',
             self::REFUNDED => 'red',
+            self::PENDING_PAYMENT => 'yellow',
         };
+    }
+
+    public static function getActiveReservations()
+    {
+        return [
+            self::PENDING,
+            self::CONFIRMED,
+            self::PAID,
+            self::IN_PROGRESS,
+            self::COMPLETED,
+        ];
     }
 }
 
