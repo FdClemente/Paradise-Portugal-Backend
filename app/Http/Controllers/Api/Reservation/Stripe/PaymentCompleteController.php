@@ -8,8 +8,7 @@ use App\Http\Requests\Api\Reservation\PaymentCompleteRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House;
 use App\Models\Reservation;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Services\Customer\CustomerService;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 use Stripe\StripeClient;
@@ -21,21 +20,42 @@ class PaymentCompleteController extends Controller
         $stripe = new StripeClient(config('services.stripe.secret'));
 
         $paymentIntent = $this->retrievePaymentIntent($stripe, $request->get('paymentIntent'));
+
+        if ($paymentIntent->status !== "succeeded"){
+            abort(402);
+        }
+
         $billingDetails = $this->retrieveBillingDetails($stripe, $paymentIntent->latest_charge);
 
-        $user = $this->findOrCreateUser($billingDetails);
-        $user = $this->updateUserDetails($user, $billingDetails);
+        $customerService = new CustomerService();
 
-        $reservation = Reservation::where('payment_intent', $request->get('paymentIntent'))->first();
+        $customer = $customerService->retrieveCustomer($billingDetails->email);
+        $newUser = false;
+        if (!$customer){
+            $customer = $customerService->createUser($this->fillUserDetails($billingDetails));
+            $newUser = true;
+        }
 
-        $reservation->user_id = $user->id;
+        $reservation = Reservation::where('payment_intent', $request->get('paymentIntent'))->firstOrFail();
+
+        $reservation->user_id = $customer->id;
         $reservation->status = ReservationStatusEnum::CONFIRMED;
         $reservation->save();
 
         $this->markDates($reservation->house, $reservation);
 
+        if ($newUser || !$newUser){
+            $userDetails = [
+                'email' => $billingDetails->email,
+                'authToken' => $customer->createToken($request->get('deviceName'))->plainTextToken,
+            ];
+        }else{
+            $userDetails = null;
+        }
+
         return ApiSuccessResponse::make([
-            'email' => $user->email,
+            'newUser' => $newUser,
+            'userDetails' => $userDetails,
             'message' => 'Reservation confirmed'
         ]);
     }
@@ -51,32 +71,23 @@ class PaymentCompleteController extends Controller
         return $chargeDetails->billing_details;
     }
 
-    private function findOrCreateUser(object $billingDetails): User
-    {
-        return User::firstOrNew(
-            ['email' => $billingDetails->email],
-            ['email' => $billingDetails->email]
-        );
-    }
-
-    private function updateUserDetails(User $user, object $billingDetails): User
+    public function fillUserDetails(object $billingDetails)
     {
         $nameParts = explode(' ', $billingDetails->name);
         $phoneParts = $this->splitPhoneNumber($billingDetails->phone);
 
-        $user->first_name = $nameParts[0];
-        $user->last_name = count($nameParts) > 1 ? $nameParts[count($nameParts) - 1] : '';
-        $user->email_verified_at = now();
-        $user->country_phone = '+'.$phoneParts['country_code'];
-        $user->phone_number = $phoneParts['national_number'];
-        $user->phone_number_verified_at = now();
-        $user->password = \Str::random(20);
-        $user->country = $billingDetails->address->country;
-        $user->save();
-
-        $user->refresh();
-
-        return $user;
+        return [
+            'first_name' => $nameParts[0],
+            'last_name' => count($nameParts) > 1 ? $nameParts[count($nameParts) - 1] : '',
+            'email' => $billingDetails->email,
+            'email_verified_at' => now(),
+            'need_change_password' => true,
+            'country_phone' => '+' . $phoneParts['country_code'],
+            'phone_number' => $phoneParts['national_number'],
+            'phone_number_verified_at' => now(),
+            'password' => \Str::random(20),
+            'country' => $billingDetails->address->country
+        ];
     }
 
     private function splitPhoneNumber($phoneNumber)
@@ -84,7 +95,7 @@ class PaymentCompleteController extends Controller
         $phoneUtil = PhoneNumberUtil::getInstance();
 
         try {
-            $parsedNumber = $phoneUtil->parse($phoneNumber, null);
+            $parsedNumber = $phoneUtil->parse($phoneNumber);
 
             $countryCode = $parsedNumber->getCountryCode();
 

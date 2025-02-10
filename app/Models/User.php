@@ -14,11 +14,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Ladder\HasRoles;
 use Ladder\Ladder;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail, Authorizable;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail, Authorizable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +33,7 @@ class User extends Authenticatable implements FilamentUser
         'phone_number',
         'phone_number_verified_at',
         'country',
+        'need_change_password',
         'country_phone',
         'first_name',
         'last_name',
@@ -45,6 +47,7 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'deleted_at',
     ];
 
     /**
@@ -57,6 +60,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'need_change_password' => 'boolean'
         ];
     }
 

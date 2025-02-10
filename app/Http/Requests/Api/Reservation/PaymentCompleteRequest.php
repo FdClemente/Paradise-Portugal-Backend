@@ -10,6 +10,7 @@ class PaymentCompleteRequest extends FormRequest
     {
         return [
             'paymentIntent' => 'required|string',
+            'deviceName' => 'required|string'
         ];
     }
 }

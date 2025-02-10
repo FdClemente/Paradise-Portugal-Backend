@@ -5,9 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+    Route::get('/me', \App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
 
     Route::post('/map', App\Http\Controllers\Api\MapController::class);
 
@@ -23,5 +21,10 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);
         Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
     });
+
+    Route::group(['middleware' => 'auth:sanctum', 'prefix' => '/auth'], function (){
+        Route::post('/update-password', App\Http\Controllers\Api\Auth\UpdatePasswordController::class);
+    });
 });
+
 
