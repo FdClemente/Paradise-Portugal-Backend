@@ -41,6 +41,7 @@ class PaymentController extends Controller
             $paymentIntent = $stripe->paymentIntents->create([
                 'amount' => $total,
                 'currency' => 'eur',
+                'description' => 'Reservation for ' . $house->name,
                 'payment_method_types' => ['card', 'paypal'],
             ]);
 
@@ -60,7 +61,7 @@ class PaymentController extends Controller
 
             Reservation::create([
                 'ip' => $request->ip(),
-                'user_id' => null,
+                'user_id' => \Auth::guard('sanctum')->check()? \Auth::guard('sanctum')->id() : null,
                 'status' => ReservationStatusEnum::PENDING_PAYMENT,
                 'check_out_date' => Carbon::make($request->get('check_out')),
                 'check_in_date' => Carbon::make($request->get('check_in')),

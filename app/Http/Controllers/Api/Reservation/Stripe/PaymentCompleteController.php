@@ -17,6 +17,7 @@ class PaymentCompleteController extends Controller
 {
     public function __invoke(PaymentCompleteRequest $request)
     {
+        $email = $request->get('email');
         $stripe = new StripeClient(config('services.stripe.secret'));
 
         $paymentIntent = $this->retrievePaymentIntent($stripe, $request->get('paymentIntent'));
@@ -29,16 +30,22 @@ class PaymentCompleteController extends Controller
 
         $customerService = new CustomerService();
 
-        $customer = $customerService->retrieveCustomer($billingDetails->email);
-        $newUser = false;
-        if (!$customer){
-            $customer = $customerService->createUser($this->fillUserDetails($billingDetails));
+        if(!\Auth::guard('sanctum')->check()){
+            $customer = $customerService->createUser($this->fillUserDetails($billingDetails, $email));
             $newUser = true;
+        }else{
+            $customer = \Auth::guard('sanctum')->user();
+            $newUser = false;
         }
 
-        $reservation = Reservation::where('payment_intent', $request->get('paymentIntent'))->firstOrFail();
+        $reservation = Reservation::where('payment_intent', $request->get('paymentIntent'))->where(function ($query){
+            if (\Auth::guard('sanctum')->check())
+                $query->where('user_id', \Auth::guard('sanctum')->id());
+        })->firstOrFail();
 
-        $reservation->user_id = $customer->id;
+        if ($newUser){
+            $reservation->user_id = $customer->id;
+        }
         $reservation->status = ReservationStatusEnum::CONFIRMED;
         $reservation->save();
 
@@ -46,7 +53,7 @@ class PaymentCompleteController extends Controller
 
         if ($newUser || !$newUser){
             $userDetails = [
-                'email' => $billingDetails->email,
+                'email' => $email,
                 'authToken' => $customer->createToken($request->get('deviceName'))->plainTextToken,
             ];
         }else{
@@ -71,7 +78,7 @@ class PaymentCompleteController extends Controller
         return $chargeDetails->billing_details;
     }
 
-    public function fillUserDetails(object $billingDetails)
+    public function fillUserDetails(object $billingDetails, $email = null)
     {
         $nameParts = explode(' ', $billingDetails->name);
         $phoneParts = $this->splitPhoneNumber($billingDetails->phone);
@@ -79,7 +86,7 @@ class PaymentCompleteController extends Controller
         return [
             'first_name' => $nameParts[0],
             'last_name' => count($nameParts) > 1 ? $nameParts[count($nameParts) - 1] : '',
-            'email' => $billingDetails->email,
+            'email' => $email,
             'email_verified_at' => now(),
             'need_change_password' => true,
             'country_phone' => '+' . $phoneParts['country_code'],
