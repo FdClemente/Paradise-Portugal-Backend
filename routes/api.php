@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
-    Route::get('/me', \App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
-    Route::delete('/logout', \App\Http\Controllers\Api\Auth\LogoutController::class)->middleware('auth:sanctum');
+    Route::get('/me', App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
+    Route::delete('/logout', App\Http\Controllers\Api\Auth\LogoutController::class)->middleware('auth:sanctum');
 
     Route::post('/map', App\Http\Controllers\Api\MapController::class);
 
