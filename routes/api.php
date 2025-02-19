@@ -29,6 +29,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
         Route::group(['prefix' => '/oauth'], function () {
             Route::post('facebook', App\Http\Controllers\Api\Auth\FacebookController::class);
+            Route::post('google', App\Http\Controllers\Api\Auth\GoogleController::class);
+            Route::post('apple', App\Http\Controllers\Api\Auth\AppleController::class);
         });
 
         Route::group(['middleware' => 'auth:sanctum'], function (){

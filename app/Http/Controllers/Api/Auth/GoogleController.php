@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Enum\LoginProviders;
 use App\Http\Controllers\Auth\InteractsWithOauth;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Auth\Oauth\FacebookRequest;
+use App\Http\Requests\Api\Auth\GoogleRequest;
 use App\Http\Responses\Api\ApiErrorResponse;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\User;
@@ -13,21 +13,24 @@ use App\Services\Auth\LoginService;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
-class FacebookController extends Controller
+class GoogleController extends Controller
 {
     use InteractsWithOauth;
-    public function __invoke(FacebookRequest $request)
+
+    public function __invoke(GoogleRequest $request)
     {
         try {
-            $socialiteUser = Socialite::with('facebook')->userFromToken($request['accessToken']);
-            $email = $socialiteUser->getEmail();
-
+            $email = $request->input('user.email');
+            $googleId = $request->input('user.id');
             if (User::where('email', $email)->exists()) {
-                $user = $this->findOrValidateLoginProvider($socialiteUser->getId(), LoginProviders::FACEBOOK);
-            } else {
-                [$firstName, $lastName] = $this->extractNameParts($socialiteUser->getName());
+                $user = $this->findOrValidateLoginProvider($googleId, LoginProviders::GOOGLE);
 
-                $user = $this->createUserFromSocialiteUser($socialiteUser->getId(), $firstName, $lastName, $email, $socialiteUser->getAvatar(), LoginProviders::FACEBOOK);
+            } else {
+                $firstName = $request->input('user.givenName');
+                $lastName = $request->input('user.familyName');
+                $photo = $request->input('user.photo');
+                $user = $this->createUserFromSocialiteUser($googleId, $firstName, $lastName, $email, $photo, LoginProviders::GOOGLE);
+
             }
 
             $deviceName = $request->get('deviceName');
@@ -38,4 +41,5 @@ class FacebookController extends Controller
             return new ApiErrorResponse($e);
         }
     }
+
 }

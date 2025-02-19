@@ -11,6 +11,9 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        return ApiSuccessResponse::make($user);
+        return ApiSuccessResponse::make([
+            ...$user->toArray(),
+            'image' => $user->getFirstMediaUrl('avatar'),
+        ]);
     }
 }

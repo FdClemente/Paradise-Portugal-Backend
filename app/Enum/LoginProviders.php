@@ -6,4 +6,6 @@ enum LoginProviders:string
 {
     case GOOGLE = 'google';
     case FACEBOOK = 'facebook';
+
+    case APPLE = 'apple';
 }

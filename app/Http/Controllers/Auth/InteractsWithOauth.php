@@ -12,9 +12,9 @@ trait InteractsWithOauth
     /**
      * @throws InvalidOauthProvider
      */
-    private function findOrValidateLoginProvider($socialiteUser, LoginProviders $providers): User
+    private function findOrValidateLoginProvider($providerId, LoginProviders $providers): User
     {
-        $loginProvider = LoginProvider::where('provider_id', $socialiteUser->getId())
+        $loginProvider = LoginProvider::where('provider_id', $providerId)
             ->where('provider', $providers)
             ->first();
 
@@ -25,22 +25,21 @@ trait InteractsWithOauth
         return $loginProvider->user;
     }
 
-    private function createUserFromSocialiteUser($socialiteUser, LoginProviders $providers): User
+    private function createUserFromSocialiteUser($providerId, $firstName, $lastName, $email, $avatarUrl, LoginProviders $providers): User
     {
-        [$firstName, $lastName] = $this->extractNameParts($socialiteUser->getName());
-
         $createdUser = new User();
         $createdUser->first_name = $firstName;
         $createdUser->last_name = $lastName;
-        $createdUser->email = $socialiteUser->getEmail();
+        $createdUser->email = $email;
         $createdUser->email_verified_at = now();
         $createdUser->password = \Hash::make(\Str::random(20));
         $createdUser->save();
 
-        $createdUser->addMediaFromUrl($socialiteUser->getAvatar())->toMediaCollection('avatar');
+        if ($avatarUrl)
+            $createdUser->addMediaFromUrl($avatarUrl)->toMediaCollection('avatar');
         $createdUser->loginProviders()->create([
             'provider' => $providers,
-            'provider_id' => $socialiteUser->getId(),
+            'provider_id' => $providerId,
         ]);
 
         return $createdUser;
