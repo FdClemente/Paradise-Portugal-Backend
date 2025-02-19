@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Auth\LoginProvider;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
@@ -15,11 +16,13 @@ use Illuminate\Notifications\Notifiable;
 use Ladder\HasRoles;
 use Ladder\Ladder;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasMedia
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail, Authorizable, HasApiTokens;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes, CanResetPassword, MustVerifyEmail, Authorizable, HasApiTokens, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -67,5 +70,10 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasPermission('backoffice_access');
+    }
+
+    public function loginProviders()
+    {
+        return $this->hasMany(LoginProvider::class);
     }
 }

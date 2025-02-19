@@ -23,11 +23,19 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
     });
 
-    Route::post('/auth/login', App\Http\Controllers\Api\Auth\LoginController::class);
-    Route::post('/auth/validate-email', App\Http\Controllers\Api\Auth\ValidateEmailController::class);
-    Route::group(['middleware' => 'auth:sanctum', 'prefix' => '/auth'], function (){
-        Route::post('/update-password', App\Http\Controllers\Api\Auth\UpdatePasswordController::class);
+    Route::group(['prefix' => '/auth'], function () {
+        Route::post('/login', App\Http\Controllers\Api\Auth\LoginController::class);
+        Route::post('/validate-email', App\Http\Controllers\Api\Auth\ValidateEmailController::class);
+
+        Route::group(['prefix' => '/oauth'], function () {
+            Route::post('facebook', App\Http\Controllers\Api\Auth\FacebookController::class);
+        });
+
+        Route::group(['middleware' => 'auth:sanctum'], function (){
+            Route::post('/update-password', App\Http\Controllers\Api\Auth\UpdatePasswordController::class);
+        });
     });
+
 });
 
 

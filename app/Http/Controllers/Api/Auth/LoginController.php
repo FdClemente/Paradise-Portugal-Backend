@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Responses\Api\ApiErrorResponse;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\User;
+use App\Services\Auth\LoginService;
 use Exception;
 
 class LoginController extends Controller
@@ -18,18 +19,14 @@ class LoginController extends Controller
             $customer = User::where('email', $request->get('email'))->firstOrFail();
 
             if (\Auth::attempt($request->only('email', 'password'))){
-                $token = $customer->createToken('auth_token')->plainTextToken;
 
-                return ApiSuccessResponse::make([
-                    'token' => $token,
-                ]);
+                return ApiSuccessResponse::make((new LoginService($customer, $request->get('deviceName')))->login());
+
             }else{
                 throw new WrongCredentials();
             }
         }catch (Exception $exception){
             return new ApiErrorResponse($exception, $exception->getMessage(), 400);
         }
-
-
     }
 }
