@@ -23,6 +23,7 @@
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.9",
         "meilisearch/meilisearch-php": "^1.12",
+        "owenvoke/blade-fontawesome": "^2.9",
         "parfaitementweb/filament-country-field": "^2.2",
         "saade/filament-fullcalendar": "^3.0",
         "skagarwal/google-places-api": "^2.2",

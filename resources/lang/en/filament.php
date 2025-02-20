@@ -81,7 +81,9 @@ return [
         'min_guests' => 'Minimum number of guests',
         'description' => 'Description',
         'experience_image' => 'Experience Image',
-
+    ],
+    'typePoi' => [
+        'name' => 'Name',
     ],
     'house_type' => [
         'name' => 'Name',
