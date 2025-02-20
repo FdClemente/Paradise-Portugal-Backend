@@ -25,6 +25,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
     Route::group(['prefix' => '/auth'], function () {
         Route::post('/login', App\Http\Controllers\Api\Auth\LoginController::class);
+        Route::post('/signup', App\Http\Controllers\Api\Auth\SignUpController::class);
+        Route::post('/signup/verificationEmail', App\Http\Controllers\Api\Auth\SendVerificationEmailController::class)->middleware('auth:sanctum');
         Route::post('/validate-email', App\Http\Controllers\Api\Auth\ValidateEmailController::class);
 
         Route::group(['prefix' => '/oauth'], function () {
@@ -36,6 +38,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::group(['middleware' => 'auth:sanctum'], function (){
             Route::post('/update-password', App\Http\Controllers\Api\Auth\UpdatePasswordController::class);
         });
+
+        Route::get('/email/verify/{id}/{hash}', App\Http\Controllers\Api\Auth\VerifyEmailController::class)->name('verification.verify');
     });
 
 });
