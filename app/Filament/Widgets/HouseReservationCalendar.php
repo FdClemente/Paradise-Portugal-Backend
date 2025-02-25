@@ -49,7 +49,7 @@ class HouseReservationCalendar extends FullCalendarWidget
 
         return $events->map(function ($event) {
             return [
-                'title' => $event->customer->name,
+                'title' => $event->customer?->name??'Reservation',
                 'start' => $event->check_in_date,
                 'end' => $event->check_out_date,
             ];

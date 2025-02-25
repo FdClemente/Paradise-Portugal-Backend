@@ -26,8 +26,6 @@ class TypePoiResource extends Resource
 {
     protected static ?string $model = TypePoi::class;
 
-    protected static ?string $slug = 'pois/type-pois';
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
