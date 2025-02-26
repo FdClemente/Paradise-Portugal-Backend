@@ -5,5 +5,5 @@ return [
     'minPoints' => 20,
     'maxZoom' => 22,
     'minZoom' => 1,
-    'models' => [\App\Models\House::class, \App\Models\Experience::class],
+    'models' => [\App\Models\Pois\Poi::class],
 ];

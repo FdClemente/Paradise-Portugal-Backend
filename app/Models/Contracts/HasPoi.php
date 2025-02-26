@@ -23,16 +23,22 @@ trait HasPoi
         $attributes = $this->toArray();
 
         $coordinates = $this->getCoordinates();
-        $name = $this->getName();
-        $image = $this->getFeaturedImageLink();
+
         $extraAttributes = $this->getExtraAttributes();
 
         $attributes['_geo'] = [
             'lat' => $coordinates['lat'],
             'lng' => $coordinates['lng'],
         ];
-        $attributes['name'] = $name;
-        $attributes['image'] = $image;
+        if (method_exists($this, 'getName')) {
+            $name = $this->getName();
+            $attributes['name'] = $name;
+        }
+        if (method_exists($this, 'getFeaturedImageLink')) {
+            $image = $this->getFeaturedImageLink();
+            $attributes['image'] = $image;
+        }
+
         return [
             ...$attributes,
             ...$extraAttributes,
@@ -44,12 +50,23 @@ trait HasPoi
         return [];
     }
 
-    public function geoSearchByBox($north, $east, $south, $west, $lat, $lng, string $query = ''): Builder
+    public function geoSearchByBox($north, $east, $south, $west, $lat, $lng, string $query = '', $options): Builder
     {
+        if (method_exists($this, 'getCustomFilter')){
+            $baseFilter = $this->getCustomFilter($options);
+            if ($baseFilter!=""){
+                $baseFilter = " AND {$baseFilter}";
+            }
+        }else{
+            $baseFilter = "";
+        }
+
         return $this->search($query, function (Indexes $meilisearch, string $query, array $options) use (
-            $north, $east, $south, $west, $lat, $lng
+            $north, $east, $south, $west, $lat, $lng, $baseFilter
         ) {
             $options['filter'] = "_geoBoundingBox([{$north}, {$east}], [{$south}, {$west}])";
+            $options['filter'] .= $baseFilter;
+
             $options['sort'] = [
                 "_geoPoint({$lat}, {$lng}):asc",
             ];
@@ -92,6 +109,11 @@ trait HasPoi
 
     public function formatToMap(): array
     {
+        if (method_exists($this, 'getExtraAttributes')){
+            $extraAttributes = $this->getExtraAttributes();
+        }else{
+            $extraAttributes = [];
+        }
         return [
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
@@ -99,7 +121,7 @@ trait HasPoi
             'image' => $this->getFeaturedImageLink(),
             'id' => $this->getKey(),
             'type' => $this->getClassName(),
-
+            ...$extraAttributes,
         ];
     }
 

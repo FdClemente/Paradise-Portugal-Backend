@@ -145,6 +145,10 @@ return [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo'],
                 'sortableAttributes' => ['id', 'name', 'address', '_geo'],
             ],
+            \App\Models\Pois\Poi::class => [
+                'filterableAttributes' => ['id', 'name', 'address', '_geo', 'type_poi_id'],
+                'sortableAttributes' => ['id', 'name', 'address', '_geo'],
+            ]
         ],
     ],
 

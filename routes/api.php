@@ -8,8 +8,11 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::get('/me', App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
     Route::delete('/logout', App\Http\Controllers\Api\Auth\LogoutController::class)->middleware('auth:sanctum');
 
-    Route::post('/map', App\Http\Controllers\Api\MapController::class);
-    Route::get('/map/poi-types', App\Http\Controllers\Api\Map\PoiTypesController::class);
+    Route::group(['prefix' => '/map'], function () {
+        Route::post('/', App\Http\Controllers\Api\MapController::class);
+        Route::get('/poi-types', App\Http\Controllers\Api\Map\PoiTypesController::class);
+    });
+
 
     Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
     Route::get('/houses/{house}/static_map', App\Http\Controllers\Api\MapImageController::class);

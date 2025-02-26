@@ -6,7 +6,7 @@ use App\Models\House;
 
 class MapService
 {
-    public function getPoints($north, $east, $south, $west, $latitude, $longitude, $query, $take, array $exclude = [])
+    public function getPoints($north, $east, $south, $west, $latitude, $longitude, $query, $take, array $exclude = [], $options=[])
     {
         $take = abs($take);
         $models = config('map.models');
@@ -19,7 +19,7 @@ class MapService
             if ($model->isExcluded($exclude)){
                 continue;
             }
-            $pois = $pois->merge($model->geoSearchByBox($north, $east, $south, $west, $latitude, $longitude, $query)->take($takePerModel)->get());
+            $pois = $pois->merge($model->geoSearchByBox($north, $east, $south, $west, $latitude, $longitude, $query, $options)->take($takePerModel)->get());
         }
 
         return $pois->transform(function ($poi) {
