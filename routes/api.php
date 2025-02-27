@@ -10,6 +10,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
     Route::group(['prefix' => '/map'], function () {
         Route::post('/', App\Http\Controllers\Api\MapController::class);
+        Route::get('/search', App\Http\Controllers\Api\Map\SearchPoiController::class);
         Route::get('/poi-types', App\Http\Controllers\Api\Map\PoiTypesController::class);
     });
 

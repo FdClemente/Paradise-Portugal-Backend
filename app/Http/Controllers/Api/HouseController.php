@@ -73,6 +73,10 @@ class HouseController extends Controller
                     'icon' => $item->icon,
                 ];
             }),
+            'location' => [
+                'latitude' => $house->latitude,
+                'longitude' => $house->longitude,
+            ]
         ];
 
         return ApiSuccessResponse::make([

@@ -53,7 +53,7 @@ class PoiResource extends Resource
                                             ->contained(false)
                                             ->columnSpanFull()
                                             ->schema([
-                                                RichEditor::make('description')
+                                                TextInput::make('description')
                                                     ->label(__('filament.poi.description')),
                                             ])
                                             ->locales(config('app.available_locales')),

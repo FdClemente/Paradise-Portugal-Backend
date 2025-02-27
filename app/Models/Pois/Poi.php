@@ -3,6 +3,7 @@
 namespace App\Models\Pois;
 
 use App\Models\Contracts\HasPoi;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
@@ -42,13 +43,26 @@ class Poi extends Model implements HasMedia
         return $this->getFirstMediaUrl(conversionName: 'webp_format');
     }
 
+    public function images(): Attribute
+    {
+        return Attribute::make(get: function (){
+            return $this->getMedia()
+                ->transform(fn(Media $media) => $media->getFullUrl('webp_format'))
+                ->values()
+                ->toArray();
+        })->shouldCache();
+    }
+
     public function getExtraAttributes():array
     {
         return [
             'images' => $this->images,
+            'description' => $this->description,
             'typePoi' => [
-                ...$this->type->toArray(),
+                'id' => $this->type->id,
                 'name' => $this->type->name,
+                'icon' => $this->type->icon,
+                'image' => $this->type->getFirstMediaUrl('default', 'thumb'),
             ],
         ];
     }

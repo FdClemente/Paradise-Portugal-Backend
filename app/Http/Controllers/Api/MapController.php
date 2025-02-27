@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\MapRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\House;
 use App\Services\MapService;
 
 class MapController extends Controller
@@ -41,6 +42,26 @@ class MapController extends Controller
 
         $pois = $mapService->getPoints($north, $east, $south, $west, $latitude, $longitude, $query, $numPoints, $exclude, $options);
 
-        return ApiSuccessResponse::make($pois);
+        if (isset($options['house'])){
+            $house = House::find($options['house']);
+            if (!$house){
+                $house = null;
+            }else{
+                $house = [
+                    ...$house->formatToMap(),
+                    'house' => true,
+                    'typePoi' => [
+                        'icon' => 'fas-house'
+                    ]
+                ];
+            }
+        }else{
+            $house = null;
+        }
+
+        return ApiSuccessResponse::make([
+            'pois' => $pois,
+            'house' => $house
+        ]);
     }
 }

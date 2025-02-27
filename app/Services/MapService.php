@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\House;
+use App\Models\PoiHouseTravelTime;
 
 class MapService
 {
@@ -22,8 +23,62 @@ class MapService
             $pois = $pois->merge($model->geoSearchByBox($north, $east, $south, $west, $latitude, $longitude, $query, $options)->take($takePerModel)->get());
         }
 
-        return $pois->transform(function ($poi) {
-            return $poi->formatToMap();
+        if (!isset($options['house'])){
+            return $pois->transform(function ($poi) {
+                return $poi->formatToMap();
+            });
+        }
+        $house = House::find($options['house']);
+        if (!$house){
+            return $pois->transform(function ($poi) use (&$house) {
+                return $poi->formatToMap();
+            });
+        }
+        $pois = $pois->transform(function ($poi) use (&$house) {
+            $travelTime = $this->getDistanceTime($poi, $house);
+            return [
+                ...$poi->formatToMap(),
+                'travel' => [
+                    'distance' => $travelTime->travel_distance,
+                    'travel_time' => $travelTime->travel_time,
+                ]
+            ];
         });
+
+        return $pois;
+
+    }
+
+    private function getDistanceTime($poi, House $house)
+    {
+        $travelTime = PoiHouseTravelTime::where('house_id', $house->id)->where('poi_id', $poi->id)->first();
+        if ($travelTime){
+            return $travelTime;
+        }
+
+        $apiKey = config('geocoder.key');
+
+        $origin = $house->latitude.','.$house->longitude;
+
+        $destination = $poi->latitude.','.$poi->longitude;
+
+        $url =sprintf("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=%s&mode=driving", $origin, $destination, $apiKey);
+
+        $response = file_get_contents($url);
+
+        $response = json_decode($response, true);
+
+        $rows = $response['rows'];
+        $distance = $rows[0]['elements'][0]['distance']['text'];
+        $travelTime = $rows[0]['elements'][0]['duration']['value'];
+
+        $travelTime = PoiHouseTravelTime::create([
+            'house_id' => $house->id,
+            'poi_id' => $poi->id,
+            'travel_distance' => $distance,
+            'travel_time' => $travelTime,
+        ]);
+
+        return $travelTime;
     }
 }
