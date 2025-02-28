@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Settings;
 use App\Filament\Resources\Settings\ExperienceTypeResource\Pages;
 use App\Models\Settings\ExperienceType;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,6 +46,9 @@ class ExperienceTypeResource extends Resource
                         RichEditor::make('description')
                     ])
                     ->locales(config('app.available_locales')),
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->columnSpan(2)
+                    ->conversion('thumb'),
             ]);
     }
 

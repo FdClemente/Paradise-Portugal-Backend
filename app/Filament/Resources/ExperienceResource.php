@@ -78,8 +78,6 @@ class ExperienceResource extends Resource
                                 ->schema([
                                     TextInput::make('name')
                                         ->label(__('filament.experience.name')),
-                                    RichEditor::make('description')
-                                        ->label(__('filament.experience.description'))
                                 ])->locales(config('app.available_locales')),
                         ]),
                     Section::make(__('filament.experience.experience_image'))

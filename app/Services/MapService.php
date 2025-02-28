@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\House;
-use App\Models\PoiHouseTravelTime;
+use App\Models\Settings\PoiHouseTravelTime;
 
 class MapService
 {

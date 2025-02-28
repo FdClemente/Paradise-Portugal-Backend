@@ -57,4 +57,27 @@ class Experience extends Model implements HasMedia
     {
         return Attribute::make(get: fn() => $this->experiencePartner->longitude);
     }
+
+    public function getExtraAttributes():array
+    {
+        return [
+            'images' => $this->images,
+            'description' => $this->description,
+            'experienceType' => [
+                'id' => $this->experienceType->id,
+                'name' => $this->experienceType->name,
+                'image' => $this->experienceType->getFirstMediaUrl('default', 'thumb'),
+            ],
+        ];
+    }
+
+    public function images(): Attribute
+    {
+        return Attribute::make(get: function (){
+            return $this->getMedia()
+                ->transform(fn(Media $media) => $media->getFullUrl('webp_format'))
+                ->values()
+                ->toArray();
+        })->shouldCache();
+    }
 }

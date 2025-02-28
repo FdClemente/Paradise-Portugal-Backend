@@ -21,6 +21,9 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
     Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
 
+    Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
+    Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
+
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);
 
