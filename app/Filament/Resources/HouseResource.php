@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Components\Address\GoogleAutocomplete;
 use App\Filament\Resources\HouseResource\Pages;
+use App\Filament\Resources\Settings\FeatureResource;
+use App\Filament\Resources\Settings\HouseDetailsHighlightResource;
 use App\Models\House;
+use App\Models\Settings\HouseDetailsHighlight;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -67,7 +70,6 @@ class HouseResource extends Resource
                                                             ->schema([
                                                                 TextInput::make('name'),
                                                             ])
-                                                            ->locales(config('app.available_locales'))
                                                     ]),
                                                 Select::make('is_disabled')
                                                     ->columnSpan(2)
@@ -85,8 +87,7 @@ class HouseResource extends Resource
                                                 TextInput::make('name'),
                                                 RichEditor::make('description')
                                                     ->saveUploadedFileAttachmentsUsing(fn($file) => $file->store('houses', 'public')),
-                                            ])
-                                            ->locales(config('app.available_locales')),
+                                            ]),
                                     ]),
                                 Section::make(__('filament.house.address_details'))
                                     ->columns(3)
@@ -140,8 +141,17 @@ class HouseResource extends Resource
                                         Select::make('features')
                                             ->label(__('filament.house.features'))
                                             ->columnSpanFull()
+                                            ->createOptionForm(fn(Form $form) => FeatureResource::form($form))
+                                            ->preload()
                                             ->multiple()
                                             ->relationship('features', 'name'),
+                                        Select::make('detailsHighlight')
+                                            ->label(__('filament.house.detailsHighlight'))
+                                            ->columnSpanFull()
+                                            ->preload()
+                                            ->createOptionForm(fn(Form $form) => HouseDetailsHighlightResource::form($form))
+                                            ->multiple()
+                                            ->relationship('detailsHighlight', 'name'),
                                         Grid::make()
                                             ->relationship('details')
                                             ->schema([

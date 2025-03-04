@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Settings;
 
-use App\Filament\Resources\Settings\HouseTypeResource\Pages;
-use App\Models\Settings\HouseType;
+use App\Filament\Resources\Settings\ExperienceServiceResource\Pages;
+use App\Models\Settings\ExperienceService;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -14,41 +15,39 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
-class HouseTypeResource extends Resource
+class ExperienceServiceResource extends Resource
 {
-    protected static ?string $model = HouseType::class;
+    protected static ?string $model = ExperienceService::class;
 
-    protected static ?string $slug = 'settings/house-types';
+    protected static ?string $slug = 'settings/experience-services';
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('filament.navigation_group.settings');
-    }
-
+    protected static ?string $navigationGroup = 'Settings';
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
                 Translate::make()
-                    ->prefixLocaleLabel()
-                    ->contained(false)
                     ->columnSpanFull()
                     ->schema([
-                        TextInput::make('name')
-                            ->label(__('filament.house_type.name')),
+                        TextInput::make('name'),
                     ]),
-                TextInput::make('wp_category')
-                    ->label(__('filament.house_type.wp_category')),
-                Placeholder::make('created_at')
-                    ->label(__('filament.created_at'))
-                    ->content(fn(?HouseType $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
-                Placeholder::make('updated_at')
-                    ->label(__('filament.updated_at'))
-                    ->content(fn(?HouseType $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                IconPicker::make('icon'),
+                Grid::make()
+                    ->columns()
+                    ->schema([
+                        Placeholder::make('created_at')
+                            ->label('Created Date')
+                            ->content(fn(?ExperienceService $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
+                        Placeholder::make('updated_at')
+                            ->label('Last Modified Date')
+                            ->content(fn(?ExperienceService $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                    ])
             ]);
     }
 
@@ -57,7 +56,6 @@ class HouseTypeResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('filament.house_type.name'))
                     ->searchable()
                     ->sortable(),
             ])
@@ -78,7 +76,7 @@ class HouseTypeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListHouseTypes::route('/'),
+            'index' => Pages\ListExperienceServices::route('/'),
         ];
     }
 

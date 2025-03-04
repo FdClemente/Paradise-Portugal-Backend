@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExperienceResource\Pages;
 use App\Filament\Resources\Settings\ExperiencePartnerResource;
+use App\Filament\Resources\Settings\ExperienceServiceResource;
 use App\Models\Experience;
 use App\Models\Settings\ExperiencePartner;
 use Filament\Forms\Components\Grid;
@@ -73,12 +74,32 @@ class ExperienceResource extends Resource
                                 ->label(__('filament.experience.min_guests'))
                                 ->required()
                                 ->integer(),
+                            Select::make('services')
+                                ->createOptionForm(function (Form $form){
+                                    return ExperienceServiceResource::form($form);
+                                })
+                                ->relationship('services', 'name')
+                                ->multiple()
+                                ->preload()
+                                ->columnSpanFull()
+                                ->label(__('filament.experience.services')),
+                            Grid::make()
+                                ->schema([
+                                    TextInput::make('adult_price')
+                                        ->integer()
+                                        ->suffixIcon('heroicon-o-currency-euro'),
+                                    TextInput::make('child_price')
+                                        ->integer()
+                                        ->suffixIcon('heroicon-o-currency-euro'),
+                                ]),
                             Translate::make()
                                 ->columnSpanFull()
                                 ->schema([
                                     TextInput::make('name')
                                         ->label(__('filament.experience.name')),
-                                ])->locales(config('app.available_locales')),
+                                    RichEditor::make('description')->nullable(),
+                                    RichEditor::make('additional_info')->nullable()
+                                ]),
                         ]),
                     Section::make(__('filament.experience.experience_image'))
                         ->columnSpan(4)

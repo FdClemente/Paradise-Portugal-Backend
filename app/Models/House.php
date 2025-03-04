@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
 use App\Models\Contracts\HasReservation;
+use App\Models\Contracts\HasTravelDistance;
+use App\Models\Contracts\Interfaces\HasStaticMap;
 use App\Models\House\HouseDisableDate;
 use App\Models\House\HousePrices;
 use App\Models\Settings\Feature;
+use App\Models\Settings\HouseDetailsHighlight;
 use App\Models\Settings\HouseType;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,9 +23,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
 
-class House extends Model implements HasMedia
+class House extends Model implements HasMedia, HasStaticMap
 {
-    use HasTranslations, softDeletes, InteractsWithMedia, HasPoi, HasReservation;
+    use HasTranslations, softDeletes, InteractsWithMedia, HasPoi, HasReservation, HasTravelDistance;
 
     public $translatable = ['name', 'description'];
 
@@ -107,6 +108,11 @@ class House extends Model implements HasMedia
     public function features()
     {
         return $this->belongsToMany(Feature::class);
+    }
+
+    public function detailsHighlight()
+    {
+        return $this->belongsToMany(HouseDetailsHighlight::class);
     }
 
     public function getFeaturedImageLink(): ?string

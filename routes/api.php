@@ -16,12 +16,13 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
 
     Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
-    Route::get('/houses/{house}/static_map', App\Http\Controllers\Api\MapImageController::class);
+    Route::get('/houses/{house}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'house']);
     Route::get('/houses/{house}/booking-dates', App\Http\Controllers\Api\House\GetDisableDatesAndPriceController::class);
 
     Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
 
     Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
+    Route::get('/experience/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
     Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
 
     Route::group(['prefix' => 'reservation'], function () {

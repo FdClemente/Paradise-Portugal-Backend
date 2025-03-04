@@ -44,8 +44,7 @@ class ExperienceTypeResource extends Resource
                     ->schema([
                         TextInput::make('name'),
                         RichEditor::make('description')
-                    ])
-                    ->locales(config('app.available_locales')),
+                    ]),
                 SpatieMediaLibraryFileUpload::make('images')
                     ->columnSpan(2)
                     ->conversion('thumb'),

@@ -37,12 +37,11 @@ class TypePoiResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->label(__('filament.typePoi.name')),
-                    ])->locales(config('app.available_locales')),
+                    ]),
                 SpatieMediaLibraryFileUpload::make('images')
                     ->columnSpan(2)
                     ->conversion('thumb'),
-                IconPicker::make('icon')
-                    ->sets(['heroicons', 'fontawesome-solid']),
+                IconPicker::make('icon'),
                 Select::make('is_active')
                     ->boolean()
                     ->default(true),

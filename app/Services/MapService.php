@@ -56,21 +56,7 @@ class MapService
             return $travelTime;
         }
 
-        $apiKey = config('geocoder.key');
-
-        $origin = $house->latitude.','.$house->longitude;
-
-        $destination = $poi->latitude.','.$poi->longitude;
-
-        $url =sprintf("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=%s&mode=driving", $origin, $destination, $apiKey);
-
-        $response = file_get_contents($url);
-
-        $response = json_decode($response, true);
-
-        $rows = $response['rows'];
-        $distance = $rows[0]['elements'][0]['distance']['text'];
-        $travelTime = $rows[0]['elements'][0]['duration']['value'];
+        [$distance, $travelTime] = $house->calculateTravelDistance($poi->latitude, $poi->longitude);
 
         $travelTime = PoiHouseTravelTime::create([
             'house_id' => $house->id,

@@ -49,7 +49,7 @@ class ExperiencePartner extends Model implements HasMedia
     public function addressComplete():Attribute
     {
         return Attribute::make(
-            get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->zip.' '.$this->city
+            get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->city
         );
     }
 }

@@ -26,7 +26,16 @@ class ExperienceController extends Controller
             $house = null;
         }
 
-        $experienceType = ExperienceType::whereIn('id', $types)->get();
+        if ($request->has('excludeExperience')){
+            $excludeExperience = $request->get('excludeExperience');
+        }else{
+            $excludeExperience = null;
+        }
+
+        $experienceType = ExperienceType::whereIn('id', $types)
+            ->where('id','<>', $excludeExperience)
+            ->limit($request->get('limit', 10))
+            ->get();
 
 
 
@@ -53,9 +62,29 @@ class ExperienceController extends Controller
         return ApiSuccessResponse::make($experiences);
     }
 
-    public function show($id)
+    public function show(Experience $experience)
     {
+        $experienceData = [
+            'id' => $experience->id,
+            'name' => $experience->name,
+            'description' => $experience->description,
+            'additional_information' => $experience->additional_info,
+            'short_description' => str($experience->description)->stripTags()->words(20),
+            'type' => $experience->experienceType->name,
+            'images' => $experience->images,
+            'services' => $experience->services->transform(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'name' => $service->name,
+                    'icon' => $service->icon,
+                ];
+            }),
+            'address' => $experience->experiencePartner->address_complete
+        ];
 
+        return ApiSuccessResponse::make([
+            'experience' => $experienceData,
+        ]);
     }
 
     private function getDistanceTimeToPoi(Experience $experience, House $house)
@@ -65,21 +94,8 @@ class ExperienceController extends Controller
             return $travelTime;
         }
 
-        $apiKey = config('geocoder.key');
+        [$distance, $travelTime] = $house->calculateTravelDistance($experience->latitude, $experience->longitude);
 
-        $origin = $house->latitude.','.$house->longitude;
-
-        $destination = $experience->latitude.','.$experience->longitude;
-
-        $url =sprintf("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=%s&mode=driving", $origin, $destination, $apiKey);
-
-        $response = file_get_contents($url);
-
-        $response = json_decode($response, true);
-
-        $rows = $response['rows'];
-        $distance = $rows[0]['elements'][0]['distance']['text'];
-        $travelTime = $rows[0]['elements'][0]['duration']['value'];
 
         $travelTime = House\ExperienceHouseTravelTime::create([
             'house_id' => $house->id,

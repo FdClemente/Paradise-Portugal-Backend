@@ -55,8 +55,7 @@ class PoiResource extends Resource
                                             ->schema([
                                                 TextInput::make('description')
                                                     ->label(__('filament.poi.description')),
-                                            ])
-                                            ->locales(config('app.available_locales')),
+                                            ]),
                                         Grid::make(3)
                                             ->columnSpanFull()
                                             ->schema([

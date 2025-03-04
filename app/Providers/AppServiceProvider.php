@@ -7,10 +7,12 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
+use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,25 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
+    {
+
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
+        });
+
+        $this->bootFilamentComponents();
+    }
+
+    private function bootFilamentComponents(): void
     {
         Select::configureUsing(function (Select $component): void {
             $component->native(false);
@@ -51,17 +72,14 @@ class AppServiceProvider extends ServiceProvider
             $component->preload();
         });
 
-        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
+        IconPicker::configureUsing(function (IconPicker $component): void {
+            $component
+                ->sets(['fontawesome-solid', 'heroicons'])
+                ->preload();
+        });
 
-        if ($this->app->environment('production')) {
-            URL::forceScheme('https');
-        }
-
-        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
-            $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
+        Translate::configureUsing(function (Translate $component): void {
+            $component->locales(config('app.available_locales'));
         });
     }
 }

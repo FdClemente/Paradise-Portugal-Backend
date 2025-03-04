@@ -48,6 +48,7 @@ return [
         'longitude' => 'Longitude',
         'house_details' => 'House Details',
         'features' => 'Features',
+        'detailsHighlight' => 'Villa details highlight',
         'num_guest' => 'Number of guests',
         'next_reservation' => 'Next reservation',
         'min_days_booking' => 'Minimum days booking',

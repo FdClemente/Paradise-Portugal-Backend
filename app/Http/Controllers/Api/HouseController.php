@@ -73,6 +73,13 @@ class HouseController extends Controller
                     'icon' => $item->icon,
                 ];
             }),
+            'villaDetails' => $house->detailsHighlight->transform(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'icon' => $item->icon,
+                ];
+            }),
             'location' => [
                 'latitude' => $house->latitude,
                 'longitude' => $house->longitude,

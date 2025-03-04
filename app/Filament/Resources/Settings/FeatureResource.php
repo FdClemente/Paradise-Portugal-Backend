@@ -38,7 +38,7 @@ class FeatureResource extends Resource
                     ->schema([
                         Translate::make()->schema([
                             TextInput::make('name')
-                        ])->locales(config('app.available_locales')),
+                        ]),
                         IconPicker::make('icon'),
                     ]),
                 Grid::make(2)
