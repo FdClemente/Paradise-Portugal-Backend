@@ -94,7 +94,7 @@ class ExperienceController extends Controller
             return $travelTime;
         }
 
-        [$distance, $travelTime] = $house->calculateTravelDistance($experience->latitude, $experience->longitude);
+        ['distance' => $distance, 'travel_time' => $travelTime] = $house->calculateTravelDistance($experience->latitude, $experience->longitude);
 
 
         $travelTime = House\ExperienceHouseTravelTime::create([
