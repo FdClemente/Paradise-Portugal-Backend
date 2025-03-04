@@ -20,7 +20,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
 
         Telescope::filter(function (IncomingEntry $entry) {
-            return
+            return true ||
                    $entry->isReportableException() ||
                    $entry->isFailedRequest() ||
                    $entry->isFailedJob() ||
