@@ -19,6 +19,12 @@ trait HasTravelDistance
         $response = json_decode($response, true);
 
         $rows = $response['rows'];
+        if (count($rows) == 0) {
+            return [
+                'distance' => null,
+                'travel_time' => null,
+            ];
+        }
         $distance = $rows[0]['elements'][0]['distance']['text'];
         $travelTime = $rows[0]['elements'][0]['duration']['value'];
 
