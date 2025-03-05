@@ -85,6 +85,7 @@ class BackofficePanelProvider extends PanelProvider
                     ->selectable()
                     ->editable()
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/backoffice/theme.css');
     }
 }

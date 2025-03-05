@@ -13,7 +13,9 @@ class CalculateTotalRequest extends FormRequest
             'house_id' => 'required|integer|exists:houses,id',
             'check_in' => 'required|date',
             'check_out' => 'required|date',
-            'num_guests' => 'required|integer',
+            'adults' => 'required|integer',
+            'children' => 'nullable|integer',
+            'babies' => 'nullable|integer',
         ];
     }
 

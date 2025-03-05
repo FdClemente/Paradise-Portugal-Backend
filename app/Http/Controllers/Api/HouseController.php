@@ -39,6 +39,10 @@ class HouseController extends Controller
                     'image' => $item->getFeaturedImageLink(),
                     'images' => $item->images,
                     'default_price' => $item->default_price,
+                    'ratting' => [
+                        'airbnb' => $item->airbnb_ratting,
+                        'booking' => $item->booking_ratting,
+                    ]
                 ];
             });
 
@@ -60,12 +64,18 @@ class HouseController extends Controller
             'bedrooms' => $house->details?->num_bedrooms,
             'address' => $house->address,
             'guests' => $house->details?->num_guest,
+            'min_days_booking' => $house->min_days_booking,
+            'min_nights' => $house->min_days_booking,
             'image' => $house->getFeaturedImageLink(),
             'house_id' => $house->id,
             'check_in' => Carbon::createFromFormat('H:i:s',$house->details->check_in_time)->format('H:i'),
             'check_out' => Carbon::createFromFormat('H:i:s',$house->details->check_out_time)->format('H:i'),
             'images' => $house->images,
             'default_price' => $house->default_price,
+            'ratting' => [
+                'airbnb' => $house->airbnb_ratting,
+                'booking' => $house->booking_ratting,
+            ],
             'features' => $house->features->transform(function ($item) {
                 return [
                     'id' => $item->id,

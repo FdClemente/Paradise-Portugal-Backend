@@ -79,8 +79,15 @@ class HouseResource extends Resource
                                                     ->label(__('filament.house.min_days_booking'))
                                                     ->integer(),
                                                 TextInput::make('default_price')
-                                                ->suffix('€')
-                                                ->columnSpan(2)
+                                                    ->suffix('€')
+                                                    ->columnSpan(2)
+                                            ]),
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('airbnb_ratting')
+                                                    ->suffixIcon('fab-airbnb'),
+                                                TextInput::make('booking_ratting')
+                                                    ->suffixIcon('tabler-brand-booking'),
                                             ]),
                                         Translate::make()
                                             ->schema([

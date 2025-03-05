@@ -15,7 +15,8 @@ class LoginService
         $token = $this->user->createToken($this->deviceName)->plainTextToken;
 
         return [
-            'token' => $token
+            'token' => $token,
+            'email' => $this->user->email,
         ];
     }
 }

@@ -25,6 +25,14 @@ trait HasTravelDistance
                 'travel_time' => null,
             ];
         }
+
+        if ($rows[0]['elements'][0]['status'] != 'OK'){
+            return [
+                'distance' => null,
+                'travel_time' => null,
+            ];
+        }
+
         $distance = $rows[0]['elements'][0]['distance']['text'];
         $travelTime = $rows[0]['elements'][0]['duration']['value'];
 

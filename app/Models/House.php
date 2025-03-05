@@ -44,7 +44,9 @@ class House extends Model implements HasMedia, HasStaticMap
         'latitude',
         'longitude',
         'wp_id',
-        'min_days_booking'
+        'min_days_booking',
+        'booking_ratting',
+        'airbnb_ratting',
     ];
 
     protected $casts = [

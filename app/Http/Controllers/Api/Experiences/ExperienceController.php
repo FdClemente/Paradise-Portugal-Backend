@@ -49,6 +49,9 @@ class ExperienceController extends Controller
         }else{
             $experiences = $experiences->transform(function (Experience $experience) use (&$house) {
                 $travelTime = $this->getDistanceTimeToPoi($experience, $house);
+                if ($travelTime->travel_distance == null || $travelTime->travel_time == null){
+                    return $experience->formatToMap();
+                }
                 return [
                     ...$experience->formatToMap(),
                     'travel' => [
