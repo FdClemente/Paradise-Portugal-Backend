@@ -2,7 +2,7 @@
 
 namespace App\Models\Settings;
 
-use App\Models\Experience;
+use App\Models\Experiences\Experience;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;

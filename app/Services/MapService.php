@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\House;
+use App\Models\House\House;
 use App\Models\Settings\PoiHouseTravelTime;
 
 class MapService

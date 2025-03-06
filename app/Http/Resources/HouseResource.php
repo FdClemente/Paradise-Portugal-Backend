@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\House;
+use App\Models\House\House;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

@@ -82,6 +82,18 @@ return [
         'min_guests' => 'Minimum number of guests',
         'description' => 'Description',
         'experience_image' => 'Experience Image',
+        'ticket_type' => [
+            'morning' => 'Morning',
+            'afternoon' => 'Afternoon',
+            'full_day' => 'Full day',
+            'flexible' => 'Flexible',
+            'mobile' => [
+                'morning' => '10:00 - 12:00',
+                'afternoon' => '13:00 - 18:00',
+                'full_day' => '10:00 - 17:00',
+                'flexible' => 'Flexible',
+            ]
+        ]
     ],
     'typePoi' => [
         'name' => 'Name',

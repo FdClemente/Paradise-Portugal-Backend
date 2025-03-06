@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\House;
 
 use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
 use App\Models\Contracts\HasReservation;
 use App\Models\Contracts\HasTravelDistance;
 use App\Models\Contracts\Interfaces\HasStaticMap;
-use App\Models\House\HouseDisableDate;
-use App\Models\House\HousePrices;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseDetailsHighlight;
 use App\Models\Settings\HouseType;

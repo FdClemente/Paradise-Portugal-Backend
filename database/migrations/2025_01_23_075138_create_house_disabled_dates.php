@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('house_disable_dates', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Reservation::class)->nullable()->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->string('reason')->nullable();

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api\Experiences;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
-use App\Models\Experience;
-use App\Models\House;
+use App\Models\Experiences\Experience;
+use App\Models\House\ExperienceHouseTravelTime;
+use App\Models\House\House;
 use App\Models\Settings\ExperienceType;
-use App\Models\Settings\PoiHouseTravelTime;
 use Illuminate\Http\Request;
 
 class ExperienceController extends Controller
@@ -92,7 +92,7 @@ class ExperienceController extends Controller
 
     private function getDistanceTimeToPoi(Experience $experience, House $house)
     {
-        $travelTime = House\ExperienceHouseTravelTime::where('house_id', $house->id)->where('experience_id', $experience->id)->first();
+        $travelTime = ExperienceHouseTravelTime::where('house_id', $house->id)->where('experience_id', $experience->id)->first();
         if ($travelTime){
             return $travelTime;
         }
@@ -100,7 +100,7 @@ class ExperienceController extends Controller
         ['distance' => $distance, 'travel_time' => $travelTime] = $house->calculateTravelDistance($experience->latitude, $experience->longitude);
 
 
-        $travelTime = House\ExperienceHouseTravelTime::create([
+        $travelTime = ExperienceHouseTravelTime::create([
             'house_id' => $house->id,
             'experience_id' => $experience->id,
             'travel_distance' => $distance,

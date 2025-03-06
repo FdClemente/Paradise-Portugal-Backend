@@ -3,10 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExperienceResource\Pages;
+use App\Filament\Resources\ExperienceResource\RelationManagers\AvailabilityRelationManager;
+use App\Filament\Resources\ExperienceResource\RelationManagers\TicketsRelationManager;
 use App\Filament\Resources\Settings\ExperiencePartnerResource;
 use App\Filament\Resources\Settings\ExperienceServiceResource;
-use App\Models\Experience;
-use App\Models\Settings\ExperiencePartner;
+use App\Models\Experiences\Experience;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
@@ -21,7 +22,6 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ForceDeleteAction;
-use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -31,7 +31,6 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Livewire\Attributes\Url;
 use SolutionForest\FilamentTranslateField\Forms\Component\Translate;
 
 class ExperienceResource extends Resource
@@ -47,70 +46,74 @@ class ExperienceResource extends Resource
         return $form
             ->schema([
                 Grid::make(4)
-                ->schema([
-                    Section::make(__('filament.experience.experience_details'))
-                        ->columns(3)
-                        ->columnSpan(4)
-                        ->schema([
-                            Select::make('experience_type_id')
-                                ->createOptionForm(function (Form $form){
-                                    return ExperiencePartnerResource::form($form);
-                                })
-                                ->required()
-                                ->preload()
-                                ->label(__('filament.experience.experience_type'))
-                                ->searchable()
-                                ->relationship('experienceType', 'name'),
-                            Select::make('experience_partner_id')
-                                ->label(__('filament.experience.experience_partner'))
-                                ->createOptionForm(function (Form $form){
-                                    return ExperiencePartnerResource::form($form);
-                                })
-                                ->required()
-                                ->preload()
-                                ->searchable()
-                                ->relationship('experiencePartner', 'name'),
-                            TextInput::make('min_guests')
-                                ->label(__('filament.experience.min_guests'))
-                                ->required()
-                                ->integer(),
-                            Select::make('services')
-                                ->createOptionForm(function (Form $form){
-                                    return ExperienceServiceResource::form($form);
-                                })
-                                ->relationship('services', 'name')
-                                ->multiple()
-                                ->preload()
-                                ->columnSpanFull()
-                                ->label(__('filament.experience.services')),
-                            Grid::make()
-                                ->schema([
-                                    TextInput::make('adult_price')
-                                        ->integer()
-                                        ->suffixIcon('heroicon-o-currency-euro'),
-                                    TextInput::make('child_price')
-                                        ->integer()
-                                        ->suffixIcon('heroicon-o-currency-euro'),
-                                ]),
-                            Translate::make()
-                                ->columnSpanFull()
-                                ->schema([
-                                    TextInput::make('name')
-                                        ->label(__('filament.experience.name')),
-                                    RichEditor::make('description')->nullable(),
-                                    RichEditor::make('additional_info')->nullable()
-                                ]),
-                        ]),
-                    Section::make(__('filament.experience.experience_image'))
-                        ->columnSpan(4)
                     ->schema([
-                        SpatieMediaLibraryFileUpload::make('images')
-                            ->multiple()
-                            ->label("")
-                            ->columnSpanFull()
-                            ->reorderable()
-                    ])
-                ]),
+                        Grid::make(1)
+                            ->columnSpan(3)
+                            ->schema([
+                                Section::make(__('filament.experience.experience_details'))
+                                    ->columns(3)
+                                    ->schema([
+                                        Select::make('experience_type_id')
+                                            ->createOptionForm(function (Form $form) {
+                                                return ExperiencePartnerResource::form($form);
+                                            })
+                                            ->required()
+                                            ->preload()
+                                            ->label(__('filament.experience.experience_type'))
+                                            ->searchable()
+                                            ->relationship('experienceType', 'name'),
+                                        Select::make('experience_partner_id')
+                                            ->label(__('filament.experience.experience_partner'))
+                                            ->createOptionForm(function (Form $form) {
+                                                return ExperiencePartnerResource::form($form);
+                                            })
+                                            ->required()
+                                            ->preload()
+                                            ->searchable()
+                                            ->relationship('experiencePartner', 'name'),
+                                        TextInput::make('min_guests')
+                                            ->label(__('filament.experience.min_guests'))
+                                            ->required()
+                                            ->integer(),
+                                        Select::make('services')
+                                            ->createOptionForm(function (Form $form) {
+                                                return ExperienceServiceResource::form($form);
+                                            })
+                                            ->relationship('services', 'name')
+                                            ->multiple()
+                                            ->preload()
+                                            ->columnSpanFull()
+                                            ->label(__('filament.experience.services')),
+                                        Grid::make()
+                                            ->schema([
+                                                TextInput::make('adult_price')
+                                                    ->integer()
+                                                    ->suffixIcon('heroicon-o-currency-euro'),
+                                                TextInput::make('child_price')
+                                                    ->integer()
+                                                    ->suffixIcon('heroicon-o-currency-euro'),
+                                            ]),
+                                        Translate::make()
+                                            ->columnSpanFull()
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->label(__('filament.experience.name')),
+                                                RichEditor::make('description')->nullable(),
+                                                RichEditor::make('additional_info')->nullable()
+                                            ]),
+                                    ]),
+                            ]),
+
+                        Section::make(__('filament.experience.experience_image'))
+                            ->columnSpan(1)
+                            ->schema([
+                                SpatieMediaLibraryFileUpload::make('images')
+                                    ->multiple()
+                                    ->label("")
+                                    ->columnSpanFull()
+                                    ->reorderable()
+                            ])
+                    ]),
                 Placeholder::make('created_at')
                     ->label('Created Date')
                     ->content(fn(?Experience $record): string => $record?->created_at?->diffForHumans() ?? '-'),
@@ -166,14 +169,15 @@ class ExperienceResource extends Resource
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ])
-            ;
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListExperiences::route('/'),
+            'edit' => Pages\EditExperience::route('/{record}/edit'),
+            'create' => Pages\CreateExperience::route('/create'),
         ];
     }
 
@@ -188,5 +192,13 @@ class ExperienceResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['name'];
+    }
+
+    public static function getRelations():array
+    {
+        return  [
+            TicketsRelationManager::class,
+            AvailabilityRelationManager::class
+        ];
     }
 }

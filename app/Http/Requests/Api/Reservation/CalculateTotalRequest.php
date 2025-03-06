@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\Reservation;
 
-use App\Models\House;
+use App\Models\House\House;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CalculateTotalRequest extends FormRequest

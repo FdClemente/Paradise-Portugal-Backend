@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('experience_house_travel_times', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(\App\Models\Experience::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Experiences\Experience::class)->constrained()->cascadeOnDelete();
             $table->integer('travel_time');
             $table->string('travel_distance');
             $table->timestamps();

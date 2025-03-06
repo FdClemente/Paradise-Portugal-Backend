@@ -6,7 +6,7 @@ use App\Enum\ReservationStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Reservation\PaymentCompleteRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
-use App\Models\House;
+use App\Models\House\House;
 use App\Models\Reservation;
 use App\Services\Customer\CustomerService;
 use libphonenumber\NumberParseException;

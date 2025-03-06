@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\ReservationStatusEnum;
+use App\Models\House\House;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;

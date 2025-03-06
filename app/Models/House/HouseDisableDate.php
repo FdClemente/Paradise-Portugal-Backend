@@ -2,7 +2,6 @@
 
 namespace App\Models\House;
 
-use App\Models\House;
 use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Model;
 

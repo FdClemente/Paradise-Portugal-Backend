@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\MapRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
-use App\Models\House;
+use App\Models\House\House;
 use App\Services\MapService;
 
 class MapController extends Controller

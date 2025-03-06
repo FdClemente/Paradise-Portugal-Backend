@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('house_prices', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->integer('price');
             $table->timestamps();

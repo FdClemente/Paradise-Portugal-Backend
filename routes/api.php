@@ -24,6 +24,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
     Route::get('/experience/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
     Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
+    Route::post('/experience/{experience}/tickets', App\Http\Controllers\Api\Experiences\TicketsController::class);
 
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);

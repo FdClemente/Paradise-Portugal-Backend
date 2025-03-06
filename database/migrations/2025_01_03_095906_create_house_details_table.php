@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('house_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
             $table->float('area')->nullable();
             $table->integer('num_bedrooms')->nullable();
             $table->integer('num_bathrooms')->nullable();

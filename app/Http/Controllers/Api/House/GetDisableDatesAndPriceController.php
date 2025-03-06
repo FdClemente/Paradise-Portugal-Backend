@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\House;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
-use App\Models\House;
+use App\Models\House\House;
 
 class GetDisableDatesAndPriceController extends Controller
 {

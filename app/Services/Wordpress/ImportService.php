@@ -2,10 +2,8 @@
 
 namespace App\Services\Wordpress;
 
-use App\Models\House;
+use App\Models\House\House;
 use App\Models\Settings\HouseType;
-use function PHPUnit\Framework\isArray;
-use function PHPUnit\Framework\isString;
 
 class ImportService
 {

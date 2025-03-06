@@ -137,11 +137,11 @@ return [
             // 'users' => [
             //     'filterableAttributes'=> ['id', 'name', 'email'],
             // ],
-            \App\Models\House::class => [
+            \App\Models\House\House::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state'],
                 'sortableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state'],
             ],
-            \App\Models\Experience::class => [
+            \App\Models\Experiences\Experience::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo'],
                 'sortableAttributes' => ['id', 'name', 'address', '_geo'],
             ],

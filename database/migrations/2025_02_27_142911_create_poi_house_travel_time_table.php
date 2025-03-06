@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('poi_house_travel_time', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\House::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Pois\Poi::class)->constrained()->cascadeOnDelete();
             $table->integer('travel_time');
             $table->string('travel_distance');

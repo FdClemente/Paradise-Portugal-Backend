@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Experiences;
 
-use AnourValar\EloquentSerialize\Service;
 use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
 use App\Models\Contracts\Interfaces\HasStaticMap;
@@ -103,5 +102,15 @@ class Experience extends Model implements HasMedia, HasStaticMap
                 ->values()
                 ->toArray();
         })->shouldCache();
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(ExperienceTicket::class);
+    }
+
+    public function availability()
+    {
+        return $this->hasMany(ExperiencesAvailability::class);
     }
 }

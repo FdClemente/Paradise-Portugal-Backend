@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('experience_experience_service', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Experience::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Experiences\Experience::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Settings\ExperienceService::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
