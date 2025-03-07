@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Reservation\Stripe;
 
 use App\Enum\ReservationStatusEnum;
+use App\Http\Controllers\Api\Reservation\Trait\HasReservationTotal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Reservation\CalculateTotalRequest;
 use App\Http\Responses\Api\ApiErrorResponse;
@@ -13,35 +14,41 @@ use Stripe\StripeClient;
 
 class PaymentController extends Controller
 {
+    use HasReservationTotal;
     public function __invoke(CalculateTotalRequest $request)
     {
         try {
             $stripe = new StripeClient(config('services.stripe.secret'));
 
             $house = $request->house();
+            $experience = $request->experience();
+
             $checkIn = $request->get('check_in');
             $checkOut = $request->get('check_out');
 
-            if (Reservation::where('house_id', $house->id)
-                ->whereIn('status', ReservationStatusEnum::getActiveReservations())
-                ->where(function ($query) use ($checkIn, $checkOut) {
-                    $query->whereBetween('check_in_date', [$checkIn, $checkOut])
-                        ->orWhereBetween('check_out_date', [$checkIn, $checkOut])
-                        ->orWhere(function ($q) use ($checkIn, $checkOut) {
-                            $q->where('check_in_date', '<=', $checkIn)
-                                ->where('check_out_date', '>=', $checkOut);
-                        });
-                })->exists()) {
-                throw new \Exception('Sorry, this house is already reserved for the selected dates.');
+            if ($house){
+                if (Reservation::where('house_id', $house->id)
+                    ->whereIn('status', ReservationStatusEnum::getActiveReservations())
+                    ->where(function ($query) use ($checkIn, $checkOut) {
+                        $query->whereBetween('check_in_date', [$checkIn, $checkOut])
+                            ->orWhereBetween('check_out_date', [$checkIn, $checkOut])
+                            ->orWhere(function ($q) use ($checkIn, $checkOut) {
+                                $q->where('check_in_date', '<=', $checkIn)
+                                    ->where('check_out_date', '>=', $checkOut);
+                            });
+                    })->exists()) {
+                    throw new \Exception('Sorry, this house is already reserved for the selected dates.');
+                }
             }
+            $totals = $this->calculateTotals($house, $experience, $request);
 
 
-            $total = $house->calculateTotalNightsCost($checkIn, $checkOut);
+            $total = $totals['total'];
 
             $paymentIntent = $stripe->paymentIntents->create([
                 'amount' => $total,
                 'currency' => 'eur',
-                'description' => 'Reservation for ' . $house->name,
+                'description' => 'Paradise Portugal Reserve',
                 'payment_method_types' => ['card', 'paypal'],
             ]);
 
@@ -69,7 +76,8 @@ class PaymentController extends Controller
                 'children' => $request->get('children', 0),
                 'babies' => $request->get('babies', 0),
                 'reservation_code' => $reservationCode,
-                'house_id' => $house->id,
+                'house_id' => $house?->id,
+                'experience_id' => $experience?->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_intent_secret' => $paymentIntent->client_secret,
             ])->save();

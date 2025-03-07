@@ -49,7 +49,9 @@ class PaymentCompleteController extends Controller
         $reservation->status = ReservationStatusEnum::CONFIRMED;
         $reservation->save();
 
-        $this->markDates($reservation->house, $reservation);
+        if ($reservation->house) {
+            $this->markDates($reservation->house, $reservation);
+        }
 
         if ($newUser || !$newUser){
             $userDetails = [

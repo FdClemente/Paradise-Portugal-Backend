@@ -33,6 +33,7 @@ class TicketsController extends Controller
                     'period' => $ticketType->type->getMobileLabel(),
                     'prices' => $ticketType->prices->map(function ($price) {
                         return [
+                            'price_id' => $price->id,
                             'price' => $price->price,
                             'type' => $price->ticket_type->value,
                         ];

@@ -76,4 +76,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     {
         return $this->hasMany(LoginProvider::class);
     }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 }

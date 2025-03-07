@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers\Api\Reservation;
 
+use App\Http\Controllers\Api\Reservation\Trait\HasReservationTotal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Reservation\CalculateTotalRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\Experiences\ExperiencePrice;
 
 class CalculateTotalController extends Controller
 {
+    use HasReservationTotal;
     public function __invoke(CalculateTotalRequest $request)
     {
 
         $house = $request->house();
 
-        $total = $house->calculateTotalNightsCost($request->get('check_in'), $request->get('check_out'));
+        $experience = $request->experience();
 
-        $details = $house->getDetailedPrices($request->get('check_in'), $request->get('check_out'));
 
-        $nightPrice = $house->getRawOriginal('default_price');
+        $totals = $this->calculateTotals($house, $experience, $request);
 
-        $reservePeriod = $house->getPeriod($request->get('check_in'), $request->get('check_out'));
 
-        return ApiSuccessResponse::make([
-            'total' => $total,
-            'default_price' => $nightPrice,
-            'details' => $details,
-            'period' => $reservePeriod
-        ]);
+        return ApiSuccessResponse::make($totals);
     }
 }
