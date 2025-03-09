@@ -13,4 +13,9 @@ class WishlistItems extends Model
     public function wishable(){
         return $this->morphTo();
     }
+
+    public function wishlist()
+    {
+        return $this->belongsTo(Wishlist::class);
+    }
 }

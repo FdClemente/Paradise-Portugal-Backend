@@ -31,7 +31,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         ->only('index', 'store', 'destroy', 'show')
         ->middleware('auth:sanctum');
 
-    Route::post('/wishlist/{wishlist}/atatch', [App\Http\Controllers\WishlistController::class, 'atatch']);
+    Route::post('/wishlist/{wishlist}/attach', [App\Http\Controllers\WishlistController::class, 'attach'])->middleware('auth:sanctum');
+    Route::post('/wishlist/detach', [App\Http\Controllers\WishlistController::class, 'detach'])->middleware('auth:sanctum');
 
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);

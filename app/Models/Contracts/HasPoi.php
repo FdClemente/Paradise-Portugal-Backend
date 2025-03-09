@@ -2,6 +2,7 @@
 
 namespace App\Models\Contracts;
 
+use App\Models\WishlistItems;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
 use Meilisearch\Endpoints\Indexes;
@@ -133,5 +134,19 @@ trait HasPoi
     public function isExcluded(array $excluded): bool
     {
         return in_array($this->getClassName(), $excluded);
+    }
+
+    public function isFavorite(): bool
+    {
+        if (!auth('api')->check()) {
+            return false;
+        }
+
+        return WishlistItems::where('wishable_type', get_class($this))
+            ->where('wishable_id', $this->id)
+            ->whereHas('wishlist',function ($query){
+                return $query->where('user_id', auth('api')->id());
+            })
+            ->exists();
     }
 }

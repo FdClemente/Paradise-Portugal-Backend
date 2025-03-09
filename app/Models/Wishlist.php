@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Experiences\Experience;
 use App\Models\House\House;
 use App\Models\Pois\Poi;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,11 @@ class Wishlist extends Model
     public function houses(): MorphToMany
     {
         return $this->morphToMany(House::class, 'wishable', 'wishlist_items');
+    }
+
+    public function experience()
+    {
+        return $this->morphToMany(Experience::class, 'wishable', 'wishlist_items');
     }
 
     public function items(): HasMany

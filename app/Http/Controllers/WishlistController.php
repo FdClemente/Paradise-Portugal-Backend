@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\Experiences\Experience;
+use App\Models\House\House;
 use App\Models\Pois\Poi;
 use App\Models\Wishlist;
+use App\Models\WishlistItems;
 use Illuminate\Http\Request;
 
 class WishlistController extends Controller
@@ -20,7 +23,7 @@ class WishlistController extends Controller
                         'type' => $item->wishable_type,
                         'id' => $item->wishable_id,
                         'name' => $item->wishable->name,
-                        'image' => $item->wishable->getFirstMediaUrl('default', 'thumb'),
+                        'image' => $item->wishable?->getFeaturedImageLink(),
                     ];
                 }),
             ];
@@ -61,12 +64,14 @@ class WishlistController extends Controller
         return response()->json();
     }
 
-    public function atatch(Request $request, Wishlist $wishlist)
+    public function attach(Request $request, Wishlist $wishlist)
     {
         $item = $request->all();
 
         $item = match ($item['type']) {
             'poi' => Poi::find($item['item_id']),
+            'house' => House::find($item['item_id']),
+            'experience' => Experience::find($item['item_id']),
         };
 
 
@@ -75,6 +80,31 @@ class WishlistController extends Controller
             'wishable_type' => get_class($item),
         ]);
 
+
+        return ApiSuccessResponse::make();
+    }
+
+    public function detach(Request $request)
+    {
+        $item = $request->all();
+
+        $item = match ($item['type']) {
+            'poi' => Poi::find($item['item_id']),
+            'house' => House::find($item['item_id']),
+            'experience' => Experience::find($item['item_id']),
+        };
+
+        $wishlistItems = WishlistItems::where('wishable_id', $item->id)
+            ->where('wishable_type', get_class($item))
+            ->get();
+
+        foreach ($wishlistItems as $wishlistItem){
+
+            if ($wishlistItem->wishlist->items->count() === 1){
+                $wishlistItem->wishlist->delete();
+            }
+            $wishlistItem->delete();
+        }
 
         return ApiSuccessResponse::make();
     }

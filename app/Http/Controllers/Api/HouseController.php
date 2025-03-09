@@ -37,6 +37,7 @@ class HouseController extends Controller
                     'bedrooms' => $item->details?->num_bedrooms,
                     'guests' => $item->details?->num_guest,
                     'image' => $item->getFeaturedImageLink(),
+                    'isFavorite' => $item->isFavorite(),
                     'images' => $item->images,
                     'default_price' => $item->default_price,
                     'ratting' => [
@@ -65,6 +66,7 @@ class HouseController extends Controller
             'address' => $house->address,
             'guests' => $house->details?->num_guest,
             'min_days_booking' => $house->min_days_booking,
+            'isFavorite' => $house->isFavorite(),
             'min_nights' => $house->min_days_booking,
             'image' => $house->getFeaturedImageLink(),
             'house_id' => $house->id,
