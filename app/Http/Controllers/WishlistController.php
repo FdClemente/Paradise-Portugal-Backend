@@ -43,7 +43,19 @@ class WishlistController extends Controller
 
     public function show(Wishlist $wishlist)
     {
-        return ApiSuccessResponse::make($wishlist);
+        $wishlist->load('items');
+
+
+        return ApiSuccessResponse::make([
+            'id' => $wishlist->id,
+            'items' => $wishlist->items->transform(function ($item) {
+                return [
+                    'wishlist_id' => $item->id,
+                    'type' => class_basename($item->wishable_type),
+                    ...$item->wishable->formatToList(),
+                ];
+            })
+        ]);
     }
 
     public function update(Request $request, Wishlist $wishlist)

@@ -44,23 +44,16 @@ class ExperienceController extends Controller
         });
         if (!$house){
             $experiences = $experiences->transform(function (Experience $experience) {
-                return [
-                    ...$experience->formatToMap(),
-                    'isFavorite' => $experience->isFavorite(),
-                ];
+                return $experience->formatToList();
             });
         }else{
             $experiences = $experiences->transform(function (Experience $experience) use (&$house) {
                 $travelTime = $this->getDistanceTimeToPoi($experience, $house);
                 if ($travelTime->travel_distance == null || $travelTime->travel_time == null){
-                    return [
-                        ...$experience->formatToMap(),
-                        'isFavorite' => $experience->isFavorite(),
-                    ];
+                    return $experience->formatToList();
                 }
                 return [
-                    ...$experience->formatToMap(),
-                    'isFavorite' => $experience->isFavorite(),
+                    ...$experience->formatToList(),
                     'travel' => [
                         'distance' => $travelTime->travel_distance,
                         'travel_time' => $travelTime->travel_time,

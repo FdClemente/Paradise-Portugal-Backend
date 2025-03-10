@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\ReservationStatusEnum;
+use App\Models\Experiences\Experience;
 use App\Models\House\House;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,8 +14,8 @@ class Reservation extends Model
     use SoftDeletes;
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'check_in_date' => 'date',
+        'check_out_date' => 'date',
         'status' => ReservationStatusEnum::class
     ];
 
@@ -42,5 +43,10 @@ class Reservation extends Model
     public function house(): BelongsTo
     {
         return $this->belongsTo(House::class);
+    }
+
+    public function experience(): BelongsTo
+    {
+        return $this->belongsTo(Experience::class);
     }
 }

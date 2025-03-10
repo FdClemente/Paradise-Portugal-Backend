@@ -18,4 +18,9 @@ class HouseDetail extends Model
         'family_friendly',
         'num_guest'
     ];
+
+    protected $casts = [
+        'check_in_time' => 'datetime',
+        'check_out_time' => 'datetime',
+    ];
 }

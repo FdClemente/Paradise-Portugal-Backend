@@ -19,10 +19,10 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::get('/houses/{house}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'house']);
     Route::get('/houses/{house}/booking-dates', App\Http\Controllers\Api\House\GetDisableDatesAndPriceController::class);
 
-    Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
 
     Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
     Route::get('/experience/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
+
     Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
     Route::post('/experience/tickets/price', App\Http\Controllers\Api\Experiences\TicketPriceController::class);
     Route::post('/experience/{experience}/tickets', App\Http\Controllers\Api\Experiences\TicketsController::class);
@@ -34,7 +34,10 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::post('/wishlist/{wishlist}/attach', [App\Http\Controllers\WishlistController::class, 'attach'])->middleware('auth:sanctum');
     Route::post('/wishlist/detach', [App\Http\Controllers\WishlistController::class, 'detach'])->middleware('auth:sanctum');
 
+    Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
     Route::group(['prefix' => 'reservation'], function () {
+        Route::get('/', App\Http\Controllers\Api\Reservation\UpcomingReservationController::class)->middleware('auth:sanctum');
+
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);
 
         Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);

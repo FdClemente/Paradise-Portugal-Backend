@@ -30,21 +30,7 @@ class HouseController extends Controller
 
         $houses->getCollection()
             ->transform(function (House $item) {
-                return [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'type' => $item->houseType->name,
-                    'bedrooms' => $item->details?->num_bedrooms,
-                    'guests' => $item->details?->num_guest,
-                    'image' => $item->getFeaturedImageLink(),
-                    'isFavorite' => $item->isFavorite(),
-                    'images' => $item->images,
-                    'default_price' => $item->default_price,
-                    'ratting' => [
-                        'airbnb' => $item->airbnb_ratting,
-                        'booking' => $item->booking_ratting,
-                    ]
-                ];
+                return $item->formatToList();
             });
 
 

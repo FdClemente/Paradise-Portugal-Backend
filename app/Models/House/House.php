@@ -176,4 +176,24 @@ class House extends Model implements HasMedia, HasStaticMap
 
         });
     }
+
+    public function formatToList()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'type' => $this->houseType->name,
+            'bedrooms' => $this->details?->num_bedrooms,
+            'guests' => $this->details?->num_guest,
+            'image' => $this->getFeaturedImageLink(),
+            'isFavorite' => $this->isFavorite(),
+            'images' => $this->images,
+            'default_price' => $this->default_price,
+            'checkInHour' => $this->details?->check_in_time->format('H:i').' - 21:00',
+            'ratting' => [
+                'airbnb' => $this->airbnb_ratting,
+                'booking' => $this->booking_ratting,
+            ]
+        ];
+    }
 }

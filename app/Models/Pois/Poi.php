@@ -84,4 +84,12 @@ class Poi extends Model implements HasMedia
             ->addMediaConversion('webp_format')
             ->format('webp');
     }
+
+    public function formatToList()
+    {
+        return [
+            ...$this->formatToMap(),
+            'isFavorite' => $this->isFavorite(),
+        ];
+    }
 }
