@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(\App\Models\House\House::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Pois\Poi::class)->constrained()->cascadeOnDelete();
-            $table->integer('travel_time');
-            $table->string('travel_distance');
+            $table->integer('travel_time')->nullable();
+            $table->string('travel_distance')->nullable();
             $table->timestamps();
         });
     }
