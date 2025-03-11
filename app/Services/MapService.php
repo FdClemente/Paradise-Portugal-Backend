@@ -55,7 +55,7 @@ class MapService
         if ($travelTime){
             return $travelTime;
         }
-
+dd($house->calculateTravelDistance($poi->latitude, $poi->longitude));
         [$distance, $travelTime] = $house->calculateTravelDistance($poi->latitude, $poi->longitude);
 
         $travelTime = PoiHouseTravelTime::create([
