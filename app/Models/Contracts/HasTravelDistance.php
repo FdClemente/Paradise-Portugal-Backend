@@ -36,6 +36,11 @@ trait HasTravelDistance
         $distance = $rows[0]['elements'][0]['distance']['text'];
         $travelTime = $rows[0]['elements'][0]['duration']['value'];
 
+
+        dd([
+            'distance' => $distance,
+            'travel_time' => $travelTime,
+        ]);
         return [
             'distance' => $distance,
             'travel_time' => $travelTime,
