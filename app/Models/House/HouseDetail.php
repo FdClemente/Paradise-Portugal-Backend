@@ -16,7 +16,9 @@ class HouseDetail extends Model
         'private_bathroom',
         'private_entrance',
         'family_friendly',
-        'num_guest'
+        'num_guest',
+        'wifi_ssid',
+        'wifi_password'
     ];
 
     protected $casts = [

@@ -85,6 +85,16 @@ class HouseResource extends Resource
                                                 TextInput::make('booking_ratting')
                                                     ->suffixIcon('tabler-brand-booking'),
                                             ]),
+                                        Grid::make(2)
+                                            ->relationship('details')
+                                            ->schema([
+                                                TextInput::make('wifi_ssid')
+                                                    ->label('Wifi')
+                                                    ->suffixIcon('fas-wifi'),
+                                                TextInput::make('wifi_password')
+                                                    ->suffixIcon('fas-key'),
+
+                                            ]),
                                         Translate::make()
                                             ->schema([
                                                 TextInput::make('name'),

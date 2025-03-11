@@ -37,8 +37,9 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('/', App\Http\Controllers\Api\Reservation\UpcomingReservationController::class)->middleware('auth:sanctum');
-
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);
+        Route::get('/{reservation}', App\Http\Controllers\Api\Reservation\ReservationDetailsController::class)->middleware('auth:sanctum');
+
 
         Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);
         Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
