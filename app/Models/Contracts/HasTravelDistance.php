@@ -21,15 +21,15 @@ trait HasTravelDistance
         $rows = $response['rows'];
         if (count($rows) == 0) {
             return [
-                'distance' => '',
-                'travel_time' => '',
+                'distance' => 0,
+                'travel_time' => 0,
             ];
         }
 
         if ($rows[0]['elements'][0]['status'] != 'OK'){
             return [
-                'distance' => '',
-                'travel_time' => '',
+                'distance' => 0,
+                'travel_time' => 0,
             ];
         }
 
