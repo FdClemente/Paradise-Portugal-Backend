@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\ReservationStatusEnum;
 use App\Models\Experiences\Experience;
+use App\Models\Experiences\TicketsReservation;
 use App\Models\House\House;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,7 @@ class Reservation extends Model
 
     protected $fillable = [
         'user_id',
+        'experience_id',
         'house_id',
         'check_in_date',
         'check_out_date',
@@ -48,5 +50,10 @@ class Reservation extends Model
     public function experience(): BelongsTo
     {
         return $this->belongsTo(Experience::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(TicketsReservation::class);
     }
 }

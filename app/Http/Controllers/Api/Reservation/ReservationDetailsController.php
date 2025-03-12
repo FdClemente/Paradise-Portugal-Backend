@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Reservation;
 use App\Http\Controllers\Api\Reservation\Trait\HasUpcomingDates;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\Experiences\TicketsReservation;
 use App\Models\Reservation;
 
 class ReservationDetailsController extends Controller
@@ -35,7 +36,14 @@ class ReservationDetailsController extends Controller
             'experience' => $reservation->experience ? [
                 ...$reservation->experience?->formatToList(),
                 'address' => $reservation->experience?->experiencePartner?->address_complete
-            ]: null
+            ]: null,
+            'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
+                return [
+                    'date' => $ticket->date->format('D, d M'),
+                    'tickets' => $ticket->tickets,
+                    'type' => $ticket->priceDetails->ticket_type,
+                ];
+            })
         ];
 
         return ApiSuccessResponse::make($data);

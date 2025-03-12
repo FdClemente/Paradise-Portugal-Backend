@@ -66,7 +66,7 @@ class PaymentController extends Controller
                 ReservationStatusEnum::NO_SHOW
             ])->exists());
 
-            Reservation::create([
+            $reservation = Reservation::create([
                 'ip' => $request->ip(),
                 'user_id' => \Auth::guard('sanctum')->check()? \Auth::guard('sanctum')->id() : null,
                 'status' => ReservationStatusEnum::PENDING_PAYMENT,
@@ -80,7 +80,41 @@ class PaymentController extends Controller
                 'experience_id' => $experience?->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_intent_secret' => $paymentIntent->client_secret,
-            ])->save();
+            ]);
+
+            $reservation->save();
+
+            if ($experience?->id){
+                foreach ($request->get('tickets', []) as $date => $tickets) {
+                    foreach ($tickets as $ticket) {
+                        if ($ticket['tickets'] === 0) continue;
+
+                        $reservation->tickets()->create([
+                            'date' => $date,
+                            'experience_price_id' => $ticket['price_id'],
+                            'tickets' => $ticket['tickets'],
+                        ]);
+                    }
+                }
+                $validDates = collect($request->get('tickets', []))
+                    ->mapWithKeys(fn($tickets, $date) => [
+                        $date => collect($tickets)->sum(fn($ticket) => (int) $ticket['tickets'])
+                    ])
+                    ->filter(fn($totalTickets) => $totalTickets > 0)
+                    ->keys()
+                    ->map(fn($date) => Carbon::parse($date))
+                    ->sort();
+
+                $minDate = $validDates->first()?->toDateString();
+                $maxDate = $validDates->last()?->toDateString();
+
+                $reservation->check_in_date = $minDate;
+                $reservation->check_out_date = $maxDate;
+                $reservation->save();
+
+
+            }
+
 
             return ApiSuccessResponse::make($paymentDetails);
         }catch (\Exception $e){

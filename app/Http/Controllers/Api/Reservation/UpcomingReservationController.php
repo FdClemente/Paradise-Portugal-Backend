@@ -6,6 +6,7 @@ use App\Enum\ReservationStatusEnum;
 use App\Http\Controllers\Api\Reservation\Trait\HasUpcomingDates;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\Experiences\TicketsReservation;
 use App\Models\Reservation;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -30,7 +31,14 @@ class UpcomingReservationController extends Controller
                 'check_out' => $reservation->check_out_date,
                 'status' => $reservation->status,
                 'house' => $reservation->house?->formatToList(),
-                'experience' => $reservation->experience?->formatToList()
+                'experience' => $reservation->experience?->formatToList(),
+                'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
+                    return [
+                        'date' => $ticket->date->format('D, d M'),
+                        'tickets' => $ticket->tickets,
+                        'type' => $ticket->priceDetails->ticket_type,
+                    ];
+                })
             ];
         });
 
