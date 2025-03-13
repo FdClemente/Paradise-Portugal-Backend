@@ -14,6 +14,7 @@ trait HasReservationTotal
 
         if ($house){
             $houseDetails = [
+                'hasSpecialPrice' => $house->hasSpecialPrice($request->get('check_in'), $request->get('check_out')),
                 'total' => $house->calculateTotalNightsCost($request->get('check_in'), $request->get('check_out')),
                 'details' => $house->getDetailedPrices($request->get('check_in'), $request->get('check_out')),
                 'nightPrice' => $house->getRawOriginal('default_price'),

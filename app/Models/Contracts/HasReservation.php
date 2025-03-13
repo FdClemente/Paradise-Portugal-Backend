@@ -19,6 +19,11 @@ trait HasReservation
         return $total;
     }
 
+    public function hasSpecialPrice(string $startDate, string $endDate)
+    {
+        return $this->prices()->whereBetween('date', [$startDate, $endDate])->exists();
+    }
+
     public function getDatesRange(string $startDate, string $endDate): CarbonPeriod
     {
         $start = Carbon::make($startDate);
