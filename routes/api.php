@@ -42,6 +42,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
 
 
         Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);
+        Route::post('cancel-payment', App\Http\Controllers\Api\Reservation\CancelPaymentController::class);
         Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
     });
 

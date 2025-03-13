@@ -9,6 +9,7 @@ use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House\House;
 use App\Models\Reservation;
 use App\Services\Customer\CustomerService;
+use App\Services\Reservation\ReservationService;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 use Stripe\StripeClient;
@@ -50,7 +51,8 @@ class PaymentCompleteController extends Controller
         $reservation->save();
 
         if ($reservation->house) {
-            $this->markDates($reservation->house, $reservation);
+            $reservationService = new ReservationService();
+            $reservationService->markDates($reservation);
         }
 
         if ($newUser || !$newUser){
@@ -117,28 +119,5 @@ class PaymentCompleteController extends Controller
         } catch (NumberParseException $e) {
             return ['error' => 'invalid phone number: ' . $e->getMessage()];
         }
-    }
-
-    private function markDates(House $house, Reservation $reservation)
-    {
-        $startDate = $reservation->check_in_date;
-        $endDate = $reservation->check_out_date;
-
-        $period = $house->getDatesRange($startDate, $endDate);
-
-        $datesToInsert = [];
-
-        foreach ($period as $date) {
-            $datesToInsert[] = [
-                'house_id' => $house->id,
-                'date' => $date->format('Y-m-d'),
-                'reason' => 'reserved',
-                'reservation_id' => $reservation->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        $house->disableDates()->insert($datesToInsert);
     }
 }

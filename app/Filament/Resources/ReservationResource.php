@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\Experience\TicketPriceType;
 use App\Enum\ReservationStatusEnum;
 use App\Filament\Resources\ReservationResource\Pages;
+use App\Models\Experiences\ExperiencePrice;
 use App\Models\Reservation;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +18,8 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\Fieldset;
 use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\KeyValueEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -33,6 +38,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Number;
 
 class ReservationResource extends Resource
 {
@@ -50,25 +56,6 @@ class ReservationResource extends Resource
                     ->columns(2)
                     ->columnSpanFull()
                     ->schema([
-                        Select::make('user_id')
-                            ->label(__('filament.reservation.customer'))
-                            ->createOptionForm(function (Form $form) {
-                                return CustomerResource::form($form);
-                            })
-                            ->createOptionAction(function (Action $action) {
-                                return $action->slideOver();
-                            })
-                            ->visibleOn('create')
-                            ->relationship('customer', 'email')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-
-                        Select::make('house_id')
-                            ->label(__('filament.reservation.house'))
-                            ->required()
-                            ->relationship('house', 'name'),
-
                         DatePicker::make('check_in_date')
                             ->minDate(now()->startOfDay())
                             ->reactive()
@@ -83,10 +70,47 @@ class ReservationResource extends Resource
                             })
                             ->required(),
 
-                        TextInput::make('num_guests')
-                            ->label(__('filament.reservation.num_guests'))
-                            ->required()
-                            ->integer(),
+                        Select::make('user_id')
+                            ->label(__('filament.reservation.customer'))
+                            ->createOptionForm(function (Form $form) {
+                                return CustomerResource::form($form);
+                            })
+                            ->createOptionAction(function (Action $action) {
+                                return $action->slideOver();
+                            })
+                            ->visibleOn('create')
+                            ->relationship('customer', 'email')
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            ->required(),
+
+                        Select::make('house_id')
+                            ->label(__('filament.reservation.house'))
+                            ->relationship('house', 'name'),
+                        Select::make('experience_id')
+                            ->reactive()
+                            ->label(__('filament.reservation.experience'))
+                            ->relationship('experience', 'name'),
+
+
+                        \Filament\Forms\Components\Grid::make()
+                            ->columns(3)
+                            ->schema([
+                                TextInput::make('adults')
+                                    ->label(__('filament.reservation.adults'))
+                                    ->required()
+                                    ->integer(),
+
+                                TextInput::make('children')
+                                    ->label(__('filament.reservation.children'))
+                                    ->integer(),
+
+                                TextInput::make('babies')
+                                    ->label(__('filament.reservation.babies'))
+                                    ->integer(),
+                            ]),
+
 
                         Select::make('status')
                             ->options(ReservationStatusEnum::class)
@@ -95,6 +119,31 @@ class ReservationResource extends Resource
                             ->visibleOn('create')
                             ->preload()
                             ->required(),
+
+                        Repeater::make('tickets')
+                            ->columnSpanFull()
+                            ->visible(fn(Get $get) => $get('experience_id') !== null)
+                            ->grid(2)
+                            ->relationship('tickets')
+                            ->schema([
+                                DatePicker::make('date')
+                                ->default(function (Get $get) {
+                                    return Carbon::parse($get('../../check_in_date'))->startOfDay();
+                                })
+                                ->minDate(function (Get $get) {
+                                    return Carbon::parse($get('../../check_in_date'))->startOfDay();
+                                }),
+                                TextInput::make('tickets'),
+                                Select::make('experience_price_id')
+                                    ->relationship('priceDetails', 'price', modifyQueryUsing: function (Builder $query, Get $get) {
+                                        $experience = $get('experience_id');
+                                        if ($experience) {
+                                            $query->where('experience_id', $experience);
+                                        }
+                                        return $query;
+                                    })
+                                ->getOptionLabelFromRecordUsing(fn(ExperiencePrice $record) => $record->ticket_type->name)
+                            ]),
 
                         Placeholder::make('created_at')
                             ->label(__('filament.created_at'))
@@ -120,7 +169,7 @@ class ReservationResource extends Resource
                 TextColumn::make('check_in_date')
                     ->label(__('filament.reservation.date'))
                     ->tooltip(fn($record) => Carbon::parse($record->check_in_date)->diffInDays(Carbon::parse($record->check_out_date)) . ' ' . __('filament.reservation.days'))
-                    ->formatStateUsing(fn($record) => $record->check_in_date . ' - ' . $record->check_out_date),
+                    ->formatStateUsing(fn($record) => $record->check_in_date->format('d-m-Y') . ' - ' . $record->check_out_date->format('d-m-Y')),
 
                 TextColumn::make('num_guests')
                     ->label(__('filament.reservation.num_guests')),
@@ -139,7 +188,6 @@ class ReservationResource extends Resource
             ->actions([
                 ViewAction::make(),
                 RestoreAction::make(),
-                ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -155,39 +203,105 @@ class ReservationResource extends Resource
         return $infolist->schema([
             Grid::make(4)
                 ->schema([
-                    \Filament\Infolists\Components\Section::make(__('filament.reservation.reservation_details'))
+                    Grid::make(1)
                         ->columnSpan(3)
-                        ->columns(4)
                         ->schema([
-                            TextEntry::make('house.name')
-                                ->label(__('filament.reservation.house')),
-                            TextEntry::make('num_guests')
-                                ->label(__('filament.reservation.num_guests')),
-                            TextEntry::make('check_in_date')
-                                ->formatStateUsing(fn($record) => $record->check_in_date . ' - ' . $record->check_out_date)
-                                ->label(__('filament.reservation.date')),
-                            TextEntry::make('status')
-                                ->badge(fn($record) => $record->status->getColor())
-                                ->formatStateUsing(fn($record) => ucfirst($record->status->value))
-                                ->label(__('filament.reservation.status')),
+                            \Filament\Infolists\Components\Section::make(__('filament.reservation.reservation_details'))
+                                ->columns(4)
+                                ->schema([
+                                    TextEntry::make('house.name')
+                                        ->label(__('filament.reservation.house'))
+                                        ->default(__('filament.reservation.no_house_assigned')),
+                                    TextEntry::make('check_in_date')
+                                        ->formatStateUsing(fn($record) => $record->check_in_date->format('d-m-Y') . ' - ' . $record->check_out_date->format('d-m-Y'))
+                                        ->label(__('filament.reservation.date')),
+                                    TextEntry::make('nights')
+                                        ->label(__('filament.reservation.nights')),
+                                    TextEntry::make('status')
+                                        ->badge(fn($record) => $record->status->getColor())
+                                        ->formatStateUsing(fn($record) => ucfirst($record->status->value))
+                                        ->label(__('filament.reservation.status')),
+                                    Fieldset::make(__('filament.reservation.guests'))
+                                        ->columns(3)
+                                        ->schema([
+                                            TextEntry::make('adults')
+                                                ->label(__('filament.reservation.adults')),
+                                            TextEntry::make('children')
+                                                ->label(__('filament.reservation.children')),
+                                            TextEntry::make('babies')
+                                                ->label(__('filament.reservation.babies')),
+                                        ]),
+                                ]),
+                            \Filament\Infolists\Components\Section::make(__('filament.reservation.experience'))
+                                ->columns(1)
+                                ->visible(fn($record) => $record->experience_id !== null)
+                                ->schema([
+                                    TextEntry::make('experience.name')
+                                        ->label(__('filament.reservation.experience')),
+                                    RepeatableEntry::make('tickets')
+                                        ->columns(3)
+                                        ->schema([
+                                            TextEntry::make('tickets')
+                                                ->label(__('filament.reservation.tickets')),
+                                            TextEntry::make('date')
+                                                ->label(__('filament.reservation.date'))
+                                                ->date(),
+                                            TextEntry::make('priceDetails.ticket_type')
+                                                ->label(__('filament.reservation.ticket_type'))
+                                                ->formatStateUsing(fn(TicketPriceType $state) => $state->name),
+                                        ])
+                                ]),
                         ]),
-                    \Filament\Infolists\Components\Section::make(__('filament.reservation.customer_details'))
+                    Grid::make(1)
                         ->columnSpan(1)
-                        ->columns(1)
-                        ->headerActions([
-                                \Filament\Infolists\Components\Actions\Action::make('view')
-                                    ->url(fn($record) => CustomerResource::getUrl('view', ['record' => $record->customer->id]))]
-                        )
                         ->schema([
-                            \Filament\Infolists\Components\TextEntry::make('customer.name')
-                                ->label(__('filament.reservation.customer_name')),
-                            \Filament\Infolists\Components\TextEntry::make('customer.phone_number')
-                                ->label(__('filament.reservation.customer_phone'))
-                                ->copyable(),
-                            \Filament\Infolists\Components\TextEntry::make('customer.email')
-                                ->copyable()
-                                ->label(__('filament.reservation.customer_email')),
-                        ]),
+                            \Filament\Infolists\Components\Section::make(__('filament.reservation.customer_details'))
+                                ->columnSpan(1)
+                                ->columns(1)
+                                ->headerActions([
+                                        \Filament\Infolists\Components\Actions\Action::make('view')
+                                            ->url(fn($record) => CustomerResource::getUrl('view', ['record' => $record->customer->id]))]
+                                )
+                                ->schema([
+                                    TextEntry::make('customer.name')
+                                        ->label(__('filament.reservation.customer_name')),
+                                    TextEntry::make('customer.phone_number')
+                                        ->label(__('filament.reservation.customer_phone'))
+                                        ->copyable(),
+                                    TextEntry::make('customer.email')
+                                        ->copyable()
+                                        ->label(__('filament.reservation.customer_email')),
+                                ]),
+                            \Filament\Infolists\Components\Section::make(__('filament.reservation.totals'))
+                                ->columnSpan(1)
+                                ->columns(1)
+                                ->schema([
+                                    TextEntry::make('houseTotal.total')
+                                        ->label(__('filament.reservation.house_total'))
+                                        ->visible(fn($record) => $record->house_id !== null)
+                                        ->money(currency: 'EUR', divideBy: 100),
+                                    TextEntry::make('houseTotal.nightPrice')
+                                        ->label(__('filament.reservation.house_total_details'))
+                                        ->visible(fn($record) => $record->house_id !== null)
+                                        ->formatStateUsing(function (Reservation $record) {
+                                            return __('filament.reservation.nights_price', [
+                                                'nights' => $record->houseTotal['reservePeriod'],
+                                                'nightPrice' => Number::currency($record->houseTotal['nightPrice'] / 100, 'EUR')
+                                            ]);
+                                        }),
+                                    RepeatableEntry::make('tickets')
+                                        ->columns(2)
+                                        ->schema([
+                                            TextEntry::make('priceDetails.ticket_type')
+                                                ->label(__('filament.reservation.ticket_type'))
+                                                ->formatStateUsing(fn(TicketPriceType $state) => $state->name),
+                                            TextEntry::make('ticketPriceDescription')
+                                                ->label(__('filament.reservation.ticket_type_short'))
+                                        ])
+
+                                ])
+                        ])
+
                 ])
         ]);
     }

@@ -35,6 +35,9 @@ trait InteractsWithOauth
         $createdUser->password = \Hash::make(\Str::random(20));
         $createdUser->save();
 
+        $createdUser->roles()->updateOrCreate(['role' => 'customer']);
+
+
         if ($avatarUrl)
             $createdUser->addMediaFromUrl($avatarUrl)->toMediaCollection('avatar');
         $createdUser->loginProviders()->create([

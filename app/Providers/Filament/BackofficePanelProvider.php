@@ -41,7 +41,7 @@ class BackofficePanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            //->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->brandName("Paradise Portugal")
             ->widgets([
                 Widgets\AccountWidget::class,
@@ -60,6 +60,7 @@ class BackofficePanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->spa()
             ->navigationGroups([
                 NavigationGroup::make(__('filament.navigation_group.settings'))
                     ->icon('heroicon-o-cog'),

@@ -21,7 +21,7 @@ class ViewHouse extends ViewRecord
     protected function getFooterWidgets(): array
     {
         return [
-            //HouseReservationCalendar::class
+            HouseReservationCalendar::class
         ];
     }
 }

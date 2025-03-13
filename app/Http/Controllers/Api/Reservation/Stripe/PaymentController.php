@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Reservation\CalculateTotalRequest;
 use App\Http\Responses\Api\ApiErrorResponse;
 use App\Http\Responses\Api\ApiSuccessResponse;
+use App\Models\Experiences\ExperiencePrice;
 use App\Models\Reservation;
 use Illuminate\Support\Carbon;
 use Stripe\StripeClient;
@@ -80,6 +81,7 @@ class PaymentController extends Controller
                 'experience_id' => $experience?->id,
                 'payment_intent' => $paymentIntent->id,
                 'payment_intent_secret' => $paymentIntent->client_secret,
+                'total_price' => $total,
             ]);
 
             $reservation->save();
@@ -91,6 +93,7 @@ class PaymentController extends Controller
 
                         $reservation->tickets()->create([
                             'date' => $date,
+                            'price' => ExperiencePrice::find($ticket['price_id'])->getRawOriginal('price'),
                             'experience_price_id' => $ticket['price_id'],
                             'tickets' => $ticket['tickets'],
                         ]);

@@ -31,7 +31,7 @@ class PoiResource extends Resource
 
     protected static ?string $slug = 'pois';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'fas-map-marker-alt';
 
     public static function form(Form $form): Form
     {

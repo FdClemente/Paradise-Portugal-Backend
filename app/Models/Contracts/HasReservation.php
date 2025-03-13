@@ -22,7 +22,7 @@ trait HasReservation
     public function getDatesRange(string $startDate, string $endDate): CarbonPeriod
     {
         $start = Carbon::make($startDate);
-        $end = Carbon::make($endDate);
+        $end = Carbon::make($endDate)->subDays(1);
 
         return CarbonPeriod::create($start, $end);
     }

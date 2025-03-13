@@ -33,6 +33,8 @@ class SignUpController extends Controller
             $user->save();
             $user->sendEmailVerificationNotification();
 
+            $user->roles()->updateOrCreate(['role' => 'customer']);
+
             $deviceName = $request->get('deviceName');
             $loginService = new LoginService($user, $deviceName);
 
