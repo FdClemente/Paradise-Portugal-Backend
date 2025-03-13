@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\House\House;
 use App\Models\Reservation;
 use App\Services\Reservation\ReservationService;
 
@@ -16,7 +17,19 @@ class ReservationObserver
         }
 
         if ($reservation->isDirty('house_id')){
-            $reservationService->clearDates($reservation);
+            $originalHouseId = $reservation->getRawOriginal('house_id');
+            $currentHouse = $reservation->house;
+
+            if ($originalHouseId) {
+                $previousHouse = House::find($originalHouseId);
+                if ($previousHouse) {
+                    $previousHouse->disableDates()->delete();
+                }
+            }
+
+            if ($currentHouse) {
+                $currentHouse->markDates($reservation);
+            }
         }
     }
 

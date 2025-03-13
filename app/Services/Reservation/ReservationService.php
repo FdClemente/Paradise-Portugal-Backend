@@ -59,21 +59,8 @@ class ReservationService
 
     public function clearDates(Reservation $reservation)
     {
-        $originalHouseId = $reservation->getRawOriginal('house_id');
-        $currentHouse = $reservation->house;
-
-        if ($originalHouseId) {
-            $previousHouse = House::find($originalHouseId);
-            if ($previousHouse) {
-                $previousHouse->disableDates()->delete();
-            }
-        }
-
-        if ($currentHouse) {
-            $currentHouse->markDates($reservation);
-        }
+        $reservation->house->disableDates()->delete();
     }
-
 
     public function updateDates(Reservation $reservation)
     {
