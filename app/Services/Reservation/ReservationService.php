@@ -25,7 +25,7 @@ class ReservationService
         $reservation->status = ReservationStatusEnum::CANCELED_BY_CLIENT;
 
         $paymentDetails = $this->stripe->paymentIntents->retrieve($reservation->payment_intent);
-        //$paymentDetails->cancel();
+        $paymentDetails->cancel();
 
         $reservation->save();
         $reservation->refresh();

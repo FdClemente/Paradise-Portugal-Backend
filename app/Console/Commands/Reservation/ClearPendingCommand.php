@@ -15,8 +15,8 @@ class ClearPendingCommand extends Command
 
     public function handle(): void
     {
-        $reservations = Reservation:://where('status', ReservationStatusEnum::PENDING_PAYMENT)
-            where('created_at', '<', now()->subHours(1))
+        $reservations = Reservation::where('status', ReservationStatusEnum::PENDING_PAYMENT)
+            ->where('created_at', '<', now()->subHours(1))
             ->get();
 
         $service = new ReservationService();
