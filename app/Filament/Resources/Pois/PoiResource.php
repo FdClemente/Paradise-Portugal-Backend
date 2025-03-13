@@ -44,9 +44,12 @@ class PoiResource extends Resource
                                 Section::make(__('filament.poi.poi_details'))
                                     ->columns(2)
                                     ->schema([
-                                        TextInput::make('name')->required(),
+                                        TextInput::make('name')
+                                            ->label(__('filament.poi.name'))
+                                            ->required(),
                                         Select::make('type_poi_id')
                                             ->required()
+                                            ->label(__('filament.poi.type'))
                                             ->relationship('type', 'name'),
                                         Translate::make()
                                             ->prefixLocaleLabel()
@@ -59,9 +62,12 @@ class PoiResource extends Resource
                                         Grid::make(3)
                                             ->columnSpanFull()
                                             ->schema([
-                                                TextInput::make('phone_number'),
-                                                TextInput::make('email'),
-                                                TextInput::make('website'),
+                                                TextInput::make('phone_number')
+                                                    ->label(__('filament.poi.phone_number')),
+                                                TextInput::make('email')
+                                                    ->label(__('filament.poi.email')),
+                                                TextInput::make('website')
+                                                    ->label(__('filament.poi.website')),
                                             ])
                                     ]),
                                 Section::make(__('filament.poi.address_details'))

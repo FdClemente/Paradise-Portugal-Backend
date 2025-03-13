@@ -24,5 +24,8 @@ class HouseDetail extends Model
     protected $casts = [
         'check_in_time' => 'datetime',
         'check_out_time' => 'datetime',
+        'private_bathroom' => 'boolean',
+        'private_entrance' => 'boolean',
+        'family_friendly' => 'boolean',
     ];
 }

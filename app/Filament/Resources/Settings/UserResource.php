@@ -59,13 +59,14 @@ class UserResource extends Resource
                         TextInput::make('password')
                             ->label(__('filament.user.password'))
                             ->required()
+                            ->password()
                             ->columnSpan(1)
                             ->confirmed(),
                         TextInput::make('password_confirmation')
                             ->label(__('filament.user.password_confirmation'))
+                            ->password()
                             ->required()
                             ->columnSpan(1)
-                            ->confirmed()
                     ])
             ]);
     }

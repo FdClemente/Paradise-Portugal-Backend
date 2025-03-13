@@ -82,6 +82,7 @@ return [
         'min_guests' => 'Minimum number of guests',
         'description' => 'Description',
         'experience_image' => 'Experience Image',
+        'services' => 'Services',
         'ticket_type' => [
             'morning' => 'Morning',
             'afternoon' => 'Afternoon',
@@ -94,6 +95,24 @@ return [
                 'flexible' => 'Flexible',
             ]
         ]
+    ],
+    'poi' => [
+        'name' => 'Name',
+        'type' => 'Type',
+        'description' => 'Description',
+        'phone_number' => 'Phone number',
+        'email' => 'Email',
+        'website' => 'Website',
+        'address_details' => 'Address Details',
+        'poi_details' => 'POI Details',
+        'street_name' => 'Address',
+        'street_number' => 'Street number',
+        'zip_code' => 'Zip code',
+        'city' => 'City',
+        'state' => 'State',
+        'latitude' => 'Latitude',
+        'longitude' => 'Longitude',
+        'country' => 'Country',
     ],
     'typePoi' => [
         'name' => 'Name',

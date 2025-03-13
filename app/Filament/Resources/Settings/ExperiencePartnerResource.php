@@ -44,8 +44,6 @@ class ExperiencePartnerResource extends Resource
             ->schema([
                 Section::make(__('filament.experience_partner.experience_partner_details'))
                     ->schema([
-                        SpatieMediaLibraryFileUpload::make('logo')
-                            ->preserveFilenames(),
                         TextInput::make('name')
                             ->label(__('filament.experience_partner.name'))
                             ->required(),
