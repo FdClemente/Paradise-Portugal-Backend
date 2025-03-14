@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\Experience\TicketPriceType;
 use App\Enum\ReservationStatusEnum;
+use App\Filament\Resources\CustomerResource\RelationManagers\ReservationsRelationManager;
 use App\Filament\Resources\ReservationResource\Pages;
 use App\Models\Experiences\ExperiencePrice;
 use App\Models\Reservation;
@@ -161,10 +162,13 @@ class ReservationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('customer.name')
+                    ->hiddenOn(ReservationsRelationManager::class)
                     ->label(__('filament.reservation.customer')),
 
                 TextColumn::make('house.name')
                     ->label(__('filament.reservation.house')),
+                TextColumn::make('experience.name')
+                    ->label(__('filament.reservation.experience')),
 
                 TextColumn::make('check_in_date')
                     ->label(__('filament.reservation.date'))
@@ -186,7 +190,7 @@ class ReservationResource extends Resource
                 TrashedFilter::make(),
             ])
             ->actions([
-                ViewAction::make(),
+                ViewAction::make()->url(fn($record) => ReservationResource::getUrl('view', ['record' => $record->id])),
                 RestoreAction::make(),
             ])
             ->bulkActions([

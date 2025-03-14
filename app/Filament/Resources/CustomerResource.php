@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\RelationManagers\ReservationsRelationManager;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -27,6 +29,7 @@ use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -139,28 +142,65 @@ class CustomerResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
-        return $infolist->schema([
-            \Filament\Infolists\Components\Section::make(__('filament.user.customer_details'))
-                ->columns(4)
-                ->schema([
-                    TextEntry::make('name')
-                        ->label(__('filament.user.name')),
-                    TextEntry::make('email')
-                        ->copyable()
-                        ->iconPosition(IconPosition::Before)
-                        ->iconColor('danger')
-                        ->icon(fn($record) => $record->email_verified_at ? null : 'heroicon-o-exclamation-circle')
-                        ->tooltip(fn($record) => $record->email_verified_at ? null : __('filament.user.email_not_verified'))
-                        ->label(__('filament.user.email')),
-                    TextEntry::make('phone_number')
-                        ->formatStateUsing(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
-                        ->copyable()
-                        ->copyableState(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
-                        ->label(__('filament.user.phone_number')),
-                    CountryEntry::make('country')
-                    ->label(__('filament.user.country')),
-                ])
-        ]);
+        return $infolist
+            ->columns(4)
+            ->schema([
+                \Filament\Infolists\Components\Grid::make(2)
+                    ->columnSpan(3)
+                    ->schema([
+                        \Filament\Infolists\Components\Section::make(__('filament.user.customer_details'))
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->schema([
+                                TextEntry::make('name')
+                                    ->label(__('filament.user.name')),
+                                TextEntry::make('email')
+                                    ->copyable()
+                                    ->iconPosition(IconPosition::Before)
+                                    ->iconColor('danger')
+                                    ->icon(fn($record) => $record->email_verified_at ? null : 'heroicon-o-exclamation-circle')
+                                    ->tooltip(fn($record) => $record->email_verified_at ? null : __('filament.user.email_not_verified'))
+                                    ->label(__('filament.user.email')),
+                                TextEntry::make('phone_number')
+                                    ->formatStateUsing(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
+                                    ->copyable()
+                                    ->copyableState(fn($record): string => $record->country_phone . ' ' . $record->phone_number)
+                                    ->label(__('filament.user.phone_number')),
+                                CountryEntry::make('country')
+                                    ->label(__('filament.user.country')),
+                            ]),
+                        \Filament\Infolists\Components\Section::make(__('filament.user.address_details'))
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->relationship('address')
+                            ->schema([
+                                TextEntry::make('address_line_1')
+                                    ->label(__('filament.user.address'))
+                                    ->formatStateUsing(function ($record) {
+                                        return $record->address->address_line_1 . ', ' . $record->address->address_line_2;
+                                    }),
+                                TextEntry::make('city')
+                                    ->label(__('filament.user.city')),
+                                TextEntry::make('postal_code')
+                                    ->label(__('filament.user.postal_code')),
+                                TextEntry::make('state')
+                                    ->label(__('filament.user.state')),
+                                CountryEntry::make('country')
+                                    ->label(__('filament.user.country')),
+                            ])
+                    ]),
+                \Filament\Infolists\Components\Section::make("Avatar")
+                    ->columnSpan(1)
+                    ->schema([
+                        ImageEntry::make('avatar_url')
+                            ->label('')
+                            ->columnSpanFull()
+                            ->extraImgAttributes([
+                                'draggable' => 'false',
+                            ])
+                            ->url(fn($record) => $record->avatar_url)
+                    ])
+            ]);
     }
 
     public static function getPages(): array
@@ -194,5 +234,12 @@ class CustomerResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['name', 'email'];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            ReservationsRelationManager::class
+        ];
     }
 }

@@ -33,6 +33,15 @@ class PaymentCompleteController extends Controller
 
         if(!\Auth::guard('sanctum')->check()){
             $customer = $customerService->createUser($this->fillUserDetails($billingDetails, $email));
+            $customer->address()->updateOrCreate([
+                'state' => $billingDetails->address->state,
+                'city' => $billingDetails->address->city,
+                'postal_code' => $billingDetails->address->postal_code,
+                'address_line_1' => $billingDetails->address->line1,
+                'address_line_2' => $billingDetails->address->line2,
+                'country' => $billingDetails->address->country,
+            ]);
+            $customer->save();
             $newUser = true;
         }else{
             $customer = \Auth::guard('sanctum')->user();

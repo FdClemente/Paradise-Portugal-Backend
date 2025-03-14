@@ -8,6 +8,9 @@ class CustomerService
 {
     public function createUser(array $details)
     {
+        if ($user = $this->retrieveCustomer($details['email'])) {
+            return $user;
+        }
         $user = User::create([
             'first_name' => $details['first_name'],
             'last_name' => $details['last_name'],
@@ -20,6 +23,7 @@ class CustomerService
             'password' => $details['password'],
             'country' => $details['country'],
         ]);
+        $user->roles()->updateOrCreate(['role' => 'customer']);
         $user->save();
 
         return $user;

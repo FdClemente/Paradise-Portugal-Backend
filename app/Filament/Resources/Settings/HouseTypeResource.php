@@ -40,6 +40,7 @@ class HouseTypeResource extends Resource
                             ->label(__('filament.house_type.name')),
                     ]),
                 TextInput::make('wp_category')
+                    ->columnSpanFull()
                     ->label(__('filament.house_type.wp_category')),
                 Placeholder::make('created_at')
                     ->label(__('filament.created_at'))

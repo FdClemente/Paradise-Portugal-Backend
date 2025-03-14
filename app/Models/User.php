@@ -4,11 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Auth\LoginProvider;
+use App\Models\Customer\CustomerAddress;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,13 +76,36 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return $this->hasPermission('backoffice_access');
     }
 
-    public function loginProviders()
+    public function loginProviders(): HasMany
     {
         return $this->hasMany(LoginProvider::class);
     }
 
-    public function wishlist()
+    public function wishlist(): HasMany
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function address(): HasOne
+    {
+        return $this->hasOne(CustomerAddress::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function avatarUrl(): Attribute
+    {
+        return Attribute::make(get: function (){
+            if ($this->hasMedia('avatar')){
+                return $this->getFirstMediaUrl('avatar');
+            }else{
+                return \Cache::rememberForever('avatar_'.$this->id, function (){
+                    return "https://gravatar.com/avatar/".hash('sha256',strtolower(trim($this->email))).'?d=mp&s=200';
+                });
+            }
+        })->shouldCache();
     }
 }
