@@ -15,6 +15,8 @@ class ReservationsRelationManager extends RelationManager
 {
     protected static string $relationship = 'reservations';
 
+    protected static ?string $inverseRelationship = 'customer';
+
     public function form(Form $form): Form
     {
         return $form
