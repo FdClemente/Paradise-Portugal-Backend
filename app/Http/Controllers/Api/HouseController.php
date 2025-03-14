@@ -56,8 +56,8 @@ class HouseController extends Controller
             'min_nights' => $house->min_days_booking,
             'image' => $house->getFeaturedImageLink(),
             'house_id' => $house->id,
-            'check_in' =>$house->details->check_in_time->format('H:i'),
-            'check_out' => $house->details->check_out_time->format('H:i'),
+            'check_in' =>$house->details->check_in_time?->format('H:i'),
+            'check_out' => $house->details->check_out_time?->format('H:i'),
             'images' => $house->images,
             'default_price' => $house->default_price,
             'ratting' => [
