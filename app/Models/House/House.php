@@ -188,6 +188,12 @@ class House extends Model implements HasMedia, HasStaticMap
             'image' => $this->getFeaturedImageLink(),
             'isFavorite' => $this->isFavorite(),
             'images' => $this->images,
+            'features' => $this->detailsHighlight()->where('show_in_card', true)->get()->transform(function ($item) {
+                return [
+                    'name' => $item->name,
+                    'icon' => $item->icon,
+                ];
+            }),
             'default_price' => $this->default_price,
             'checkInHour' => $this->details?->check_in_time->format('H:i').' - 21:00',
             'checkOutHour' => $this->details?->check_out_time->format('H:i').' - 10:30',

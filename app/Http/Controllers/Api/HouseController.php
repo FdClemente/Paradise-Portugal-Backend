@@ -48,6 +48,7 @@ class HouseController extends Controller
             'short_description' => Str::words(strip_tags($house->description), 20),
             'type' => $house->houseType->name,
             'bedrooms' => $house->details?->num_bedrooms,
+            'bathrooms' => $house->details?->num_bathrooms,
             'address' => $house->address,
             'guests' => $house->details?->num_guest,
             'min_days_booking' => $house->min_days_booking,

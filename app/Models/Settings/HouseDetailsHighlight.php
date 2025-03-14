@@ -12,7 +12,11 @@ class HouseDetailsHighlight extends Model
 
     public $translatable = ['name'];
 
+    protected $casts = [
+        'show_in_card' => 'boolean'
+    ];
+
     protected $fillable = [
-        'name', 'icon',
+        'name', 'icon', 'show_in_card'
     ];
 }

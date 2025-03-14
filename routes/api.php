@@ -65,6 +65,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::get('/email/verify/{id}/{hash}', App\Http\Controllers\Api\Auth\VerifyEmailController::class)->name('verification.verify');
     });
 
+    Route::get('/legal/{type}', App\Http\Controllers\Api\LegalController::class)
+        ->where('type', 'privacy_policy|cancellation_policy|terms_and_conditions');
 });
 
 
