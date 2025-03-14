@@ -84,15 +84,6 @@ class ExperienceResource extends Resource
                                             ->preload()
                                             ->columnSpanFull()
                                             ->label(__('filament.experience.services')),
-                                        Grid::make()
-                                            ->schema([
-                                                TextInput::make('adult_price')
-                                                    ->integer()
-                                                    ->suffixIcon('heroicon-o-currency-euro'),
-                                                TextInput::make('child_price')
-                                                    ->integer()
-                                                    ->suffixIcon('heroicon-o-currency-euro'),
-                                            ]),
                                         Translate::make()
                                             ->columnSpanFull()
                                             ->schema([

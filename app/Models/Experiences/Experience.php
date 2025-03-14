@@ -30,19 +30,12 @@ class Experience extends Model implements HasMedia, HasStaticMap
         'name',
         'description',
         'min_guests',
-        'adult_price',
-        'child_price',
         'additional_info',
         'latitude',
         'longitude',
         ];
 
     protected $appends = ['latitude', 'longitude'];
-
-    protected $casts = [
-        'adult_price' => PriceCast::class,
-        'child_price' => PriceCast::class,
-    ];
 
     public function experienceType(): BelongsTo
     {
