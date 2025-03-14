@@ -197,7 +197,6 @@ class ReservationResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
                 ]),
             ]);
     }
