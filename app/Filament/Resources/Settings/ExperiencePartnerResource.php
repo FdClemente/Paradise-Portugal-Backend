@@ -124,12 +124,9 @@ class ExperiencePartnerResource extends Resource
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('logo'),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-
-                TextColumn::make('addressComplete'),
 
                 TextColumn::make('phone_number'),
 

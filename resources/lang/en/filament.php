@@ -133,6 +133,7 @@ return [
         'check_in_date' => 'Check in date',
         'check_out_date' => 'Check out date',
         'guests' => 'Guests',
+        'num_guests' => 'Guests',
         'status' => 'Status',
         'adults' => 'Adults',
         'days' => 'Days',
