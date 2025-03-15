@@ -58,7 +58,7 @@ class TicketsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->slideOver(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->disabled(fn (Model $record): bool => $record->prices->count() > 0),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
