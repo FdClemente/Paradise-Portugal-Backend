@@ -27,7 +27,7 @@ class ImportService
 
     private function getAllHouses()
     {
-        return \Http::get($this->getEndpoint().'?_fields=id')->json();
+        return \Http::get($this->getEndpoint().'?_fields=id&per_page=100')->json();
     }
 
     private function getHouseById($id)
