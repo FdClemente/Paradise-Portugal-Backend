@@ -81,15 +81,13 @@ class PoiResource extends Resource
                                                         'data-google-field' => 'route',
                                                     ])
                                                     ->columnSpan(2)
-                                                    ->label(__('filament.poi.street_name'))
-                                                    ->required(),
+                                                    ->label(__('filament.poi.street_name')),
                                                 TextInput::make('street_number')
                                                     ->columnSpan(1)
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'street_number',
                                                     ])
-                                                    ->label(__('filament.poi.street_number'))
-                                                    ->required(),
+                                                    ->label(__('filament.poi.street_number')),
                                                 TextInput::make('zip')
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'postal_code_prefix',
@@ -99,14 +97,12 @@ class PoiResource extends Resource
                                                     ->label(__('filament.poi.city'))
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'administrative_area_level_2',
-                                                    ])
-                                                    ->required(),
+                                                    ]),
                                                 TextInput::make('state')
                                                     ->label(__('filament.poi.state'))
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'administrative_area_level_1',
-                                                    ])
-                                                    ->required(),
+                                                    ]),
                                                 TextInput::make('latitude')
                                                     ->label(__('filament.poi.latitude'))
                                                     ->required(),

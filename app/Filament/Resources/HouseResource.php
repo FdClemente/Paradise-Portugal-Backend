@@ -104,27 +104,23 @@ class HouseResource extends Resource
                                                         'data-google-field' => 'route',
                                                     ])
                                                     ->columnSpan(2)
-                                                    ->label(__('filament.house.street_name'))
-                                                    ->required(),
+                                                    ->label(__('filament.house.street_name')),
                                                 TextInput::make('street_number')
                                                     ->columnSpan(1)
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'street_number',
                                                     ])
-                                                    ->label(__('filament.house.street_number'))
-                                                    ->required(),
+                                                    ->label(__('filament.house.street_number')),
                                                 TextInput::make('zip')
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'postal_code_prefix',
                                                     ])
-                                                    ->label(__('filament.house.zip_code'))
-                                                    ->required(),
+                                                    ->label(__('filament.house.zip_code')),
                                                 TextInput::make('city')
                                                     ->label(__('filament.house.city'))
                                                     ->extraInputAttributes([
                                                         'data-google-field' => 'administrative_area_level_2',
-                                                    ])
-                                                    ->required(),
+                                                    ]),
                                                 TextInput::make('state')
                                                     ->label(__('filament.house.state'))
                                                     ->extraInputAttributes([
