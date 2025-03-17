@@ -75,13 +75,19 @@ class ImportService
 
     private function updateHouseDetails(House $houseModel, array $house): void
     {
+        $checkin = $house['check-in-date'];
+        $checkin = explode('-', $checkin)[0];
+
+        $checkout = $house['check-out-date'];
+        $checkout = explode('-', $checkout)[0];
+
         $houseModel->details()->updateOrCreate([], [
             'area' => $house['property_size'],
             'num_guest' => $house['guest_no'],
             'num_bedrooms' => $house['property_bedrooms'],
             'num_bathrooms' => $house['property_bathrooms'],
-            'check_in_time' => $this->convertToTime($house['check-in-hour']),
-            'check_out_time' => $this->convertToTime($house['check-out-hour']),
+            'check_in_time' => $this->convertToTime($checkin),
+            'check_out_time' => $this->convertToTime($checkout),
             'private_bathroom' => $house['private-bathroom'] === 'yes',
             'private_entrance' => $house['private-entrance'] === 'yes',
             'family_friendly' => $house['familyfriendly'] === 'yes',
