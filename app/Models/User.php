@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Ladder\HasRoles;
 use Ladder\Ladder;
 use Laravel\Sanctum\HasApiTokens;
@@ -107,5 +108,15 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                 });
             }
         })->shouldCache();
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    public function routeNotificationForExpo(): Collection
+    {
+        return $this->devices->pluck('expo_token');
     }
 }

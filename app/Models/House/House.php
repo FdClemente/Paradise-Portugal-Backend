@@ -181,7 +181,7 @@ class House extends Model implements HasMedia, HasStaticMap
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => str($this->name)->replace('&amp;', '&')->stripTags()->words(20, ''),
             'type' => $this->houseType->name,
             'bedrooms' => $this->details?->num_bedrooms,
             'guests' => $this->details?->num_guest,

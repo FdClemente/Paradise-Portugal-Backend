@@ -4,7 +4,9 @@ namespace App\Filament\Resources\CustomerResource\Pages;
 
 use App\Filament\Resources\CustomerResource;
 use App\Models\User;
+use App\Notifications\MarketingNotification;
 use Filament\Actions;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -28,6 +30,15 @@ class ViewCustomer extends ViewRecord
                         ->success()
                         ->send();
                 }),
+            Actions\Action::make('sendNotification')
+                ->color('info')
+                ->form([
+                    TextInput::make('title')->required(),
+                    TextInput::make('body')->required(),
+                ])
+            ->action(function (User $record, $data){
+                $record->notify(new MarketingNotification($data['title'], $data['body']));
+            }),
             Actions\EditAction::make(),
         ];
     }

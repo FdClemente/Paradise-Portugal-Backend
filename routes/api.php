@@ -14,6 +14,10 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::get('/poi-types', App\Http\Controllers\Api\Map\PoiTypesController::class);
     });
 
+    Route::group(['prefix' => '/user', 'middleware' => 'auth:sanctum'], function () {
+        Route::post('addNotificationDevice', App\Http\Controllers\Api\User\AddDeviceNotificationController::class);
+    });
+
 
     Route::resource('houses', App\Http\Controllers\Api\HouseController::class);
     Route::get('/houses/{house}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'house']);
@@ -44,6 +48,10 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::post('create-payment', App\Http\Controllers\Api\Reservation\Stripe\PaymentController::class);
         Route::post('cancel-payment', App\Http\Controllers\Api\Reservation\CancelPaymentController::class);
         Route::post('payment-complete', App\Http\Controllers\Api\Reservation\Stripe\PaymentCompleteController::class);
+    });
+
+    Route::group(['prefix' => 'profile', 'middleware' => 'auth:sanctum'], function (){
+        Route::post('setImage', App\Http\Controllers\Api\Profile\UploadImageController::class);
     });
 
     Route::group(['prefix' => '/auth'], function () {
