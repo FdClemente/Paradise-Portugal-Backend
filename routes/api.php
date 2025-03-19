@@ -53,6 +53,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::group(['prefix' => 'profile', 'middleware' => 'auth:sanctum'], function (){
         Route::post('setImage', App\Http\Controllers\Api\Profile\UploadImageController::class);
         Route::post('name', App\Http\Controllers\Api\Profile\UpdateNameController::class);
+        Route::post('date-birthday', App\Http\Controllers\Api\Profile\UpdateDateBirthdayController::class);
+        Route::post('email', App\Http\Controllers\Api\Profile\UpdateEmailController::class);
     });
 
     Route::group(['prefix' => '/auth'], function () {

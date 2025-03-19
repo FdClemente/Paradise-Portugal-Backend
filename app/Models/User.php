@@ -70,7 +70,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'need_change_password' => 'boolean',
-            'birthday' => 'date'
+            'birthday' => 'date:Y/m/d'
         ];
     }
 
