@@ -140,6 +140,7 @@ return [
         'num_guests' => 'Guests',
         'status' => 'Status',
         'adults' => 'Adults',
+        'nights' => 'Nights',
         'days' => 'Days',
         'children' => 'Children',
         'babies' => 'Babies',

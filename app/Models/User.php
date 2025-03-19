@@ -45,6 +45,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         'country_phone',
         'first_name',
         'last_name',
+        'birthday'
     ];
 
     /**
@@ -68,7 +69,8 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'need_change_password' => 'boolean'
+            'need_change_password' => 'boolean',
+            'birthday' => 'date'
         ];
     }
 
@@ -90,6 +92,18 @@ class User extends Authenticatable implements FilamentUser, HasMedia
     public function address(): HasOne
     {
         return $this->hasOne(CustomerAddress::class);
+    }
+
+    public function addressComplete():Attribute
+    {
+        return Attribute::make(
+            get: function(){
+                if (!$this->address){
+                    return null;
+                }
+                return $this->address?->street_name.', '.$this->address?->street_number.' '.$this->address?->zip.' '.$this->address?->city;
+            }
+        );
     }
 
     public function reservations(): HasMany
