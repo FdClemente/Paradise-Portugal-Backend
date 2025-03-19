@@ -11,7 +11,7 @@ class MarketingNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public string $title, public string $body = '')
+    public function __construct(public string $title, public string $body = '', public ?string $url = null)
     {
     }
 
@@ -30,7 +30,7 @@ class MarketingNotification extends Notification implements ShouldQueue
         return ExpoMessage::create($this->title)
             ->body($this->body)
             ->badge(1)
-            //->data(['url' => '/House/10'])
+            ->when($this->url, fn($message) => $message->data(['url' => $this->url]))
             ->playSound();
     }
 }
