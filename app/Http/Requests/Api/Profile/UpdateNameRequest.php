@@ -9,7 +9,7 @@ class UpdateNameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fist_name' => 'required|string',
+            'first_name' => 'required|string',
             'last_name' => 'required|string',
         ];
     }
