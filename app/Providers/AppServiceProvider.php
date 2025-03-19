@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
@@ -80,6 +81,10 @@ class AppServiceProvider extends ServiceProvider
 
         Translate::configureUsing(function (Translate $component): void {
             $component->locales(config('app.available_locales'));
+        });
+
+        FileUpload::configureUsing(function (FileUpload $component): void {
+            $component->maxSize(102400);;
         });
     }
 }
