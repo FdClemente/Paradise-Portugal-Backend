@@ -27,7 +27,10 @@ class ImportService
 
     private function getAllHouses()
     {
-        return \Http::get($this->getEndpoint().'?_fields=id&per_page=100')->json();
+        return \Http::withOptions([
+            'verify' => false,
+            'curl' => [CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1]
+        ])->get($this->getEndpoint().'?_fields=id&per_page=100')->json();
     }
 
     private function getHouseById($id)
@@ -75,10 +78,10 @@ class ImportService
 
     private function updateHouseDetails(House $houseModel, array $house): void
     {
-        $checkin = $house['check-in-date'];
+        $checkin = $house['check-in-hour'];
         $checkin = explode('-', $checkin)[0];
 
-        $checkout = $house['check-out-date'];
+        $checkout = $house['check-out-hour'];
         $checkout = explode('-', $checkout)[0];
 
         $houseModel->details()->updateOrCreate([], [
