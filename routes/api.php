@@ -55,6 +55,9 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
         Route::post('name', App\Http\Controllers\Api\Profile\UpdateNameController::class);
         Route::post('date-birthday', App\Http\Controllers\Api\Profile\UpdateDateBirthdayController::class);
         Route::post('email', App\Http\Controllers\Api\Profile\UpdateEmailController::class);
+        Route::post('address', App\Http\Controllers\Api\Profile\UpdateAddressController::class);
+        Route::post('phone-number', App\Http\Controllers\Api\Profile\UpdatePhoneNumberController::class);
+        Route::post('notifications', App\Http\Controllers\Api\Profile\NotificationsController::class);
     });
 
     Route::group(['prefix' => '/auth'], function () {

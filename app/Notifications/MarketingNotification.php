@@ -17,7 +17,10 @@ class MarketingNotification extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['expo'];
+        if ($notifiable->allow_marketing_notifications)
+            return ['expo'];
+
+        return [];
     }
 
     public function toArray($notifiable): array
