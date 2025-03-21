@@ -45,7 +45,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         'country_phone',
         'first_name',
         'last_name',
-        'birthday'
+        'birthday',
+        'allow_marketing_notifications',
+        'allow_remainders_notifications'
     ];
 
     /**
@@ -70,7 +72,9 @@ class User extends Authenticatable implements FilamentUser, HasMedia
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'need_change_password' => 'boolean',
-            'birthday' => 'date:Y/m/d'
+            'birthday' => 'date:Y/m/d',
+            'allow_remainders_notifications' => 'boolean',
+            'allow_marketing_notifications' => 'boolean',
         ];
     }
 
@@ -101,7 +105,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
                 if (!$this->address){
                     return null;
                 }
-                return $this->address?->street_name.', '.$this->address?->street_number.' '.$this->address?->zip.' '.$this->address?->city;
+                return str($this->address?->address_line_1.', '.' '.$this->address?->city)->limit(45);
             }
         );
     }

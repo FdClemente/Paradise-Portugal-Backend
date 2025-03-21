@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Reservation\Stripe;
 
 use App\Enum\ReservationStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\ManageAddress;
 use App\Http\Requests\Api\Reservation\PaymentCompleteRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House\House;
@@ -16,6 +17,7 @@ use Stripe\StripeClient;
 
 class PaymentCompleteController extends Controller
 {
+    use ManageAddress;
     public function __invoke(PaymentCompleteRequest $request)
     {
         $email = $request->get('email');
@@ -33,14 +35,16 @@ class PaymentCompleteController extends Controller
 
         if(!\Auth::guard('sanctum')->check()){
             $customer = $customerService->createUser($this->fillUserDetails($billingDetails, $email));
-            $customer->address()->updateOrCreate([
+            $addressParts = [
                 'state' => $billingDetails->address->state,
                 'city' => $billingDetails->address->city,
                 'postal_code' => $billingDetails->address->postal_code,
                 'address_line_1' => $billingDetails->address->line1,
                 'address_line_2' => $billingDetails->address->line2,
                 'country' => $billingDetails->address->country,
-            ]);
+            ];
+
+            $customer->address()->updateOrCreate($this->mapAddress($addressParts));
             $customer->save();
             $newUser = true;
         }else{
