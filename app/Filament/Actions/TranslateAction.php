@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Translatable\Translatable;
@@ -20,6 +21,7 @@ class TranslateAction extends Action
 
         $this->label('Translate');
         $this->icon('heroicon-o-language');
+        $this->successNotificationTitle("Translated successfully");
         $this->color('info');
         $this->form(function (Model $record) {
             if (!in_array(HasTranslations::class, class_uses_recursive($record))) {
@@ -68,11 +70,13 @@ class TranslateAction extends Action
             ];
         });
 
-        $this->action(function ($data) {
+        $this->action(function ($data, EditRecord $livewire) {
             TranslateJob::dispatchSync($this->record, $data['originLanguage'], $data['attributes'], $data['targetLanguage']);
-            Notification::make()->success()->send();
+            $this->sendSuccessNotification();
             $this->record->refresh();
-            return redirect()->back();
+            $data = $livewire->getRecord()->attributesToArray();
+            $livewire->form->fill($data);
+            return ;
         });
     }
 
