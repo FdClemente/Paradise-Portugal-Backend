@@ -46,6 +46,8 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => ''
+        'redirect' => '',
+        'project_id' => env('GOOGLE_PROJECT_ID'),
+        'google_json_key' => base_path('keys/google-key.json')
     ]
 ];

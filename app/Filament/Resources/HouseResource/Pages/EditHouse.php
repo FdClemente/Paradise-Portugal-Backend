@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HouseResource\Pages;
 
+use App\Filament\Actions\TranslateAction;
 use App\Filament\Resources\HouseResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -14,6 +15,7 @@ class EditHouse extends EditRecord
     {
         return [
             DeleteAction::make(),
+            TranslateAction::make(),
         ];
     }
 }
