@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Pois\PoiResource\Pages;
 
+use App\Filament\Actions\TranslateAction;
 use App\Filament\Resources\Pois\PoiResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -14,6 +15,7 @@ class EditPoi extends EditRecord
     {
         return [
             DeleteAction::make(),
+            TranslateAction::make(),
         ];
     }
 }

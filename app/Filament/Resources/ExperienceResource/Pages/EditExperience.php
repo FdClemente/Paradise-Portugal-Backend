@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ExperienceResource\Pages;
 
+use App\Filament\Actions\TranslateAction;
 use App\Filament\Resources\ExperienceResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -16,6 +17,7 @@ class EditExperience extends EditRecord
     {
         return [
             DeleteAction::make(),
+            TranslateAction::make(),
             ForceDeleteAction::make(),
             RestoreAction::make(),
         ];
