@@ -9,6 +9,7 @@ enum ReservationStatusEnum: string
     case PAID = 'paid';
     case CANCELED_BY_CLIENT = 'canceled_by_client';
     case CANCELED_BY_OWNER = 'canceled_by_owner';
+    case CUSTOMER_WANT_CANCEL = 'customer_want_cancel';
     case NO_SHOW = 'no_show';
     case IN_PROGRESS = 'in_progress';
     case COMPLETED = 'completed';
@@ -26,6 +27,7 @@ enum ReservationStatusEnum: string
             self::PAID => 'blue',
             self::CANCELED_BY_CLIENT => 'red',
             self::CANCELED_BY_OWNER => 'red',
+            self::CUSTOMER_WANT_CANCEL => 'red',
             self::NO_SHOW => 'red',
             self::IN_PROGRESS => 'blue',
             self::COMPLETED => 'green',
@@ -42,6 +44,7 @@ enum ReservationStatusEnum: string
             self::CONFIRMED,
             self::PAID,
             self::IN_PROGRESS,
+            self::CUSTOMER_WANT_CANCEL,
             self::COMPLETED,
         ];
     }

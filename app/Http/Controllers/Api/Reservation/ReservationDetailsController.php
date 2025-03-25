@@ -19,6 +19,7 @@ class ReservationDetailsController extends Controller
 
         $data = [
             'id' => $reservation->id,
+            'total' => $reservation->total_price,
             'date' => $this->formatDate($reservation->check_in_date),
             'isCurrent' => $reservation->check_in_date->isPast(),
             'check_in' => $reservation->check_in_date,
@@ -32,10 +33,15 @@ class ReservationDetailsController extends Controller
                 'address' => $reservation->house?->address_complete,
                 'wifi_ssid' => $reservation->house?->details->wifi_ssid,
                 'wifi_password' => $reservation->house?->details->wifi_password,
+                'night_price' => $reservation->house?->getRawOriginal('default_price'),
+                'nights' => $reservation->house?->getPeriod($reservation->check_in_date, $reservation->check_out_date),
+                'house_total' => $reservation->house?->calculateTotalNightsCost($reservation->check_in_date, $reservation->check_out_date),
             ] : null,
             'experience' => $reservation->experience ? [
                 ...$reservation->experience?->formatToList(),
-                'address' => $reservation->experience?->experiencePartner?->address_complete
+                'address' => $reservation->experience?->experiencePartner?->address_complete,
+                'tickets_price' => $reservation->tickets->sum('price'),
+                'tickets' => $reservation->tickets->count()
             ]: null,
             'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
                 return [
@@ -43,7 +49,7 @@ class ReservationDetailsController extends Controller
                     'tickets' => $ticket->tickets,
                     'type' => $ticket->priceDetails->ticket_type,
                 ];
-            })
+            }),
         ];
 
         return ApiSuccessResponse::make($data);

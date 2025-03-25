@@ -36,6 +36,7 @@ class Reservation extends Model
         'status',
         'reservation_code',
         'payment_intent',
+        'cancellation_motive_id',
         'payment_intent_secret',
         'ip',
         'total_price'
@@ -67,6 +68,11 @@ class Reservation extends Model
     public function tickets()
     {
         return $this->hasMany(TicketsReservation::class);
+    }
+
+    public function cancellation_motive(): BelongsTo
+    {
+        return $this->belongsTo(CancellationMotive::class);
     }
 
     public function nights():Attribute
