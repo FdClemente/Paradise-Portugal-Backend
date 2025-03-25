@@ -159,5 +159,10 @@ return [
     'updated_at' => 'Updated at',
     'navigation_group' => [
         'settings' => 'Settings'
+    ],
+    'translate' => [
+        'attributes' => 'Attributes',
+        'originLanguage' => 'Origin language',
+        'targetLanguage' => 'Target language',
     ]
 ];

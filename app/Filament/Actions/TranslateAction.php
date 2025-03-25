@@ -34,10 +34,12 @@ class TranslateAction extends Action
 
             return [
                 Select::make('attributes')
+                    ->label(__('filament.translate.attributes'))
                     ->multiple()
                     ->default($record->translatable)
                     ->options($options),
                 Select::make('originLanguage')
+                    ->label(__('filament.translate.originLanguage'))
                     ->live()
                     ->options(config('app.available_locales_with_labels'))
                     ->live()
@@ -50,6 +52,7 @@ class TranslateAction extends Action
                     })
                     ->default('en'),
                 Select::make('targetLanguage')
+                    ->label(__('filament.translate.targetLanguage'))
                     ->reactive()
                     ->options(function (Get $get){
                         $originLanguage = $get('originLanguage');
