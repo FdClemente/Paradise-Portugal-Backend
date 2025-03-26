@@ -1,4 +1,7 @@
+/** @type {import('tailwindcss').Config} */
+
 import preset from '../../../../vendor/filament/filament/tailwind.config.preset'
+import colors from "tailwindcss/colors.js";
 
 export default {
     presets: [preset],
@@ -9,4 +12,14 @@ export default {
         './vendor/diogogpinto/filament-auth-ui-enhancer/resources/**/*.blade.php',
         './vendor/guava/calendar/resources/**/*.blade.php',
     ],
+    theme: {
+        extend: {
+            colors: {
+                ...colors,
+                primary: {
+                    DEFAULT:'#ff5733'
+                },
+            },
+        },
+    }
 }

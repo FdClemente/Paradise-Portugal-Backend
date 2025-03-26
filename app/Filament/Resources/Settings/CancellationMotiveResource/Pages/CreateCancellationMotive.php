@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\CancellationMotiveResource\Pages;
+namespace App\Filament\Resources\Settings\CancellationMotiveResource\Pages;
 
-use App\Filament\Resources\CancellationMotiveResource;
+use App\Filament\Resources\Settings\CancellationMotiveResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateCancellationMotive extends CreateRecord

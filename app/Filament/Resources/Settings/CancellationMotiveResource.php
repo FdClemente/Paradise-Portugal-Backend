@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Settings;
 
-use App\Filament\Actions\TranslateAction;
 use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\CancellationMotiveResource\Pages;
+use App\Filament\Resources\Settings;
 use App\Models\CancellationMotive;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,7 +24,10 @@ class CancellationMotiveResource extends Resource
 
     protected static ?string $slug = 'cancellation-motives';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament.navigation_group.settings');
+    }
 
     public static function form(Form $form): Form
     {
@@ -71,7 +73,7 @@ class CancellationMotiveResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCancellationMotives::route('/'),
+            'index' => Settings\CancellationMotiveResource\Pages\ListCancellationMotives::route('/'),
         ];
     }
 

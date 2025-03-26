@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
+use Filament\FontProviders\GoogleFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,7 +45,7 @@ class BackofficePanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->brandName("Paradise Portugal")
             ->widgets([
-                Widgets\AccountWidget::class,
+                #Widgets\AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -86,6 +87,11 @@ class BackofficePanelProvider extends PanelProvider
                     ->selectable()
                     ->editable()
             ])
+            ->brandLogo(fn () => view('filament.admin.logo'))
+            ->colors([
+                'primary' => '#42B7BA',
+            ])
+            ->font('Nunito', provider: GoogleFontProvider::class)
             ->sidebarCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/backoffice/theme.css');
     }
