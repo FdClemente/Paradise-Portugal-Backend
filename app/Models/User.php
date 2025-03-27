@@ -98,14 +98,14 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return $this->hasOne(CustomerAddress::class);
     }
 
-    public function addressComplete():Attribute
+    public function addressComplete(): Attribute
     {
         return Attribute::make(
-            get: function(){
-                if (!$this->address){
+            get: function () {
+                if (!$this->address) {
                     return null;
                 }
-                return str($this->address?->address_line_1.', '.' '.$this->address?->city)->limit(45);
+                return str($this->address?->address_line_1 . ', ' . ' ' . $this->address?->city)->limit(45);
             }
         );
     }
@@ -117,15 +117,28 @@ class User extends Authenticatable implements FilamentUser, HasMedia
 
     public function avatarUrl(): Attribute
     {
-        return Attribute::make(get: function (){
-            if ($this->hasMedia('avatar')){
+        return Attribute::make(get: function () {
+            if ($this->hasMedia('avatar')) {
                 return $this->getFirstMediaUrl('avatar');
-            }else{
-                return \Cache::rememberForever('avatar_'.$this->id, function (){
-                    return "https://gravatar.com/avatar/".hash('sha256',strtolower(trim($this->email))).'?d=mp&s=200';
+            } else {
+                return \Cache::rememberForever('avatar_' . $this->id, function () {
+                    return "https://gravatar.com/avatar/" . hash('sha256', strtolower(trim($this->email))) . '?d=mp&s=200';
                 });
             }
         })->shouldCache();
+    }
+
+    public function language(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return match ($this->country) {
+                'PT' => 'pt',
+                'ES' => 'es',
+                'FR' => 'fr',
+                'DE' => 'de',
+                default => 'en'
+            };
+        });
     }
 
     public function devices()

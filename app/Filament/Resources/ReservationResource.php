@@ -23,6 +23,7 @@ use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -128,12 +129,12 @@ class ReservationResource extends Resource
                             ->relationship('tickets')
                             ->schema([
                                 DatePicker::make('date')
-                                ->default(function (Get $get) {
-                                    return Carbon::parse($get('../../check_in_date'))->startOfDay();
-                                })
-                                ->minDate(function (Get $get) {
-                                    return Carbon::parse($get('../../check_in_date'))->startOfDay();
-                                }),
+                                    ->default(function (Get $get) {
+                                        return Carbon::parse($get('../../check_in_date'))->startOfDay();
+                                    })
+                                    ->minDate(function (Get $get) {
+                                        return Carbon::parse($get('../../check_in_date'))->startOfDay();
+                                    }),
                                 TextInput::make('tickets'),
                                 Select::make('experience_price_id')
                                     ->relationship('priceDetails', 'price', modifyQueryUsing: function (Builder $query, Get $get) {
@@ -143,7 +144,7 @@ class ReservationResource extends Resource
                                         }
                                         return $query;
                                     })
-                                ->getOptionLabelFromRecordUsing(fn(ExperiencePrice $record) => $record->ticket_type->name)
+                                    ->getOptionLabelFromRecordUsing(fn(ExperiencePrice $record) => $record->ticket_type->name)
                             ]),
 
                         Placeholder::make('created_at')
@@ -179,7 +180,9 @@ class ReservationResource extends Resource
                     ->label(__('filament.reservation.num_guests')),
 
                 TextColumn::make('status')
-                    ->badge(fn($record) => $record->status->getColor())
+                    ->color(fn($record) => $record->status->getColor())
+                    ->badge()
+                    ->formatStateUsing(fn($record) => __('filament.reservation.status_' . $record->status->value))
                     ->label(__('filament.reservation.status')),
 
                 TextColumn::make('reservation_code')
@@ -204,6 +207,36 @@ class ReservationResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
+            \Filament\Infolists\Components\Section::make(__('filament.reservation.cancellation'))
+                ->hidden(fn(Reservation $record) => $record->status !== ReservationStatusEnum::CUSTOMER_WANT_CANCEL)
+                ->headerActions([
+                    \Filament\Infolists\Components\Actions\Action::make('confirm')
+                        ->color('danger')
+                        ->label(__('filament.reservation.confirm_cancellation'))
+                        ->modal()
+                        ->form([
+                            Select::make('status')
+                                ->options([
+                                    ReservationStatusEnum::CANCELED_BY_CLIENT->value => __('filament.reservation.canceled_by_client'),
+                                    ReservationStatusEnum::CONFIRMED->value => __('filament.reservation.status_confirmed'),
+                                ])
+                        ])
+                        ->requiresConfirmation()
+                        ->modalDescription(__('filament.reservation.confirm_cancellation_message'))
+                    ->action(function ($record, $data) {
+                        $record->status = $data['status'];
+                        $record->save();
+
+                        Notification::make()
+                            ->title(__('filament.reservation.updated'))
+                            ->success()
+                            ->send();
+                        return;
+                    })
+                ])
+                ->schema([
+                    TextEntry::make('cancellation_motive.motive'),
+                ]),
             Grid::make(4)
                 ->schema([
                     Grid::make(1)
@@ -221,8 +254,9 @@ class ReservationResource extends Resource
                                     TextEntry::make('nights')
                                         ->label(__('filament.reservation.nights')),
                                     TextEntry::make('status')
-                                        ->badge(fn($record) => $record->status->getColor())
-                                        ->formatStateUsing(fn($record) => ucfirst($record->status->value))
+                                        ->color(fn($record) => $record->status->getColor())
+                                        ->badge()
+                                        ->formatStateUsing(fn($record) => __('filament.reservation.status_' . $record->status->value))
                                         ->label(__('filament.reservation.status')),
                                     Fieldset::make(__('filament.reservation.guests'))
                                         ->columns(3)

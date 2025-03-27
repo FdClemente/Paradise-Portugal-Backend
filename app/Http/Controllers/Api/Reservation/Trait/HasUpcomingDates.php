@@ -20,7 +20,7 @@ trait HasUpcomingDates
             return "Tomorrow";
         }
 
-        if ($date->isSameMonth(now())){
+        if ($date->diffInDays(now(), true) < 30){
             $days = $date->diffInDays(now(), true);
             $days = intval($days);
             return __('reservation.diffInDays', ['days' => $days]);

@@ -22,18 +22,18 @@ enum ReservationStatusEnum: string
     public function getColor(): string
     {
         return match ($this) {
-            self::PENDING => 'yellow',
-            self::CONFIRMED => 'green',
-            self::PAID => 'blue',
-            self::CANCELED_BY_CLIENT => 'red',
-            self::CANCELED_BY_OWNER => 'red',
-            self::CUSTOMER_WANT_CANCEL => 'red',
-            self::NO_SHOW => 'red',
-            self::IN_PROGRESS => 'blue',
-            self::COMPLETED => 'green',
-            self::REJECTED => 'red',
-            self::REFUNDED => 'red',
-            self::PENDING_PAYMENT => 'yellow',
+            self::PENDING => 'warning',
+            self::CONFIRMED => 'success',
+            self::PAID => 'info',
+            self::CANCELED_BY_CLIENT => 'danger',
+            self::CANCELED_BY_OWNER => 'danger',
+            self::CUSTOMER_WANT_CANCEL => 'danger',
+            self::NO_SHOW => 'danger',
+            self::IN_PROGRESS => 'info',
+            self::COMPLETED => 'success',
+            self::REJECTED => 'danger',
+            self::REFUNDED => 'danger',
+            self::PENDING_PAYMENT => 'warning',
         };
     }
 

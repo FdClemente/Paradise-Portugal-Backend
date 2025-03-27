@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enum\ReservationStatusEnum;
 use App\Models\House\House;
 use App\Models\Reservation;
 use App\Services\Reservation\ReservationService;
@@ -29,6 +30,17 @@ class ReservationObserver
 
             if ($currentHouse) {
                 $currentHouse->markDates($reservation);
+            }
+        }
+    }
+
+    public function updated(Reservation $reservation): void
+    {
+        $reservationService = new ReservationService();
+
+        if ($reservation->isDirty('status')){
+            if ($reservation->status === ReservationStatusEnum::CANCELED_BY_CLIENT) {
+                $reservationService->refund($reservation);
             }
         }
     }

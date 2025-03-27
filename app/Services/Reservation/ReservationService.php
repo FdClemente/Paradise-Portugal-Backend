@@ -5,6 +5,7 @@ namespace App\Services\Reservation;
 use App\Enum\ReservationStatusEnum;
 use App\Models\House\House;
 use App\Models\Reservation;
+use App\Notifications\Reservation\RefundNotification;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Stripe;
 use Stripe\StripeClient;
@@ -32,6 +33,27 @@ class ReservationService
         $reservation->delete();
 
         return $reservation;
+    }
+
+    public function refund(Reservation $reservation)
+    {
+        $reservation->status = ReservationStatusEnum::REFUNDED;
+
+        $paymentDetails = $this->stripe->paymentIntents->retrieve($reservation->payment_intent);
+
+        $this->stripe->refunds->create([
+            'charge' => $paymentDetails->latest_charge,
+            'amount' => $paymentDetails->amount,
+            'reason' => 'requested_by_customer'
+        ]);
+
+        $this->clearDates($reservation);
+
+        $reservation->status = ReservationStatusEnum::REFUNDED;
+
+        $reservation->save();
+
+        $reservation->customer->notify(new RefundNotification($reservation));
     }
 
     public function markDates(Reservation $reservation)

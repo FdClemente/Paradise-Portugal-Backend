@@ -25,6 +25,7 @@ class ReservationDetailsController extends Controller
             'check_in' => $reservation->check_in_date,
             'check_in_formated' => $reservation->check_in_date->format('D, M j, Y'),
             'check_out' => $reservation->check_out_date,
+            'can_show_wifi' => $reservation->check_in_date->isSameDay(now()),
             'check_out_formated' => $reservation->check_out_date->format('D, M j, Y'),
             'status' => $reservation->status,
             'cancellation_limit' => $reservation->check_in_date->subDays(7)->format('j M.'),
