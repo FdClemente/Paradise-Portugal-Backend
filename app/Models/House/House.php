@@ -128,7 +128,8 @@ class House extends Model implements HasMedia, HasStaticMap
     public function getExtraAttributes():array
     {
         return [
-            'images' => $this->images
+            'images' => $this->images,
+            'disable_dates' => $this->disableDates->pluck('date')
         ];
     }
 

@@ -138,8 +138,8 @@ return [
             //     'filterableAttributes'=> ['id', 'name', 'email'],
             // ],
             \App\Models\House\House::class => [
-                'filterableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state'],
-                'sortableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state'],
+                'filterableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state', 'disable_dates'],
+                'sortableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state', 'disable_dates'],
             ],
             \App\Models\Experiences\Experience::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo'],

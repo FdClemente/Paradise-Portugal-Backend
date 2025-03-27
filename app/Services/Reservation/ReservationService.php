@@ -50,6 +50,7 @@ class ReservationService
         $this->clearDates($reservation);
 
         $reservation->status = ReservationStatusEnum::REFUNDED;
+        $reservation->cancellation_date = now();
 
         $reservation->save();
 

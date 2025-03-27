@@ -11,12 +11,12 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 
-class UpcomingReservationController extends Controller
+class MyPaymentsController extends Controller
 {
     use HasUpcomingDates;
     public function __invoke()
     {
-        $reservations = Reservation::whereIn('status', [...ReservationStatusEnum::getActiveReservations()])
+        $reservations = Reservation::whereIn('status', [...ReservationStatusEnum::getActiveReservations(), ReservationStatusEnum::CANCELED_BY_OWNER, ReservationStatusEnum::CANCELED_BY_CLIENT, ReservationStatusEnum::REFUNDED])
             ->where('user_id', auth('api')->user()->id)
             ->where('check_out_date', '>=', now())
             ->orderBy('check_in_date')
@@ -25,13 +25,13 @@ class UpcomingReservationController extends Controller
         $reservations = $reservations->transform(function (Reservation $reservation) {
             return [
                 'id' => $reservation->id,
-                'date' => $this->formatDate($reservation->check_in_date),
                 'isCurrent' => $reservation->check_in_date->isPast(),
                 'check_in' => $reservation->check_in_date,
                 'check_out' => $reservation->check_out_date,
-                'status' => $reservation->status,
+                'status' => __('filament.reservation.status_'.$reservation->status->value),
                 'house' => $reservation->house?->formatToList(),
                 'experience' => $reservation->experience?->formatToList(),
+                'created_at' => $reservation->created_at->format('d-m-Y'),
                 'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
                     return [
                         'date' => $ticket->date->format('D, d M'),

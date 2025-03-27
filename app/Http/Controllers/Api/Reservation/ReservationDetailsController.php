@@ -28,6 +28,7 @@ class ReservationDetailsController extends Controller
             'can_show_wifi' => $reservation->check_in_date->isSameDay(now()),
             'check_out_formated' => $reservation->check_out_date->format('D, M j, Y'),
             'status' => $reservation->status,
+            'cancellation_date' => $reservation->cancellation_date?->format('D, M j, Y'),
             'cancellation_limit' => $reservation->check_in_date->subDays(7)->format('j M.'),
             'house' => $reservation->house ? [
                 ...$reservation->house?->formatToList(),

@@ -20,6 +20,7 @@ class Reservation extends Model
 
     protected $casts = [
         'check_in_date' => 'date',
+        'cancellation_date' => 'date',
         'check_out_date' => 'date',
         'status' => ReservationStatusEnum::class
     ];
@@ -32,6 +33,7 @@ class Reservation extends Model
         'check_out_date',
         'adults',
         'children',
+        'cancellation_date',
         'babies',
         'status',
         'reservation_code',

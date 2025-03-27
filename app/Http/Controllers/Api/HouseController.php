@@ -8,13 +8,16 @@ use App\Models\House\House;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Meilisearch\Endpoints\Indexes;
 
 class HouseController extends Controller
 {
     public function index(Request $request)
     {
         $selectedCities = $request->get('cities');
-        $query = $request->get('q');
+        $query = $request->get('q', '');
+        $startDate = $request->get('startDate');
+        $endDate = $request->get('endDate');
 
         $cities = House::distinct()->get(['state'])->pluck('state');
 
@@ -24,7 +27,26 @@ class HouseController extends Controller
             $selectedCities = explode(',', $selectedCities);
         }
 
-        $houses = House::search($query)
+        $dateRange = [];
+        if ($startDate && $endDate){
+            $startDate = Carbon::parse($startDate);
+            $endDate = Carbon::parse($endDate);
+
+            $currentDate = $startDate->copy();
+            while ($currentDate <= $endDate) {
+                $dateRange[] = $currentDate->toDateString();
+                $currentDate->addDay();
+            }
+        }
+
+        $houses = House::search($query, function (Indexes $meilisearch, ?string $query = '', array $options) use ($dateRange) {
+            $range = '"' . implode('","', $dateRange) . '"';
+            $options['filter'] = "disable_dates NOT IN [".$range."]";
+
+            $response = $meilisearch->search($query, $options);
+
+            return $response;
+        })
             ->whereIn('state', $selectedCities)
             ->paginate(25);
 
