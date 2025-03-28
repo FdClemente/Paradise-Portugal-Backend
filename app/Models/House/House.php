@@ -180,28 +180,30 @@ class House extends Model implements HasMedia, HasStaticMap
 
     public function formatToList()
     {
-        return [
-            'id' => $this->id,
-            'name' => str($this->name)->replace('&amp;', '&')->stripTags()->words(20, ''),
-            'type' => $this->houseType->name,
-            'bedrooms' => $this->details?->num_bedrooms,
-            'guests' => $this->details?->num_guest,
-            'image' => $this->getFeaturedImageLink(),
-            'isFavorite' => $this->isFavorite(),
-            'images' => $this->images,
-            'features' => $this->detailsHighlight()->where('show_in_card', true)->get()->transform(function ($item) {
-                return [
-                    'name' => $item->name,
-                    'icon' => $item->icon,
-                ];
-            }),
-            'default_price' => $this->default_price,
-            'checkInHour' => $this->details?->check_in_time?->format('H:i').' - 21:00',
-            'checkOutHour' => $this->details?->check_out_time?->format('H:i').' - 10:30',
-            'ratting' => [
-                'airbnb' => $this->airbnb_ratting,
-                'booking' => $this->booking_ratting,
-            ]
-        ];
+
+        return \Cache::rememberForever(House::class.'_'.$this->getKey(), function () {
+            return  [
+                'id' => $this->id,
+                'name' => str($this->name)->replace('&amp;', '&')->stripTags()->words(20, ''),
+                'type' => $this->houseType->name,
+                'bedrooms' => $this->details?->num_bedrooms,
+                'guests' => $this->details?->num_guest,
+                'image' => $this->getFeaturedImageLink(),
+                'images' => $this->images,
+                'features' => $this->detailsHighlight()->where('show_in_card', true)->get()->transform(function ($item) {
+                    return [
+                        'name' => $item->name,
+                        'icon' => $item->icon,
+                    ];
+                }),
+                'default_price' => $this->default_price,
+                'checkInHour' => $this->details?->check_in_time?->format('H:i').' - 21:00',
+                'checkOutHour' => $this->details?->check_out_time?->format('H:i').' - 10:30',
+                'ratting' => [
+                    'airbnb' => $this->airbnb_ratting,
+                    'booking' => $this->booking_ratting,
+                ]
+            ];
+        });
     }
 }

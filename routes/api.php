@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\ETagMiddleware;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
@@ -31,12 +30,12 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::post('/experience/tickets/price', App\Http\Controllers\Api\Experiences\TicketPriceController::class);
     Route::post('/experience/{experience}/tickets', App\Http\Controllers\Api\Experiences\TicketsController::class);
 
-    Route::resource('/wishlist', App\Http\Controllers\WishlistController::class)
+    Route::resource('/wishlist', \App\Http\Controllers\Api\WishlistController::class)
         ->only('index', 'store', 'destroy', 'show')
         ->middleware('auth:sanctum');
 
-    Route::post('/wishlist/{wishlist}/attach', [App\Http\Controllers\WishlistController::class, 'attach'])->middleware('auth:sanctum');
-    Route::post('/wishlist/detach', [App\Http\Controllers\WishlistController::class, 'detach'])->middleware('auth:sanctum');
+    Route::post('/wishlist/{wishlist}/attach', [\App\Http\Controllers\Api\WishlistController::class, 'attach'])->middleware('auth:sanctum');
+    Route::post('/wishlist/detach', [\App\Http\Controllers\Api\WishlistController::class, 'detach'])->middleware('auth:sanctum');
 
     Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
     Route::group(['prefix' => 'reservation'], function () {
@@ -83,7 +82,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     });
 
     Route::group(['prefix' => '/cancellation', 'middleware' => 'auth:sanctum'], function () {
-        Route::get('/motives', App\Http\Controllers\CancellationMotiveController::class);
+        Route::get('/motives', \App\Http\Controllers\Api\CancellationMotiveController::class);
     });
 
     Route::get('/legal/{type}', App\Http\Controllers\Api\LegalController::class)

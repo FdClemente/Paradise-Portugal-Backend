@@ -89,7 +89,6 @@ class Poi extends Model implements HasMedia
     {
         return [
             ...$this->formatToMap(),
-            'isFavorite' => $this->isFavorite(),
         ];
     }
 }

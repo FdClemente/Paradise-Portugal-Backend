@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\Experiences\Experience;
 use App\Models\House\House;
@@ -53,6 +54,7 @@ class WishlistController extends Controller
                     'wishlist_id' => $item->id,
                     'type' => class_basename($item->wishable_type),
                     ...$item->wishable->formatToList(),
+                    'isFavorite' => true
                 ];
             })
         ]);

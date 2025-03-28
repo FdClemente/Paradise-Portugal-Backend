@@ -111,7 +111,6 @@ class Experience extends Model implements HasMedia, HasStaticMap
     {
         return [
             ...$this->formatToMap(),
-            'isFavorite' => $this->isFavorite(),
         ];
     }
 }

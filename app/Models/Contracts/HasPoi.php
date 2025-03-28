@@ -2,6 +2,7 @@
 
 namespace App\Models\Contracts;
 
+use App\Models\House\House;
 use App\Models\WishlistItems;
 use Laravel\Scout\Builder;
 use Laravel\Scout\Searchable;
@@ -110,20 +111,24 @@ trait HasPoi
 
     public function formatToMap(): array
     {
-        if (method_exists($this, 'getExtraAttributes')){
-            $extraAttributes = $this->getExtraAttributes();
-        }else{
-            $extraAttributes = [];
-        }
-        return [
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude,
-            'name' => $this->name,
-            'image' => $this->getFeaturedImageLink(),
-            'id' => $this->getKey(),
-            'type' => $this->getClassName(),
-            ...$extraAttributes,
-        ];
+        return \Cache::rememberForever(get_class($this).'_'.$this->getKey(), function () {
+            if (method_exists($this, 'getExtraAttributes')){
+                $extraAttributes = $this->getExtraAttributes();
+            }else{
+                $extraAttributes = [];
+            }
+
+            return [
+                'latitude' => $this->latitude,
+                'longitude' => $this->longitude,
+                'name' => $this->name,
+                'image' => $this->getFeaturedImageLink(),
+                'id' => $this->getKey(),
+                'type' => $this->getClassName(),
+                ...$extraAttributes,
+            ];
+        });
+
     }
 
     private function getClassName(): string

@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House\House;
+use App\Models\Pois\Poi;
+use App\Models\WishlistItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Meilisearch\Endpoints\Indexes;
 
@@ -14,24 +17,15 @@ class HouseController extends Controller
 {
     public function index(Request $request)
     {
-        $selectedCities = $request->get('cities');
         $query = $request->get('q', '');
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
-
-        $cities = House::distinct()->get(['state'])->pluck('state');
-
-        if ($selectedCities === null) {
-            $selectedCities =  $cities->toArray();
-        }else{
-            $selectedCities = explode(',', $selectedCities);
-        }
+        $userId = auth()->id();
 
         $dateRange = [];
-        if ($startDate && $endDate){
+        if ($startDate && $endDate) {
             $startDate = Carbon::parse($startDate);
             $endDate = Carbon::parse($endDate);
-
             $currentDate = $startDate->copy();
             while ($currentDate <= $endDate) {
                 $dateRange[] = $currentDate->toDateString();
@@ -42,22 +36,34 @@ class HouseController extends Controller
         $houses = House::search($query, function (Indexes $meilisearch, ?string $query = '', array $options) use ($dateRange) {
             $range = '"' . implode('","', $dateRange) . '"';
             $options['filter'] = "disable_dates NOT IN [".$range."]";
+            return $meilisearch->search($query, $options);
+        })->paginate(25);
 
-            $response = $meilisearch->search($query, $options);
+        $houseIds = $houses->getCollection()->pluck('id')->toArray();
 
-            return $response;
-        })
-            ->whereIn('state', $selectedCities)
-            ->paginate(25);
+        if(auth('api')->check()){
+            $userId = auth('api')->id();
+            $favorites = WishlistItems::where('wishable_type', House::class)
+                ->whereIn('wishable_id', $houseIds)
+                ->whereHas('wishlist', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                ->pluck('wishable_id')
+                ->toArray();
+        }else{
+            $favorites = [];
+        }
 
-        $houses->getCollection()
-            ->transform(function (House $item) {
-                return $item->formatToList();
-            });
+        $houses->getCollection()->transform(function (House $item) use ($favorites) {
 
+            return [
+                ...$item->formatToList(),
+                'isFavorite' => in_array($item->id, $favorites),
+            ];
+        });
 
         return ApiSuccessResponse::make([
-            'cities' => $cities,
+            'cities' => [],
             'houses' => $houses,
         ]);
     }

@@ -28,7 +28,7 @@ class MyPaymentsController extends Controller
                 'isCurrent' => $reservation->check_in_date->isPast(),
                 'check_in' => $reservation->check_in_date,
                 'check_out' => $reservation->check_out_date,
-                'status' => __('filament.reservation.status_'.$reservation->status->value),
+                'status' => __('filament.reservation.status_customer_'.$reservation->status->value),
                 'house' => $reservation->house?->formatToList(),
                 'experience' => $reservation->experience?->formatToList(),
                 'created_at' => $reservation->created_at->format('d-m-Y'),
