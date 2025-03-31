@@ -22,6 +22,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::get('/houses/{house}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'house']);
     Route::get('/houses/{house}/booking-dates', App\Http\Controllers\Api\House\GetDisableDatesAndPriceController::class);
 
+    Route::post('/rating', App\Http\Controllers\Api\RatingController::class)->middleware('auth:sanctum');
 
     Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
     Route::get('/experience/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
