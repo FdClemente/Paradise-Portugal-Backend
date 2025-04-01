@@ -22,6 +22,9 @@ class Reservation extends Model
         'check_in_date' => 'date',
         'cancellation_date' => 'date',
         'check_out_date' => 'date',
+        'has_show_ratting_alert' => 'boolean',
+        'experience_rated' => 'boolean',
+        'house_rated' => 'boolean',
         'status' => ReservationStatusEnum::class
     ];
 
@@ -41,6 +44,9 @@ class Reservation extends Model
         'cancellation_motive_id',
         'payment_intent_secret',
         'ip',
+        'has_show_ratting_alert',
+        'house_rated',
+        'experience_rated',
         'total_price'
     ];
     public function customer(): BelongsTo

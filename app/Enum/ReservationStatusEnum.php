@@ -45,7 +45,6 @@ enum ReservationStatusEnum: string
             self::PAID,
             self::IN_PROGRESS,
             self::CUSTOMER_WANT_CANCEL,
-            self::COMPLETED,
         ];
     }
 }

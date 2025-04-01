@@ -28,6 +28,11 @@ class ReservationDetailsController extends Controller
             'can_show_wifi' => $reservation->check_in_date->isSameDay(now()),
             'check_out_formated' => $reservation->check_out_date->format('D, M j, Y'),
             'status' => $reservation->status,
+
+            'house_rated' => $reservation->house_rated,
+            'experience_rated' => $reservation->experience_rated,
+
+            'can_cancel' => $reservation->check_in_date->subDays(7)->isFuture(),
             'cancellation_date' => $reservation->cancellation_date?->format('D, M j, Y'),
             'cancellation_limit' => $reservation->check_in_date->subDays(7)->format('j M.'),
             'house' => $reservation->house ? [
@@ -38,12 +43,20 @@ class ReservationDetailsController extends Controller
                 'night_price' => $reservation->house?->getRawOriginal('default_price'),
                 'nights' => $reservation->house?->getPeriod($reservation->check_in_date, $reservation->check_out_date),
                 'house_total' => $reservation->house?->calculateTotalNightsCost($reservation->check_in_date, $reservation->check_out_date),
+                'location' => [
+                    'latitude' => $reservation->house?->latitude,
+                    'longitude' => $reservation->house?->longitude,
+                ]
             ] : null,
             'experience' => $reservation->experience ? [
                 ...$reservation->experience?->formatToList(),
                 'address' => $reservation->experience?->experiencePartner?->address_complete,
                 'tickets_price' => $reservation->tickets->sum('price'),
-                'tickets' => $reservation->tickets->count()
+                'tickets' => $reservation->tickets->count(),
+                'location' => [
+                    'latitude' => $reservation->experience?->experiencePartner?->latitude,
+                    'longitude' => $reservation->experience?->experiencePartner?->longitude,
+                ]
             ]: null,
             'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
                 return [

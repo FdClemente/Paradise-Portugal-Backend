@@ -20,11 +20,9 @@ class ExperienceController extends Controller
         $excludedExperienceId = $this->getExcludedExperienceId($request);
 
         $experienceTypes = ExperienceType::whereIn('id', $experienceTypeIds)
-            ->where('id', '<>', $excludedExperienceId)
-            ->limit($request->get('limit', 10))
             ->get();
 
-        $experiences = $experienceTypes->flatMap(fn(ExperienceType $type) => $type->experiences);
+        $experiences = $experienceTypes->flatMap(fn(ExperienceType $type) => $type->experiences->where('id', '<>', $excludedExperienceId));
         $ids = $experiences->pluck('id')->toArray();
         if (auth('api')->check()) {
             $userId = auth('api')->id();

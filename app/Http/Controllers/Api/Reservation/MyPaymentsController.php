@@ -16,7 +16,7 @@ class MyPaymentsController extends Controller
     use HasUpcomingDates;
     public function __invoke()
     {
-        $reservations = Reservation::whereIn('status', [...ReservationStatusEnum::getActiveReservations(), ReservationStatusEnum::CANCELED_BY_OWNER, ReservationStatusEnum::CANCELED_BY_CLIENT, ReservationStatusEnum::REFUNDED])
+        $reservations = Reservation::whereIn('status', [...ReservationStatusEnum::getActiveReservations(), ReservationStatusEnum::CANCELED_BY_OWNER, ReservationStatusEnum::CANCELED_BY_CLIENT, ReservationStatusEnum::REFUNDED, ReservationStatusEnum::COMPLETED])
             ->where('user_id', auth('api')->user()->id)
             ->where('check_out_date', '>=', now())
             ->orderBy('check_in_date')

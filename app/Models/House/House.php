@@ -7,6 +7,7 @@ use App\Models\Contracts\HasPoi;
 use App\Models\Contracts\HasReservation;
 use App\Models\Contracts\HasTravelDistance;
 use App\Models\Contracts\Interfaces\HasStaticMap;
+use App\Models\Rating;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseDetailsHighlight;
 use App\Models\Settings\HouseType;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -176,6 +178,11 @@ class House extends Model implements HasMedia, HasStaticMap
             return $groupedPrices;
 
         });
+    }
+
+    public function ratings(): MorphMany
+    {
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     public function formatToList()

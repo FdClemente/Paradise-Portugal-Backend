@@ -23,6 +23,7 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::get('/houses/{house}/booking-dates', App\Http\Controllers\Api\House\GetDisableDatesAndPriceController::class);
 
     Route::post('/rating', App\Http\Controllers\Api\RatingController::class)->middleware('auth:sanctum');
+    Route::get('/rating', App\Http\Controllers\Api\CheckRatingController::class);
 
     Route::get('/experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
     Route::get('/experience/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
@@ -41,6 +42,8 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
     Route::post('/reservation', App\Http\Controllers\Api\Reservation\CalculateTotalController::class);
     Route::group(['prefix' => 'reservation'], function () {
         Route::get('/', App\Http\Controllers\Api\Reservation\UpcomingReservationController::class)->middleware('auth:sanctum');
+        Route::get('/check-rating', App\Http\Controllers\Api\Reservation\CheckNeedShowRatingController::class)->middleware('auth:sanctum');
+        Route::get('/check-rating/{reservation}', App\Http\Controllers\Api\Reservation\DemiseRattingController::class)->middleware('auth:sanctum');
         Route::get('stripe-publishable-key', App\Http\Controllers\Api\Reservation\Stripe\GetPublishKeyController::class);
         Route::post('/cancel', App\Http\Controllers\Api\Reservation\CancelReservationController::class);
         Route::get('/my-payments', App\Http\Controllers\Api\Reservation\MyPaymentsController::class);

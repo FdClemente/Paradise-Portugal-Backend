@@ -5,6 +5,7 @@ namespace App\Models\Experiences;
 use App\Casts\House\PriceCast;
 use App\Models\Contracts\HasPoi;
 use App\Models\Contracts\Interfaces\HasStaticMap;
+use App\Models\Rating;
 use App\Models\Settings\ExperiencePartner;
 use App\Models\Settings\ExperienceService;
 use App\Models\Settings\ExperienceType;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -97,19 +100,25 @@ class Experience extends Model implements HasMedia, HasStaticMap
         })->shouldCache();
     }
 
-    public function tickets()
+    public function tickets(): HasMany
     {
         return $this->hasMany(ExperienceTicket::class);
     }
 
-    public function availability()
+    public function availability(): HasMany
     {
         return $this->hasMany(ExperiencesAvailability::class);
+    }
+
+    public function ratings(): MorphMany
+    {
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     public function formatToList()
     {
         return [
+            'rating' => number_format($this->ratings()->avg('score')??0, 2),
             ...$this->formatToMap(),
         ];
     }
