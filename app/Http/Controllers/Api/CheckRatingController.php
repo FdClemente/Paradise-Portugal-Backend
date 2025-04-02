@@ -17,6 +17,10 @@ class CheckRatingController extends Controller
 
         $ratings = $model->ratings;
 
+        if(!$ratings){
+            return ApiSuccessResponse::make();
+        }
+
         $ratings = $ratings->transform(function (Rating $rating) {
             $user = User::find($rating['user_id']);
             return [

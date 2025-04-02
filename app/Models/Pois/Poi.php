@@ -3,8 +3,10 @@
 namespace App\Models\Pois;
 
 use App\Models\Contracts\HasPoi;
+use App\Models\Rating;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -53,11 +55,22 @@ class Poi extends Model implements HasMedia
         })->shouldCache();
     }
 
+    public function address():Attribute
+    {
+        return Attribute::make(
+            get: fn()=>$this->street_name.', '.$this->street_number.' '.$this->city
+        );
+    }
+
     public function getExtraAttributes():array
     {
         return [
             'images' => $this->images,
             'description' => $this->description,
+            'address' => $this->address,
+            'phone_number' => $this->phone_number,
+            'website' => $this->website,
+            'email' => $this->email,
             'typePoi' => [
                 'id' => $this->type->id,
                 'name' => $this->type->name,
@@ -83,6 +96,11 @@ class Poi extends Model implements HasMedia
         $this
             ->addMediaConversion('webp_format')
             ->format('webp');
+    }
+
+    public function ratings(): MorphMany
+    {
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     public function formatToList()
