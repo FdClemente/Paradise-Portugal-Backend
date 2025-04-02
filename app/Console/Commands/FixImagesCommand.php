@@ -16,6 +16,7 @@ class FixImagesCommand extends Command
         $mediaItems = Media::all();
 
         foreach ($mediaItems as $media) {
+            dump($media);
             $conversions = $media->generated_conversions;
             $missingConversions = [];
 
