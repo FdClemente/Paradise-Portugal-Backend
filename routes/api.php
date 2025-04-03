@@ -78,6 +78,12 @@ Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
             Route::post('apple', App\Http\Controllers\Api\Auth\AppleController::class);
         });
 
+        Route::group(['prefix' => '/forgot-password'], function () {
+            Route::post('email',  App\Http\Controllers\Api\Auth\PasswordReset\ForgotPasswordController::class);
+            Route::post('code/check', App\Http\Controllers\Api\Auth\PasswordReset\CodeCheckController::class);
+            Route::post('reset', App\Http\Controllers\Api\Auth\PasswordReset\ResetPasswordController::class);
+        });
+
         Route::group(['middleware' => 'auth:sanctum'], function (){
             Route::post('/update-password', App\Http\Controllers\Api\Auth\UpdatePasswordController::class);
         });
