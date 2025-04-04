@@ -10,7 +10,7 @@ class SetAppLanguageMiddleware
     public function handle(Request $request, Closure $next)
     {
         if($request->hasHeader('Language')){
-            App()->setLocale($request->header('Language'));
+            App()->setLocale(strtolower($request->header('Language')));
         }
         return $next($request);
     }
