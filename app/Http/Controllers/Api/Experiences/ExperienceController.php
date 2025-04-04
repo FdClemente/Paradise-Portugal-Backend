@@ -60,9 +60,9 @@ class ExperienceController extends Controller
 
         $experiences = $experiences->transform(function (Experience $experience) use ($selectedHouse, $favorites) {
             return $this->transformExperience($experience, $selectedHouse, $favorites);
-        });
+        })->values();
 
-        return ApiSuccessResponse::make($experiences->values());
+        return ApiSuccessResponse::make($experiences);
     }
 
     private function getExperienceTypeIds(Request $request): array
