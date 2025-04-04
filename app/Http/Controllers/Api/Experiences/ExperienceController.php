@@ -18,6 +18,7 @@ class ExperienceController extends Controller
         $experienceTypeIds = $this->getExperienceTypeIds($request);
         $selectedHouse = $this->getSelectedHouse($request);
         $excludedExperienceId = $this->getExcludedExperienceId($request);
+        $order = $request->get('order', 'price_asc');
 
         $experienceTypes = ExperienceType::whereIn('id', $experienceTypeIds)
             ->get();
@@ -36,6 +37,26 @@ class ExperienceController extends Controller
         } else {
             $favorites = [];
         }
+
+        $experiences = $experiences->sortBy(function (Experience $experience) use ($order) {
+            switch ($order) {
+                case 'price_asc':
+                    return $experience->average_price;
+                case 'newest':
+                    return $experience->created_at;
+                case 'relevance':
+                    return $experience->searchScore();
+            }
+        })->sortByDesc(function (Experience $experience) use ($order) {
+            switch ($order) {
+                case 'price_desc':
+                    return $experience->average_price;
+                case 'oldest':
+                    return $experience->average_price;
+                case 'newest':
+                    return $experience->created_at;
+            }
+        });
 
         $experiences = $experiences->transform(function (Experience $experience) use ($selectedHouse, $favorites) {
             return $this->transformExperience($experience, $selectedHouse, $favorites);

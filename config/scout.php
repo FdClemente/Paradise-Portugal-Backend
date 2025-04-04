@@ -139,7 +139,7 @@ return [
             // ],
             \App\Models\House\House::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state', 'disable_dates'],
-                'sortableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state', 'disable_dates'],
+                'sortableAttributes' => ['id', 'name', 'address', '_geo', 'city', 'state', 'disable_dates', 'default_price', 'created_at'],
             ],
             \App\Models\Experiences\Experience::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo'],

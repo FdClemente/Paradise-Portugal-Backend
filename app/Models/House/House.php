@@ -11,6 +11,8 @@ use App\Models\Rating;
 use App\Models\Settings\Feature;
 use App\Models\Settings\HouseDetailsHighlight;
 use App\Models\Settings\HouseType;
+use App\Models\WishlistItems;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -212,5 +214,50 @@ class House extends Model implements HasMedia, HasStaticMap
                 ]
             ];
         });
+    }
+
+    public function searchScore(array $dateRange): int
+    {
+        $score = \Cache::rememberForever('relevance_house_'.$this->getKey(), function () {
+            $score = 0;
+            $avgPrice = House::avg('default_price');
+
+            $score += round($this->ratings->avg('score') * 10);
+
+            if ($this->created_at->gt(now()->subDays(30))) $score += 10;
+
+            if ($this->default_price < $avgPrice) $score += 15;
+
+            $score += min(WishlistItems::where('wishable_type', House::class)->where('wishable_id', $this->getKey())->count(), 20);
+
+            return $score;
+        });
+
+        if (count($dateRange)>0) {
+            $score += $this->calculateAvailabilityScore($dateRange);
+        }
+        return intval($score);
+    }
+
+    private function calculateAvailabilityScore(array $dateRange): int
+    {
+        $desiredStart = \Illuminate\Support\Carbon::parse($dateRange[0]);
+        $desiredEnd = Carbon::parse(end($dateRange));
+
+        $disableDates = $this->disableDates()->whereBetween('date', [$desiredStart->subDays(5), $desiredEnd->addDays(5)])->get()->pluck('date');
+
+        $disableDates = collect($disableDates)->map(fn($d) => $d instanceof Carbon ? $d : Carbon::parse($d))->sort();
+
+        $before = false;
+        $after = false;
+
+        foreach ($disableDates as $date) {
+            if ($date->lt($desiredStart)) $before = true;
+            if ($date->gt($desiredEnd)) $after = true;
+        }
+
+        if ($before && $after) return 3;
+        if ($before || $after) return 2;
+        return 1;
     }
 }

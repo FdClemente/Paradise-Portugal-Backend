@@ -14,3 +14,9 @@ Schedule::command('reservation:start')
     ->daily()
     ->at('07:00');
 
+Schedule::command('reservation:finish')
+    ->daily()
+    ->at('16:00');
+
+Schedule::command('refresh:cache')
+    ->hourly();

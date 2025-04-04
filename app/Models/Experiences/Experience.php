@@ -9,6 +9,7 @@ use App\Models\Rating;
 use App\Models\Settings\ExperiencePartner;
 use App\Models\Settings\ExperienceService;
 use App\Models\Settings\ExperienceType;
+use App\Models\WishlistItems;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -108,6 +109,36 @@ class Experience extends Model implements HasMedia, HasStaticMap
     public function availability(): HasMany
     {
         return $this->hasMany(ExperiencesAvailability::class);
+    }
+
+    public function averagePrice(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->tickets()
+                ->with('prices')
+                ->get()
+                ->flatMap(function ($ticket) {
+                    return $ticket->prices;
+                })->avg('price');
+        })->shouldCache();
+    }
+
+    public function searchScore(): int
+    {
+        $score = \Cache::rememberForever('relevance_experience_'.$this->getKey(), function () {
+            $score = 0;
+            $score += round($this->ratings->avg('score') * 10);
+
+            if ($this->created_at->gt(now()->subDays(30))) $score += 10;
+
+
+            $score += min(WishlistItems::where('wishable_type', Experience::class)->where('wishable_id', $this->getKey())->count(), 20);
+
+            return $score;
+        });
+
+
+        return intval($score);
     }
 
     public function ratings(): MorphMany
