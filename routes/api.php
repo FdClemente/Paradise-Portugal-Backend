@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Middleware\ETagMiddleware;
+use App\Http\Middleware\SetAppLanguageMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->middleware(ETagMiddleware::class)->group(function () {
+Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware::class])->group(function () {
     Route::get('/me', App\Http\Controllers\Api\UserController::class)->middleware('auth:sanctum');
     Route::delete('/logout', App\Http\Controllers\Api\Auth\LogoutController::class)->middleware('auth:sanctum');
 
