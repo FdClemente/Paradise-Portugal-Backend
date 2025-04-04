@@ -100,7 +100,7 @@ class HouseController extends Controller
     {
         $houseData = [
             'id' => $house->id,
-            'name' => str($house->name)->replace('&amp;', '&')->stripTags()->words(20, ''),
+            'name' => str(html_entity_decode($house->name))->replace('&amp;', '&')->stripTags()->words(20, ''),
             'description' => \str(html_entity_decode($house->description))->replace('&amp;', '&')->stripTags()->toString(),
             'short_description' => \str(html_entity_decode($house->description))->replace('&amp;', '&')->stripTags()->words(20),
             'type' => $house->houseType->name,

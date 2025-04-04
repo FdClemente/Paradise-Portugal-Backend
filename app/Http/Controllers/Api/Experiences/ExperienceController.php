@@ -110,8 +110,8 @@ class ExperienceController extends Controller
             'name' => $experience->name,
             'isFavorite' => $experience->isFavorite(),
             'description' => $experience->description,
-            'additional_information' => $experience->additional_info,
-            'short_description' => str($experience->description)->stripTags()->words(20),
+            'additional_information' => html_entity_decode($experience->additional_info),
+            'short_description' => str(html_entity_decode($experience->description))->stripTags()->words(20),
             'type' => $experience->experienceType->name,
             'images' => $experience->images,
             'services' => $experience->services->transform(function ($service) {
