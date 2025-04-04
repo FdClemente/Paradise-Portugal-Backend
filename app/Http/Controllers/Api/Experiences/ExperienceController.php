@@ -62,7 +62,7 @@ class ExperienceController extends Controller
             return $this->transformExperience($experience, $selectedHouse, $favorites);
         });
 
-        return ApiSuccessResponse::make($experiences);
+        return ApiSuccessResponse::make($experiences->values());
     }
 
     private function getExperienceTypeIds(Request $request): array
