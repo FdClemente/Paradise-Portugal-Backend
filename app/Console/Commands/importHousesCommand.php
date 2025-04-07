@@ -9,7 +9,7 @@ class importHousesCommand extends Command
 {
     protected $signature = 'import:houses';
 
-    protected $description = 'Command description';
+    protected $description = 'Import houses from wordpress';
 
     public function handle(): void
     {

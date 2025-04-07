@@ -30,18 +30,23 @@ class RefundNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
+        \App::setLocale($notifiable->language);
 
         return (new MailMessage())
-            ->subject(__('notification.refund.title', locale: $notifiable->language))
-            ->greeting(__('notification.refund.greeting', locale: $notifiable->language))
-            ->line(__('notification.refund.body', locale: $notifiable->language))
-            ->line(__('notification.refund.signature', locale: $notifiable->language));
+            ->subject(__('notification.refund.email.title'))
+            ->greeting(__('notification.refund.email.greeting', ['name' => $notifiable->name]))
+            ->line(__('notification.refund.email.body'))
+            ->line(__('notification.refund.email.signature'))
+            ->salutation(__('notification.refund.email.salutation'))
+            ->line(__('notification.refund.email.footer'));
     }
 
     public function toExpo(User $notifiable): ExpoMessage
     {
-        return ExpoMessage::create(__('notification.refund.title', locale: $notifiable->language))
-            ->body(__('notification.refund.body', locale: $notifiable->language))
+        \App::setLocale($notifiable->language);
+
+        return ExpoMessage::create(__('notification.refund.title'))
+            ->body(__('notification.refund.body'))
             ->badge(1)
             ->data(['url' => '/Reservation/Cancellation/Status?reservation?'.$this->reservation->id])
             ->playSound();

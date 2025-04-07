@@ -111,9 +111,12 @@ class ImportService
 
     private function attachAdditionalMedia(House $houseModel, array $house): void
     {
-        $mediaItems = \Http::get($house['_links']['wp:attachment'][0]['href'])->json();
+        $mediaItems = \Http::get($house['_links']['wp:attachment'][0]['href'].'&per_page=100')->json();
 
         foreach ($mediaItems as $item) {
+            if ($item['media_details'] === []){
+                continue;
+            }
             $mediaUrl = $item['media_details']['sizes']['full']['source_url'];
             $fileName = basename($mediaUrl);
 
