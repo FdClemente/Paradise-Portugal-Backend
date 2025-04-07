@@ -10,9 +10,13 @@ Artisan::command('inspire', function () {
 
 
 
-Schedule::command('reservation:start')
+/*Schedule::command('reservation:start')
     ->daily()
-    ->at('07:00');
+    ->at('07:00');*/
+
+Schedule::command('reservation:send-reminder')
+    ->daily()
+    ->at('10:00');
 
 Schedule::command('reservation:finish')
     ->daily()
