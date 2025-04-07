@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Settings\HouseDetailsHighlightResource\Pages;
 use App\Models\Settings\HouseDetailsHighlight;
 use Filament\Forms\Components\Grid;
@@ -65,6 +66,7 @@ class HouseDetailsHighlightResource extends Resource
                 //
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
             ])

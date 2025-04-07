@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Settings\FeatureResource\Pages;
 use App\Models\Settings\Feature;
 use Filament\Forms\Components\Grid;
@@ -71,6 +72,7 @@ class FeatureResource extends Resource
                 //
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
             ])

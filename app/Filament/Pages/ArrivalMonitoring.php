@@ -26,7 +26,7 @@ class ArrivalMonitoring extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Reservation::where('check_in_date', '<>', now()->format('Y-m-d'))->whereNotNull('house_id'))
+            ->query(Reservation::where('check_in_date', '=', now()->format('Y-m-d'))->whereNotNull('house_id'))
             ->columns([
                 TextColumn::make('customer.name'),
                 TextColumn::make('house.name'),

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Settings\ExperienceServiceResource\Pages;
 use App\Models\Settings\ExperienceService;
 use Filament\Forms\Components\Grid;
@@ -63,6 +64,7 @@ class ExperienceServiceResource extends Resource
                 //
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
             ])

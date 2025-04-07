@@ -1,0 +1,185 @@
+/* Base */
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #f4f6f9; /* Fundo claro e suave */
+    color: #333;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Tipografia */
+h1, h2, h3 {
+    font-weight: 600;
+    text-align: left;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 24px;
+    color: #223A51
+}
+
+h2 {
+    font-size: 20px;
+    color: #223A51
+}
+
+h3 {
+    font-size: 16px;
+    color: #223A51
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 0;
+    text-align: left;
+}
+
+/* Layout */
+.wrapper {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Header */
+.header {
+    padding: 20px 0;
+    text-align: center;
+    background: #f4f6f9;
+}
+
+.header a {
+    color: #2d3748;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Logo */
+.logo {
+    height: 50px;
+    max-height: 50px;
+    width: 50px;
+}
+
+/* Body */
+.body {
+    background-color: #f4f6f9;
+    border-bottom: 1px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.inner-body {
+    background-color: #ffffff;
+    border-radius: 8px;
+    border-width: 1px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+}
+
+/* Botões */
+.button {
+    border-radius: 25px; /* Borda arredondada */
+    color: #fff;
+    display: inline-block;
+    padding: 12px 25px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button-blue {
+    background-color: #4e9d7f;
+    border: none;
+}
+
+.button-blue:hover {
+    background-color: #39996d; /* Efeito hover */
+}
+
+.button-green {
+    background-color: #48bb78;
+}
+
+.button-green:hover {
+    background-color: #38a15c; /* Efeito hover */
+}
+
+.button-red {
+    background-color: #e53e3e;
+}
+
+.button-red:hover {
+    background-color: #d32f2f; /* Efeito hover */
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    background: #f4f6f9;
+}
+
+.footer p {
+    color: #718096;
+    font-size: 14px;
+}
+
+.td-footer{
+    background: #f4f6f9;
+}
+
+/* Tabelas */
+.table table {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.table th {
+    background-color: #f7fafc;
+    padding: 12px;
+}
+
+.table td {
+    padding: 12px;
+}
+
+/* Painéis */
+.panel {
+    border-left: #4e9d7f solid 4px;
+    margin: 20px 0;
+}
+
+.panel-content {
+    background-color: #edf2f7;
+    padding: 20px;
+}
+
+/* Utilitários */
+.break-all {
+    word-break: break-all;
+}

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Settings\HouseTypeResource\Pages;
 use App\Models\Settings\HouseType;
 use Filament\Forms\Components\Placeholder;
@@ -66,6 +67,7 @@ class HouseTypeResource extends Resource
                 //
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
             ])
