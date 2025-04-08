@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([], function () {
     Route::get('/', function () {
-        return view('welcome');
+        return redirect()->route('download');
     });
 
     Route::group(['prefix' => 'auth'], function () {
@@ -14,6 +14,6 @@ Route::group([], function () {
 
     Route::get('/download', function () {
         return view('download.app');
-    });
+    })->name('download');
 
 });
