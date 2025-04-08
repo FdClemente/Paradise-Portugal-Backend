@@ -40,7 +40,6 @@ class UpcomingReservationNotification extends Notification implements ShouldQueu
             ->line(__('notification.reminder.email.checkin_date', ['date' => $checkinDate]))
             ->line(__('notification.reminder.email.checkin_time', ['time' => $checkinHour]))
             ->line(__('notification.reminder.email.address', ['address' => $address]))
-            ->action(__('notification.reminder.email.button'), url("/reservation/{$this->reservation->id}/checkin-info"))
             ->line(__('notification.reminder.email.footer'))
             ->salutation(__('notification.reminder.email.salutation'));
     }

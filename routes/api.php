@@ -16,6 +16,7 @@ Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware
 
     Route::group(['prefix' => '/user', 'middleware' => 'auth:sanctum'], function () {
         Route::post('addNotificationDevice', App\Http\Controllers\Api\User\AddDeviceNotificationController::class);
+        Route::post('delete', App\Http\Controllers\Api\Auth\DeleteAccountController::class);
     });
 
 
