@@ -28,5 +28,19 @@ return [
             'footer' => 'If you have any questions, feel free to contact us.',
             'salutation' => 'Have a great stay! 🌅',
         ]
+    ],
+    'booking_created' => [
+        'email' => [
+            'subject' => 'Your reservation at :property is confirmed!',
+            'greeting' => 'Hi :name,',
+            'intro' => 'Your reservation at **:property** has been successfully created.',
+            'details' => 'Here are the main details of your booking:',
+            'checkin_date' => '🗓️ **Check-in Date:** :date',
+            'checkin_time' => '🕒 **Check-in Time:** from :time',
+            'address' => '📍 **Address:** :address',
+            'button' => 'View Reservation Details',
+            'footer' => 'Need help or have questions? We’re here for you.',
+            'salutation' => 'We look forward to hosting you! 🏡',
+        ],
     ]
 ];

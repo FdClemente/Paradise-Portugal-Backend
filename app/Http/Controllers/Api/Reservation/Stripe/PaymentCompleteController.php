@@ -9,6 +9,7 @@ use App\Http\Requests\Api\Reservation\PaymentCompleteRequest;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\House\House;
 use App\Models\Reservation;
+use App\Notifications\Reservation\NewReservationNotification;
 use App\Services\Customer\CustomerService;
 use App\Services\Reservation\ReservationService;
 use libphonenumber\NumberParseException;
@@ -62,6 +63,8 @@ class PaymentCompleteController extends Controller
         }
         $reservation->status = ReservationStatusEnum::CONFIRMED;
         $reservation->save();
+
+        auth()->user()->notify(new NewReservationNotification($reservation));
 
         if ($reservation->house) {
             $reservationService = new ReservationService();

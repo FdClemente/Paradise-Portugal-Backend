@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Dev;
 
 use App\Models\Reservation;
+use App\Notifications\Reservation\NewReservationNotification;
 use App\Notifications\Reservation\UpcomingReservationNotification;
 use Illuminate\Console\Command;
 
@@ -16,6 +17,7 @@ class TestUpcomingReservationCommand extends Command
     {
         $reservation = Reservation::latest()->first();
 
-        $reservation->customer->notify(new UpcomingReservationNotification($reservation));
+        #$reservation->customer->notify(new UpcomingReservationNotification($reservation));
+        $reservation->customer->notify(new NewReservationNotification($reservation));
     }
 }
