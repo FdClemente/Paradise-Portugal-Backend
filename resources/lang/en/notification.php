@@ -42,5 +42,15 @@ return [
             'footer' => 'Need help or have questions? We’re here for you.',
             'salutation' => 'We look forward to hosting you! 🏡',
         ],
-    ]
+    ],
+    'password_reset' => [
+        'email' => [
+            'subject' => 'Password Reset Request',
+            'greeting' => 'Hi :name,',
+            'intro' => 'We received a request to reset your account password.',
+            'code' => '🔐 **Your reset code is:** :code',
+            'expiry' => 'This code is valid for 1 hour from the time this email was sent.',
+            'salutation' => 'If you did not request this, please ignore this message.',
+        ],
+    ],
 ];
