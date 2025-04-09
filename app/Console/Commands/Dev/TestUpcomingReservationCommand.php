@@ -17,7 +17,7 @@ class TestUpcomingReservationCommand extends Command
     {
         $reservation = Reservation::latest()->first();
 
-        #$reservation->customer->notify(new UpcomingReservationNotification($reservation));
-        $reservation->customer->notify(new NewReservationNotification($reservation));
+        $reservation->customer->notify(new UpcomingReservationNotification($reservation));
+        #$reservation->customer->notify(new NewReservationNotification($reservation));
     }
 }

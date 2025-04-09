@@ -64,7 +64,7 @@ class PaymentCompleteController extends Controller
         $reservation->status = ReservationStatusEnum::CONFIRMED;
         $reservation->save();
 
-        auth()->user()->notify(new NewReservationNotification($reservation));
+        $customer->notify(new NewReservationNotification($reservation));
 
         if ($reservation->house) {
             $reservationService = new ReservationService();

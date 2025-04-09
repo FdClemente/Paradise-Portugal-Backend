@@ -23,18 +23,18 @@ class ReservationDetailsController extends Controller
             'date' => $this->formatDate($reservation->check_in_date),
             'isCurrent' => $reservation->check_in_date->isPast(),
             'check_in' => $reservation->check_in_date,
-            'check_in_formated' => $reservation->check_in_date->format('D, M j, Y'),
+            'check_in_formated' => ucfirst($reservation->check_in_date->translatedFormat('D, M j, Y')),
             'check_out' => $reservation->check_out_date,
             'can_show_wifi' => now()->between($reservation->check_in_date, $reservation->check_out_date),
-            'check_out_formated' => $reservation->check_out_date->format('D, M j, Y'),
+            'check_out_formated' => ucfirst($reservation->check_out_date->translatedFormat('D, M j, Y')),
             'status' => $reservation->status,
 
             'house_rated' => $reservation->house_rated,
             'experience_rated' => $reservation->experience_rated,
 
             'can_cancel' => $reservation->check_in_date->subDays(7)->isFuture(),
-            'cancellation_date' => $reservation->cancellation_date?->format('D, M j, Y'),
-            'cancellation_limit' => $reservation->check_in_date->subDays(7)->format('j M.'),
+            'cancellation_date' => ucfirst($reservation->cancellation_date?->translatedFormat('D, M j, Y')),
+            'cancellation_limit' => ucfirst($reservation->check_in_date->subDays(7)->translatedFormat('j M.')),
             'house' => $reservation->house ? [
                 ...$reservation->house?->formatToList(),
                 'address' => $reservation->house?->address_complete,
@@ -60,7 +60,7 @@ class ReservationDetailsController extends Controller
             ]: null,
             'tickets' => $reservation->tickets->map(function (TicketsReservation $ticket){
                 return [
-                    'date' => $ticket->date->format('D, d M'),
+                    'date' => ucfirst($ticket->date->translatedFormat('D, d M')),
                     'tickets' => $ticket->tickets,
                     'type' => $ticket->priceDetails->ticket_type,
                 ];

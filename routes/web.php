@@ -8,8 +8,8 @@ Route::group([], function () {
     });
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::get('/password-reset/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'index'])->name('password.reset');
-        Route::post('/password-reset', [\App\Http\Controllers\Auth\PasswordResetController::class, 'store'])->name('password.reset.store');
+        Route::get('/password-reset/{token}', [App\Http\Controllers\Auth\PasswordResetController::class, 'index'])->name('password.reset');
+        Route::post('/password-reset', [App\Http\Controllers\Auth\PasswordResetController::class, 'store'])->name('password.reset.store');
     });
 
     Route::get('/download', function () {

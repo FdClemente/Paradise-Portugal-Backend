@@ -20,14 +20,15 @@ trait HasUpcomingDates
             return "Tomorrow";
         }
 
-        if ($date->diffInDays(now(), true) < 30){
+        if ($date->diffInDays(now(), true) < 30) {
             $days = $date->diffInDays(now(), true);
             $days = intval($days);
-            return __('reservation.diffInDays', ['days' => $days]);
-        }else{
+            return trans_choice('reservation.diffInDays', $days, ['days' => $days]);
+        } else {
             $months = $date->diffInMonths(now(), true);
             $months = intval($months);
-            return __('reservation.diffInMonths', ['months' => $months]);
+            return trans_choice('reservation.diffInMonths', $months, ['months' => $months]);
         }
+
     }
 }
