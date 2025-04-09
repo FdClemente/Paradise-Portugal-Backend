@@ -41,6 +41,9 @@ class ImportService
     private function saveHouse(array $house)
     {
         $houseModel = $this->initializeHouseModel($house);
+        if (!$houseModel){
+            return;
+        }
         $this->syncPrices($houseModel, $house);
         $this->syncBookedDates($houseModel, $house);
         $this->updateHouseDetails($houseModel, $house);
@@ -48,10 +51,13 @@ class ImportService
         $this->attachAdditionalMedia($houseModel, $house);
     }
 
-    private function initializeHouseModel(array $house): House
+    private function initializeHouseModel(array $house): ?House
     {
-        $houseModel = House::firstOrNew(['wp_id' => $house['id']]);
-
+        $houseModel = House::where('wp_id', $house['id'])->first();
+        #$houseModel = House::firstOrNew(['wp_id' => $house['id']]);
+        if (!$houseModel){
+            return null;
+        }
         $houseModel->setTranslationForAllLanguages('name', $house['title']['rendered']);
         $houseModel->setTranslationForAllLanguages('description', $house['content']['rendered']);
         $houseModel->is_disabled = $house['status'] !== 'publish';
