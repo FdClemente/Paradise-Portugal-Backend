@@ -9,7 +9,8 @@ trait ManageAddress
 {
     private function getCoordinates($data)
     {
-        $address = $data['addressLine1'].' '.$data['addressLine2'].' '.$data['city'].' '.$data['postalCode'].' '.$data['state'];
+
+        $address = ($data['address_line_1']??'').' '.($data['address_line_2']??'').' '.($data['city']??'').' '.($data['postal_code']??'').' '.($data['state']??'');
 
         return Cache::remember('geocoder-address-'.$address, now()->addDay(), function () use ($address) {
             return Geocoder::getCoordinatesForAddress($address);
@@ -21,13 +22,16 @@ trait ManageAddress
         $addressDetails = $this->getCoordinates($addressData);
 
         $mapped = [
-            'address_line_1' => null,
-            'address_line_2' => null,
-            'city' => null,
-            'postal_code' => null,
-            'state' => null,
-            'country' => null,
+            'address_line_1' => '',
+            'address_line_2' => '',
+            'city' => '',
+            'postal_code' => '',
+            'state' => '',
+            'country' => '',
         ];
+        if ($addressDetails['formatted_address'] == 'result_not_found'){
+            return $mapped;
+        }
 
         foreach ($addressDetails['address_components'] as $component) {
             $types = $component->types;

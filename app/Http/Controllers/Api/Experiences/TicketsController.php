@@ -57,7 +57,7 @@ class TicketsController extends Controller
         $availableDates = [];
 
         while ($startDate <= $endDate) {
-            $month = Months::from(strtolower($startDate->monthName));
+            $month = Months::from(strtolower($startDate->locale('en_EN')->monthName));
             $monthValid = in_array($month, $availabilities->pluck('month')->flatten()->toArray());
 
             $weekDay = Weekdays::from(strtolower($startDate->dayName));

@@ -23,8 +23,6 @@ class HouseController extends Controller
         $order = $request->get('order', 'price_asc');
 
 
-        $userId = auth()->id();
-
         $dateRange = [];
         if ($startDate && $endDate) {
             $startDate = Carbon::parse($startDate);
@@ -38,7 +36,7 @@ class HouseController extends Controller
 
         $houses = House::search($query, function (Indexes $meilisearch, ?string $query = '', array $options) use ($dateRange, $order) {
             $range = '"' . implode('","', $dateRange) . '"';
-            $options['filter'] = "disable_dates NOT IN [" . $range . "]";
+            $options['filter'] = "disable_dates NOT IN [" . $range . "] AND default_price != 0";
 
             switch ($order) {
                 case 'price_asc':
