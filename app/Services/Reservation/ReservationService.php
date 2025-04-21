@@ -13,6 +13,7 @@ use Stripe\StripeClient;
 class ReservationService
 {
     private StripeClient $stripe;
+
     public function __construct()
     {
         $this->stripe = new StripeClient(config('services.stripe.secret'));
@@ -62,27 +63,30 @@ class ReservationService
         $startDate = $reservation->check_in_date;
         $endDate = $reservation->check_out_date;
 
-        $period = $reservation->house->getDatesRange($startDate, $endDate);
+        if ($reservation->house) {
+            $period = $reservation->house->getDatesRange($startDate, $endDate);
 
-        $datesToInsert = [];
+            $datesToInsert = [];
 
-        foreach ($period as $date) {
-            $datesToInsert[] = [
-                'house_id' => $reservation->house->id,
-                'date' => $date->format('Y-m-d'),
-                'reason' => 'reserved',
-                'reservation_id' => $reservation->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            foreach ($period as $date) {
+                $datesToInsert[] = [
+                    'house_id' => $reservation->house->id,
+                    'date' => $date->format('Y-m-d'),
+                    'reason' => 'reserved',
+                    'reservation_id' => $reservation->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            $reservation->house->disableDates()->insert($datesToInsert);
         }
-
-        $reservation->house->disableDates()->insert($datesToInsert);
     }
 
     public function clearDates(Reservation $reservation)
     {
-        $reservation->house->disableDates()->delete();
+        if ($reservation->house)
+            $reservation->house->disableDates()->delete();
     }
 
     public function updateDates(Reservation $reservation)
