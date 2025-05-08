@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('experience_types', function (Blueprint $table) {
-            $table->text('description')->nullable()->change();
+            $table->text('description')->default("")->nullable()->change();
         });
     }
 
