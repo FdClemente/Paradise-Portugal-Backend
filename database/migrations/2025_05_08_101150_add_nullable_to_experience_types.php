@@ -8,14 +8,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('experience_types', function (Blueprint $table) {
-            $table->text('description')->default("")->nullable()->change();
+            $table->json('description')->nullable()->change();
         });
     }
 
     public function down(): void
     {
         Schema::table('experience_types', function (Blueprint $table) {
-            $table->text('description')->nullable(false)->change();
+            $table->json('description')->nullable(false)->change();
         });
     }
 };
