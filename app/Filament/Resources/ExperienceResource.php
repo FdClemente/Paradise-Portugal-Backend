@@ -7,7 +7,9 @@ use App\Filament\Resources\ExperienceResource\RelationManagers\AvailabilityRelat
 use App\Filament\Resources\ExperienceResource\RelationManagers\TicketsRelationManager;
 use App\Filament\Resources\Settings\ExperiencePartnerResource;
 use App\Filament\Resources\Settings\ExperienceServiceResource;
+use App\Filament\Resources\Settings\ExperienceTypeResource;
 use App\Models\Experiences\Experience;
+use App\Models\Settings\ExperienceType;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
@@ -55,7 +57,7 @@ class ExperienceResource extends Resource
                                     ->schema([
                                         Select::make('experience_type_id')
                                             ->createOptionForm(function (Form $form) {
-                                                return ExperiencePartnerResource::form($form);
+                                                return ExperienceTypeResource::form($form);
                                             })
                                             ->required()
                                             ->preload()
