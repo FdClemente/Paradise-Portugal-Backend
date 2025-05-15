@@ -95,6 +95,7 @@ class Poi extends Model implements HasMedia
     {
         $this
             ->addMediaConversion('webp_format')
+            ->quality(75)
             ->format('webp');
     }
 

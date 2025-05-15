@@ -59,6 +59,7 @@ class House extends Model implements HasMedia, HasStaticMap
     {
             $this
                 ->addMediaConversion('webp_format')
+                ->quality(75)
                 ->format('webp');
     }
 
