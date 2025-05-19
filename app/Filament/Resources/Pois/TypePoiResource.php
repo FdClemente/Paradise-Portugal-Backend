@@ -71,7 +71,6 @@ class TypePoiResource extends Resource
                 IconColumn::make('is_active')->boolean(),
             ])
             ->filters([
-                TranslateTableAction::make()
             ])
             ->actions([
                 EditAction::make()->slideOver(),

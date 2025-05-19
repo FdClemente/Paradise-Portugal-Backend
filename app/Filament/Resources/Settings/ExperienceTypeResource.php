@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Settings;
 
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Settings\ExperienceTypeResource\Pages;
 use App\Models\Settings\ExperienceType;
 use Filament\Forms\Components\RichEditor;
@@ -61,6 +62,7 @@ class ExperienceTypeResource extends Resource
                 TrashedFilter::make(),
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
                 RestoreAction::make(),
