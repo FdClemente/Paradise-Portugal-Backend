@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Pois;
 
+use App\Filament\Actions\TranslateAction;
+use App\Filament\Actions\TranslateTableAction;
 use App\Filament\Resources\Pois\TypePoiResource\Pages;
 use App\Models\Pois\TypePoi;
 use Filament\Forms\Components\Placeholder;
@@ -69,7 +71,7 @@ class TypePoiResource extends Resource
                 IconColumn::make('is_active')->boolean(),
             ])
             ->filters([
-                //
+                TranslateTableAction::make()
             ])
             ->actions([
                 EditAction::make()->slideOver(),
