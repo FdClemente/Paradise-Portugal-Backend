@@ -33,6 +33,8 @@ Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware
     Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
     Route::post('/experience/tickets/price', App\Http\Controllers\Api\Experiences\TicketPriceController::class);
     Route::post('/experience/{experience}/tickets', App\Http\Controllers\Api\Experiences\TicketsController::class);
+    Route::get('/experience/search', App\Http\Controllers\Api\Experiences\SearchExperienceController::class);
+
 
     Route::resource('/wishlist', \App\Http\Controllers\Api\WishlistController::class)
         ->only('index', 'store', 'destroy', 'show')
