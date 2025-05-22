@@ -28,7 +28,6 @@ Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware
     Route::get('/rating', App\Http\Controllers\Api\CheckRatingController::class);
 
     Route::group(['prefix' => '/experience'], function () {
-        Route::resource('/', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
         Route::post('/tickets/price', App\Http\Controllers\Api\Experiences\TicketPriceController::class);
         Route::post('/{experience}/tickets', App\Http\Controllers\Api\Experiences\TicketsController::class);
         Route::get('/search', App\Http\Controllers\Api\Experiences\SearchExperienceController::class);
@@ -36,6 +35,7 @@ Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware
         Route::get('/{experience}/static_map', [App\Http\Controllers\Api\MapImageController::class, 'experience']);
     });
     Route::get('experiences-types', App\Http\Controllers\Api\Experiences\ExperienceTypeController::class);
+    Route::resource('/experience', App\Http\Controllers\Api\Experiences\ExperienceController::class)->only('index', 'show');
 
 
     Route::resource('/wishlist', \App\Http\Controllers\Api\WishlistController::class)
