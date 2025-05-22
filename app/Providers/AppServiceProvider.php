@@ -75,7 +75,6 @@ class AppServiceProvider extends ServiceProvider
 
         IconPicker::configureUsing(function (IconPicker $component): void {
             $component
-                ->sets(['fontawesome-solid', 'heroicons'])
                 ->preload(false);
         });
 

@@ -38,7 +38,8 @@ class HouseDetailsHighlightResource extends Resource
                         TextInput::make('name'),
                     ]),
 
-                IconPicker::make('icon'),
+                IconPicker::make('icon')
+                    ->sets(['fontawesome-solid', 'heroicons', 'google-material-design-icons']),
                 Grid::make()
                     ->columns()
                     ->schema([

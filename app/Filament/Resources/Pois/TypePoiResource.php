@@ -46,7 +46,8 @@ class TypePoiResource extends Resource
                 SpatieMediaLibraryFileUpload::make('images')
                     ->columnSpan(2)
                     ->conversion('thumb'),
-                IconPicker::make('icon'),
+                IconPicker::make('icon')
+                    ->sets(['fontawesome-solid', 'heroicons', 'google-material-design-icons']),
                 Select::make('is_active')
                     ->boolean()
                     ->default(true),

@@ -40,7 +40,8 @@ class FeatureResource extends Resource
                         Translate::make()->schema([
                             TextInput::make('name')
                         ]),
-                        IconPicker::make('icon'),
+                        IconPicker::make('icon')
+                            ->sets(['fontawesome-solid', 'heroicons', 'google-material-design-icons']),
                     ]),
                 Grid::make(2)
                     ->schema([
