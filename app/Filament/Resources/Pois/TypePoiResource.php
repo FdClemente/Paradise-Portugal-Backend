@@ -73,6 +73,7 @@ class TypePoiResource extends Resource
             ->filters([
             ])
             ->actions([
+                TranslateTableAction::make(),
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),
             ])

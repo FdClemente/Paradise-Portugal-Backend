@@ -13,7 +13,7 @@ class TypePoi extends Model implements HasMedia
     use InteractsWithMedia, HasTranslations;
 
     protected $table = 'types_pois';
-    public $translatable = ['name', 'description'];
+    public $translatable = ['name'];
 
     protected $fillable = ['name', 'icon', 'is_active'];
 

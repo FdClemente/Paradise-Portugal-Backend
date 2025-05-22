@@ -19,6 +19,9 @@ class TranslationService
 
     private function translateText(string $text, string $targetLanguage, string $sourceLanguage)
     {
+        if ($text === "")
+            return "";
+
         $projectId = config('services.google.project_id');
         $location = 'global';
 
