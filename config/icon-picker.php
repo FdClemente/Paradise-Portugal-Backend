@@ -15,7 +15,7 @@ return [
     | When set to null (default), every installed icon set will be used.
     |
     */
-    'sets' => null,
+    'sets' => ['fontawesome-solid', 'heroicons', 'google-material-design-icons'],
 //     example:
 //     'sets' => 'heroicons',
 //     'sets' => [
