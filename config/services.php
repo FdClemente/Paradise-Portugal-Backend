@@ -49,5 +49,9 @@ return [
         'redirect' => '',
         'project_id' => env('GOOGLE_PROJECT_ID'),
         'google_json_key' => base_path('keys/google-key.json')
+    ],
+    'guestParadise'=>[
+        'auth_token' => env('GUEST_PARADISE_TOKEN'),
+        'domain' => env('GUEST_PARADISE_DOMAIN')
     ]
 ];
