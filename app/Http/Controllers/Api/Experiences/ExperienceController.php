@@ -18,7 +18,7 @@ class ExperienceController extends Controller
         $experienceTypeIds = $this->getExperienceTypeIds($request);
         $selectedHouse = $this->getSelectedHouse($request);
         $excludedExperienceId = $this->getExcludedExperienceId($request);
-        $order = $request->get('order', 'price_asc');
+        $order = $request->get('order', 'order');
 
         $experienceTypes = ExperienceType::whereIn('id', $experienceTypeIds)
             ->get();
@@ -40,6 +40,8 @@ class ExperienceController extends Controller
 
         $experiences = $experiences->sortBy(function (Experience $experience) use ($order) {
             switch ($order) {
+                case 'order':
+                    return $experience->order;
                 case 'price_asc':
                     return $experience->average_price;
                 case 'newest':

@@ -143,7 +143,7 @@ return [
             ],
             \App\Models\Experiences\Experience::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo'],
-                'sortableAttributes' => ['id', 'name', 'address', '_geo'],
+                'sortableAttributes' => ['id', 'name', 'address', '_geo', 'order'],
             ],
             \App\Models\Pois\Poi::class => [
                 'filterableAttributes' => ['id', 'name', 'address', '_geo', 'type_poi_id'],

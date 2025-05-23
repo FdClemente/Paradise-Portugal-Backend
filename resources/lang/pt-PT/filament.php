@@ -84,6 +84,7 @@ return [
         'name' => 'Nome',
         'experience_partner' => 'Parceiro de experiência',
         'min_guests' => 'Número mínimo de hóspedes',
+        'order' => 'Ordenação',
         'description' => 'Descrição',
         'experience_image' => 'Imagem da experiência',
         'services' => 'Serviços',

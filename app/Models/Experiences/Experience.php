@@ -37,9 +37,41 @@ class Experience extends Model implements HasMedia, HasStaticMap
         'additional_info',
         'latitude',
         'longitude',
-        ];
+        'order',
+    ];
 
     protected $appends = ['latitude', 'longitude'];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Experience $experience) {
+            $maxOrder = self::where('experience_type_id', $experience->experience_type_id)->max('order');
+            $experience->order = is_null($maxOrder) ? 1 : $maxOrder + 1;
+        });
+        static::updating(function (Experience $experience) {
+            if ($experience->isDirty('experience_type_id')) {
+                $maxOrder = self::where('experience_type_id', $experience->experience_type_id)->max('order');
+                $experience->order = is_null($maxOrder) ? 1 : $maxOrder + 1;
+            } elseif ($experience->isDirty('order')) {
+                $experiences = self::where('experience_type_id', $experience->experience_type_id)
+                    ->where('id', '!=', $experience->id)
+                    ->orderBy('order')
+                    ->get();
+
+                $newOrder = 1;
+                foreach ($experiences as $exp) {
+                    if ($newOrder == $experience->order) $newOrder++;
+                    $exp->order = $newOrder++;
+                    $exp->saveQuietly();
+                }
+            }
+        });
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('experience_type_id')->orderBy('order');
+    }
 
     public function experienceType(): BelongsTo
     {

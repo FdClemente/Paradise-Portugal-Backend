@@ -77,6 +77,10 @@ class ExperienceResource extends Resource
                                             ->label(__('filament.experience.min_guests'))
                                             ->required()
                                             ->integer(),
+                                        TextInput::make('order')
+                                            ->label(__('filament.experience.order'))
+                                            ->required()
+                                            ->integer(),
                                         Select::make('services')
                                             ->createOptionForm(function (Form $form) {
                                                 return ExperienceServiceResource::form($form);
