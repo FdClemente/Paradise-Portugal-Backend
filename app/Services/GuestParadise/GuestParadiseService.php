@@ -11,7 +11,7 @@ class GuestParadiseService
     public function addReservation(Reservation $reservation)
     {
         $data = [
-            'accommodation_id' => /*$reservation->house->house_id*/38589,
+            'accommodation_id' => $reservation->house->house_id,
             'name' => $reservation->customer->first_name.' '.$reservation->customer->last_name,
             'phone' => $reservation->customer->phone_number,
             'email' => $reservation->customer->email,
