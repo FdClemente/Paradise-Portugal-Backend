@@ -103,6 +103,9 @@ Route::prefix('v1')->middleware([SetAppLanguageMiddleware::class, ETagMiddleware
 
     Route::get('/legal/{type}', App\Http\Controllers\Api\LegalController::class)
         ->where('type', 'privacy_policy|cancellation_policy|terms_and_conditions');
+
+    Route::group(['prefix' => 'guest-paradise/reservation', 'middleware' => 'auth:sanctum'], function (){
+        Route::post('/', [App\Http\Controllers\GuestParadise\ReservationSyncController::class, 'store']);
+        Route::delete('/{externalId}', [App\Http\Controllers\GuestParadise\ReservationSyncController::class, 'destroy']);
+    });
 });
-
-
