@@ -16,6 +16,6 @@ Route::group([], function () {
         return view('download.app');
     })->name('download');
 
-    Route::get('/privacy', [\App\Http\Controllers\Web\PrivacyController::class, 'index'])->name('download');
+    Route::get('/privacy', [\App\Http\Controllers\Web\PrivacyController::class, 'index']);
 
 });
