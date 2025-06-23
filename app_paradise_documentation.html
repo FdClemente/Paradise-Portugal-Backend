@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>App Paradise - API Docs</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+        window.onload = () => {
+            SwaggerUIBundle({
+                spec: {
+                    openapi: "3.0.0",
+                    components: {
+                        securitySchemes: {
+                            bearerAuth: {
+                                type: "http",
+                                scheme: "bearer"
+                            }
+                        }
+                    },
+                    security: [{ bearerAuth: [] }],
+                    info: {
+                        title: "App Paradise API",
+                        version: "1.0.0",
+                        description: "App Paradise API Documentation"
+                    },
+                    paths: {
+                        "/api/v1/guest-paradise/reservation": {
+                            post: {
+                                summary: "Create a reservation",
+                                security: [{ bearerAuth: [] }],
+                                requestBody: {
+                                    required: true,
+                                    content: {
+                                        "application/json": {
+                                            schema: {
+                                                type: "object",
+                                                properties: {
+                                                    id: { type: "integer" },
+                                                    check_in_date: { type: "string", format: "date" },
+                                                    check_out_date: { type: "string", format: "date" },
+                                                    adults: { type: "integer" },
+                                                    children: { type: "integer" },
+                                                    house_id: { type: "integer" }
+                                                },
+                                                required: ["id", "check_in_date", "check_out_date", "adults", "children", "house_id"]
+                                            }
+                                        }
+                                    }
+                                },
+                                responses: {
+                                    "201": {
+                                        description: "Reservation created successfully"
+                                    },
+                                    "422": {
+                                        description: "Validation error",
+                                        content: {
+                                            "application/json": {
+                                                schema: {
+                                                    type: "object",
+                                                    properties: {
+                                                        message: { type: "string", example: "The given data was invalid." },
+                                                        errors: {
+                                                            type: "object",
+                                                            additionalProperties: {
+                                                                type: "array",
+                                                                items: { type: "string" }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "/api/v1/guest-paradise/reservation/{reservation_id}": {
+                            delete: {
+                                summary: "Delete a reservation",
+                                security: [{ bearerAuth: [] }],
+                                parameters: [
+                                    {
+                                        name: "reservation_id",
+                                        in: "path",
+                                        required: true,
+                                        schema: {
+                                            type: "integer"
+                                        }
+                                    }
+                                ],
+                                responses: {
+                                    "204": {
+                                        description: "Reservation deleted successfully"
+                                    },
+                                    "422": {
+                                        description: "Validation error",
+                                        content: {
+                                            "application/json": {
+                                                schema: {
+                                                    type: "object",
+                                                    properties: {
+                                                        message: { type: "string", example: "The given data was invalid." },
+                                                        errors: {
+                                                            type: "object",
+                                                            additionalProperties: {
+                                                                type: "array",
+                                                                items: { type: "string" }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                dom_id: '#swagger-ui',
+            });
+        };
+    </script>
+</body>
+</html>
