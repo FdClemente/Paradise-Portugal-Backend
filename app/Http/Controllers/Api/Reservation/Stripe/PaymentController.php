@@ -50,7 +50,7 @@ class PaymentController extends Controller
                 'amount' => $total,
                 'currency' => 'eur',
                 'description' => 'Paradise Portugal Reserve',
-                'payment_method_types' => ['card', 'paypal'],
+                'payment_method_types' => ['card'],
             ]);
 
             $paymentDetails = [
