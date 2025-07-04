@@ -9,13 +9,13 @@
             <p class="text-[#454545] text-lg mb-10">{{ __('download.text') }}</p>
 
             <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mb-12">
-                <a href="#"
+                <a href="https://apps.apple.com/us/app/paradise-portugal/id6740406437"
                    class="w-full sm:w-60 bg-black text-white py-4 rounded-xl flex items-center justify-center gap-2 shadow hover:scale-105 transition-transform">
                     <x-grommet-apple-app-store class="w-6 h-6" />
                     <span class="text-lg font-medium">App Store</span>
                 </a>
 
-                <a href="#"
+                <a href="https://play.google.com/store/apps/details?id=com.appParadiseportugal.mobile"
                    class="w-full sm:w-60 bg-green-600 text-white py-4 rounded-xl flex items-center justify-center gap-2 shadow hover:scale-105 transition-transform">
                     <x-grommet-google-play class="w-6 h-6" />
                     <span class="text-lg font-medium">Google Play</span>

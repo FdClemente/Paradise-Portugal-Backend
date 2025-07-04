@@ -5,6 +5,7 @@ namespace App\Services;
 use Google\Cloud\Translate\V3\Client\TranslationServiceClient;
 use Google\Cloud\Translate\V3\TranslateTextRequest;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\LaravelSettings\Settings;
 use Spatie\Translatable\HasTranslations;
 
 class TranslationService
@@ -59,5 +60,15 @@ class TranslationService
             }
         }
         $model->save();
+    }
+
+    public function translateSettings(Settings $settings, string $originLanguage, array $attributes, array $targetLanguage): void
+    {
+        foreach ($attributes as $attribute){
+            foreach ($targetLanguage as $lang){
+                $settings->{$attribute}[$lang] =  $this->translateText($settings->{$attribute}[$originLanguage], $lang, $originLanguage);
+            }
+        }
+        $settings->save();
     }
 }
