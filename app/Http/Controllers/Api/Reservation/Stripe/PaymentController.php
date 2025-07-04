@@ -10,6 +10,7 @@ use App\Http\Responses\Api\ApiErrorResponse;
 use App\Http\Responses\Api\ApiSuccessResponse;
 use App\Models\Experiences\ExperiencePrice;
 use App\Models\Reservation;
+use App\Notifications\Experience\ReservationNotification;
 use Illuminate\Support\Carbon;
 use Stripe\StripeClient;
 
@@ -97,6 +98,8 @@ class PaymentController extends Controller
                             'experience_price_id' => $ticket['price_id'],
                             'tickets' => $ticket['tickets'],
                         ]);
+
+                        $experience->experiencePartner->notify(new ReservationNotification($reservation));
                     }
                 }
                 $validDates = collect($request->get('tickets', []))
