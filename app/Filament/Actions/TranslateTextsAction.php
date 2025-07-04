@@ -33,6 +33,9 @@ class TranslateTextsAction extends Action
                 $attributes[] = $key;
             }
 
+            $attributes = array_combine($attributes, $attributes);
+
+
             return [
                 Select::make('attributes')
                     ->label(__('filament.translate.attributes'))
