@@ -26,22 +26,26 @@ class TranslateTextsAction extends Action
         $this->successNotificationTitle("Translated successfully");
         $this->color('info');
         $this->form(function () {
-            $settingField = get_class_vars($this->settings);
+            $options = get_class_vars($this->settings);
+
 
             $attributes = [];
-            foreach ($settingField as $key => $field){
-                $attributes[] = $key;
+            $keys = [];
+            foreach (get_class_vars($this->settings) as $key => $field){
+                $keys[] = $key;
+                $attributes[$key] = $key;
             }
 
-            $attributes = array_combine($attributes, $attributes);
+            $options = array_combine($attributes, $attributes);
 
+            #dd($options);
 
             return [
                 Select::make('attributes')
                     ->label(__('filament.translate.attributes'))
                     ->multiple()
-                    ->default($attributes)
-                    ->options($attributes),
+                    ->default($keys)
+                    ->options($options),
                 Select::make('originLanguage')
                     ->label(__('filament.translate.originLanguage'))
                     ->live()
