@@ -35,7 +35,7 @@ class HouseController extends Controller
         }
 
         $houses = House::search($query, function (Indexes $meilisearch, ?string $query = '', array $options) use ($dateRange, $order) {
-            $range = '"' . implode('","', $dateRange) . '"';
+            $range = '"' . implode('T00:00:00.000000Z","', $dateRange) . '"';
             $options['filter'] = "disable_dates NOT IN [" . $range . "] AND default_price != 0";
 
             switch ($order) {
@@ -89,9 +89,7 @@ class HouseController extends Controller
             ];
 
             if ($startDate && $endDate) {
-                $nights = $startDate->diffInDays($endDate);
-
-                $data['default_price'] = $data['default_price'] * $nights;
+                $data['default_price'] = $item->calculateTotalNightsCost($startDate, $endDate);
 
             }
             return $data;
