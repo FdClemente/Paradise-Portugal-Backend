@@ -5,6 +5,7 @@ namespace App\Services;
 use Google\Cloud\Translate\V3\Client\TranslationServiceClient;
 use Google\Cloud\Translate\V3\TranslateTextRequest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelSettings\Settings;
 use Spatie\Translatable\HasTranslations;
 
@@ -39,7 +40,7 @@ class TranslationService
             $request->setContents([$text]);
             $request->setParent($formattedParent);
         }catch (\Exception $e){
-            dd($targetLanguage);
+            Log::error($e->getMessage()." target language: ".$targetLanguage);
         }
 
 

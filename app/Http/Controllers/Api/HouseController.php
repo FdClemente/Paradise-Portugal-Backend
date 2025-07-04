@@ -78,13 +78,23 @@ class HouseController extends Controller
             })->sortByDesc('availability_score')->values();
         }
 
-        $houses->getCollection()->transform(function (House $item) use ($favorites) {
 
-            return [
+
+        $houses->getCollection()->transform(function (House $item) use ($endDate, $startDate, $favorites) {
+
+            $data = [
                 ...$item->formatToList(),
                 'availability_score' => $item->availability_score,
                 'isFavorite' => in_array($item->id, $favorites),
             ];
+
+            if ($startDate && $endDate) {
+                $nights = $startDate->diffInDays($endDate);
+
+                $data['default_price'] = $data['default_price'] * $nights;
+
+            }
+            return $data;
         });
 
 
