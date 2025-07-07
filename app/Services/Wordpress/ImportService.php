@@ -119,17 +119,28 @@ class ImportService
     {
         $mediaItems = \Http::get($house['_links']['wp:attachment'][0]['href'].'&per_page=100')->json();
 
+        $apiFileNames = [];
+
         foreach ($mediaItems as $item) {
-            if ($item['media_details'] === []){
+            if (empty($item['media_details'])) {
                 continue;
             }
+
             $mediaUrl = $item['media_details']['sizes']['full']['source_url'];
             $fileName = basename($mediaUrl);
+            $apiFileNames[] = $fileName;
 
             if (!$houseModel->media()->where('collection_name', 'house_image')->where('file_name', $fileName)->exists()) {
                 $houseModel->addMediaFromUrl($mediaUrl)->toMediaCollection('house_image');
             }
         }
+
+        $houseModel->media()
+            ->where('collection_name', 'house_image')
+            ->whereNotIn('file_name', $apiFileNames)
+            ->each(function ($media) {
+                $media->delete();
+            });
     }
 
     private function syncPrices(House $houseModel, array $house)
